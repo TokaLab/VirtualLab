@@ -61,16 +61,6 @@ A typical VirtualLab workflow consists of:
 
 ---
 
-## 🎓 Educational Value
-
-VirtualLab is especially useful in:
-
-* Classroom environments
-* Thesis projects
-* Rapid prototyping for new diagnostic methods
-
----
-
 ## 🤝 Contributing
 
 We welcome contributions from the community. To contribute, please contact us.
