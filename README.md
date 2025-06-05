@@ -13,6 +13,11 @@ VirtualLab is designed to:
 * Provide templates for new experiments and simulation chains
 
 It serves as an educational and research-oriented sandbox to prototype virtual tokamak scenarios.
+VirtualLab is especially useful in:
+
+* Educational environments
+* Thesis projects
+* Digital twin simulations of tokamaks
 
 ---
 
@@ -21,14 +26,19 @@ It serves as an educational and research-oriented sandbox to prototype virtual t
 ```plaintext
 VirtualLab/
 │
-├── examples/             # End-to-end use cases
-│   ├── case1_simple/     # Basic equilibrium + diagnostic example
-│   ├── case2_diverted/   # Advanced configuration with diagnostics
-│   └── ...
+├── VirtualLab_MATLAB/           # MATLAB implementation (object-oriented)
+│   ├── ...            
 │
-├── shared/               # Shared utilities and data
-├── plots/                # Output figures and diagnostics
-└── README.md             # This file
+│── VirtualLab_MATLAB_edu/       # MATLAB function-oriented code for education
+│   ├── ...
+│
+├── VirtualLab_Python/           # Python implementation (object-oriented)
+│   └── ...
+│ 
+├── docs/                        # Coming soon!
+│ 
+├── License
+└── README.md             
 ```
 
 ---
@@ -45,37 +55,9 @@ A typical VirtualLab workflow consists of:
 
 ## 🤖 Getting Started
 
-1. Ensure `SimPla` and `SynDiag` are installed or accessible
+1. Ensure `SimPla` and `SynDiag` are downloaded in the proper folders VirtualLab_MATLAB/SimPla_MATLAB and VirtualLab_MATLAB/SynDiag_MATLAB (or VirtualLab_Python/SimPla_Python and VirtualLab_Python/SynDiag_Python)
 2. Navigate to a case study under `examples/`
 3. Run the provided script in Python or MATLAB
-
-**Python Example:**
-
-```bash
-cd examples/case1_simple/
-python run_case.py
-```
-
-**MATLAB Example:**
-
-```matlab
-cd examples/case1_simple/
-run('run_case.m')
-```
-
----
-
-## 🔍 Included Use Cases
-
-* **Circular Plasma with Interferometry**
-* **D-Shaped Plasma with Thomson Scattering**
-* **Diverted Configuration with Magnetic Diagnostics**
-
-Each case includes:
-
-* Inputs: separatrix, machine geometry, diagnostic setup
-* Scripts: equilibrium reconstruction and diagnostics
-* Outputs: plots, signals, performance metrics
 
 ---
 
@@ -91,13 +73,7 @@ VirtualLab is especially useful in:
 
 ## 🤝 Contributing
 
-Want to add your own case or use VirtualLab in your research? We welcome contributions:
-
-1. Fork this repository
-2. Add your new example under `examples/`
-3. Submit a pull request
-
----
+We welcome contributions from the community. To contribute, please contact us.
 
 ## 📄 License
 
@@ -108,10 +84,11 @@ Please see the [License](./License) file for full details.
 
 ## 📬 Contact
 
-**TokaLab Team**
-Email: \[[your-email@example.com](mailto:your-email@example.com)]
-Website: \[your-lab-or-group-website]
+For questions, suggestions, or collaborations:
 
----
+**TokaLab Team**
+Email: \[tokalab.fusion@gmail.com](mailto:tokalab.fusion@gmail.com)
+Website: \[tokalab.github.io](https://tokalab.github.io/)
+
 
 Happy experimenting in the VirtualLab!
