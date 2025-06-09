@@ -65,6 +65,8 @@ A typical VirtualLab workflow consists of:
 
 We welcome contributions from the community. To contribute, please contact us.
 
+---
+
 ## 📄 License
 
 Tokalab is licensed under the BSD 3-Clause License.  
