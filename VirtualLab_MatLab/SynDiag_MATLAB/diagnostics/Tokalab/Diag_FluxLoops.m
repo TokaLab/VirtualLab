@@ -1,0 +1,79 @@
+%% tokalab diagnostics
+
+classdef Diag_FluxLoops
+
+    properties
+
+        R % Horixontal coordinate
+        Z % Vertical coordinate
+
+        psi % Measured Flux 
+
+        unit % Unit Measure
+
+        config % contains the various information such as noise, etc.
+
+        ideal % contains the measurements without the noise
+
+    end
+
+    methods
+
+        function obj = measure(obj,equi)
+
+            R_equi = equi.geo.grid.Rg;
+            Z_equi = equi.geo.grid.Zg;
+
+            psi_equi = equi.psi;
+
+            psi = interp2(R_equi,Z_equi,psi_equi,obj.R,obj.Z);
+
+            obj.ideal.psi = psi;
+
+            % noise absolute 
+            noise_abs = normrnd(0,obj.config.noise_random_absolute_intensity,size(obj.ideal.psi));
+
+            % noise proportional
+            noise_prop = normrnd(0,abs(obj.ideal.psi).*obj.config.noise_random_proportional_intensity);
+
+            % real measurement
+            obj.psi = obj.ideal.psi + noise_abs + noise_prop;
+
+            obj.unit = "Wb/rad";
+
+        end
+
+        function obj = Upload(obj,configuration)
+
+            % default configuration
+            if nargin<2
+                configuration = 1;
+            end
+
+            if configuration == 1
+                
+                obj.config.configuration = 1;
+
+                load("diagnostics_data\FluxLoopsData_config_1.mat")
+
+                obj.R = R;
+                obj.Z = Z;
+
+                obj.config.noise_random_absolute_intensity = 0; 
+                obj.config.noise_random_proportional_intensity = 0;
+
+            end
+
+        end
+
+    end
+
+
+
+
+
+end
+
+
+
+
