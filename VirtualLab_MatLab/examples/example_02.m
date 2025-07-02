@@ -20,7 +20,6 @@ equi = equi.import_configuration(geo,tok.config);
 equi = equi.import_classes();
 equi.separatrix = equi.separatrix.build_separatrix(equi.config.separatrix,equi.geo);
 
-
 % we want to evaluate three equilibrium at different plasma current
 Ip_s = [-3e6 -10e6 -15e6];
 

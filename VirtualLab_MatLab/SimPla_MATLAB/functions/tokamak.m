@@ -43,14 +43,21 @@ classdef tokamak
         end
 
         % upload equilibrium configuration file
-        function obj = scenario_upload(obj)
-            
+        function obj = scenario_upload(obj,separatrix,Jt_method)
+
+            if nargin < 2
+                separatrix = 1;
+                Jt_method = 1;
+            elseif nargin < 3
+                Jt_method = 1;
+            end
+
             machine = obj.machine;
 
             if machine == "Tokalab"
-                config = Tokalab_Scenario();
+                config = Tokalab_Scenario(separatrix,Jt_method);
             elseif machine == "NewMachine"
-                config = NewMachine_Scenatio();
+                config = NewMachine_Scenario(separatrix,Jt_method);
             end
 
             % store parameters in the class

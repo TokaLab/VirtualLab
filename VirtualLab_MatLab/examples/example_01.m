@@ -27,7 +27,6 @@ geo.plot_wall()
 hold on
 equi.plot_separatrix();
 
-
 % solve equilibrium
 equi = equi.solve_equilibrium();
 
@@ -70,3 +69,5 @@ IntPol = Diag_InterferometerPolarimeter();
 IntPol = IntPol.Upload(1);
 IntPol = IntPol.measure(equi);
 figure(7); clf; IntPol.plot_StandAlone;
+
+

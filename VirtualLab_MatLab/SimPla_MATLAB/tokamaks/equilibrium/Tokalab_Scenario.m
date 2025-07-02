@@ -1,12 +1,5 @@
 function config = Tokalab_Scenario(separatrix,toroidal_current_method)
     
-    if nargin < 1
-        separatrix = 1;
-        toroidal_current_method = 1;
-    elseif nargin < 2
-        toroidal_current_method = 1;
-    end
-
     %% Here we define the values for the target separatrix
 
     if separatrix == 1
@@ -22,8 +15,43 @@ function config = Tokalab_Scenario(separatrix,toroidal_current_method)
         config.separatrix.gamma_p_1 = 0;
         config.separatrix.gamma_p_2 = pi/6;
 
+        config.separatrix.a = 2;
+        config.separatrix.R0 = 6;
+        config.separatrix.Z0 = 0;
+
     elseif separatrix == 2
-        % new scenario
+        % Double-null standard tokalab scenario
+        config.separatrix.scenario = 1;
+        config.separatrix.method = 1;
+        config.separatrix.k1 = 1.7;
+        config.separatrix.k2 = 1.7;
+        config.separatrix.d1 = 0.5;
+        config.separatrix.d2 = 0.5;
+        config.separatrix.gamma_n_1 = pi/3;
+        config.separatrix.gamma_n_2 = pi/3;
+        config.separatrix.gamma_p_1 = pi/6;
+        config.separatrix.gamma_p_2 = pi/6;
+         
+        config.separatrix.a = 2;
+        config.separatrix.R0 = 6;
+        config.separatrix.Z0 = 0;
+
+      elseif separatrix == 3
+        % Negative Triangularity
+        config.separatrix.scenario = 1;
+        config.separatrix.method = 1;
+        config.separatrix.k1 = 1.7;
+        config.separatrix.k2 = 2;
+        config.separatrix.d1 = -0.5;
+        config.separatrix.d2 = -0.5;
+        config.separatrix.gamma_n_1 = 0;
+        config.separatrix.gamma_n_2 = pi/6;
+        config.separatrix.gamma_p_1 = 0;
+        config.separatrix.gamma_p_2 = pi/3;
+
+        config.separatrix.a = 2;
+        config.separatrix.R0 = 6;
+        config.separatrix.Z0 = 0;
 
     end
 

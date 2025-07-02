@@ -52,7 +52,7 @@ classdef equilibrium
             % equilibrium solver configuration
             obj.config.GSsolver.maxIter = 30;
             obj.config.GSsolver.abs_tol = 0;
-            obj.config.GSsolver.rel_tol = 0;
+            obj.config.GSsolver.rel_tol = 1e-4;
             obj.config.GSsolver.update_rate = 1; % min 0, max 1
             obj.config.GSsolver.Lambda = 0;
 
@@ -154,7 +154,7 @@ classdef equilibrium
                 iteration = iteration + 1;
 
                 % find critical points (O-point, X-point)
-                [Opoint,Xpoint] = obj.CriticalPoints(Ip,R,inside_wall,psi);
+                [Opoint,Xpoint] = obj.CriticalPoints(Ip,R,Z,inside_wall,psi);
 
                 % normalisation of psi
                 psi_0 = psi(Opoint);
@@ -229,7 +229,7 @@ classdef equilibrium
             end
 
             % find critical points (O-point, X-point)
-            [Opoint,Xpoint] = obj.CriticalPoints(Ip,R,inside_wall,psi);
+            [Opoint,Xpoint] = obj.CriticalPoints(Ip,R,Z,inside_wall,psi);
 
             % normalisation of psi
             psi_0 = psi(Opoint);
@@ -275,9 +275,9 @@ classdef equilibrium
 
         %% function to evaluate critical points in standard grid
 
-        function [Opoint,Xpoint] = CriticalPoints(obj,Ip,R,inside_wall,Psi)
+        function [Opoint,Xpoint] = CriticalPoints(obj,Ip,R,Z,inside_wall,Psi)
             
-            % 
+            R_b = obj.separatrix.R_sep_target;
             Z_b = obj.separatrix.Z_sep_target;
 
             % sign correction
@@ -342,7 +342,7 @@ classdef equilibrium
             inside_wall_HR = inpolygon(R_HR,Z_HR,R_wall,Z_wall);
 
             % O and X points calculation
-            [Opoint,Xpoint] = obj.CriticalPoints(Ip,R_HR,inside_wall_HR,psi_HR);
+            [Opoint,Xpoint] = obj.CriticalPoints(Ip,R_HR, Z_HR,inside_wall_HR,psi_HR);
 
             Opoint_R = R_HR(Opoint);
             Opoint_Z = Z_HR(Opoint);
@@ -435,16 +435,17 @@ classdef equilibrium
 
             R = obj.geo.grid.Rg;
             Z = obj.geo.grid.Zg;
-
-            psi_n = obj.psi_n;
-            levels = [linspace(0,1,11) 1.01, 1.05 1.1];
-            
+        
             F = obj.(field);
 
             contourf(R,Z,F,30,"LineStyle",'none')
             colorbar()
             hold on
-            contour(R,Z,psi_n,levels,"r",'linewidth',0.5)
+            if equi_lines == 1
+                psi_n = obj.psi_n;
+                levels = [linspace(0,1,11) 1.01, 1.05 1.1];
+                contour(R,Z,psi_n,levels,"r",'linewidth',0.5)
+            end
             axis equal
             xlabel("R [m]")
             ylabel("z [m]")

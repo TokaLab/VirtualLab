@@ -14,7 +14,7 @@ classdef separatrix_target
             
             % evaluate separatrix coordinates
             if separatrix_config.method == 1
-                obj = build_separatrix_m1(obj,separatrix_config,geo);
+                obj = build_separatrix_m1(obj,separatrix_config);
             else
                 % new method can be added here
 
@@ -67,7 +67,7 @@ classdef separatrix_target
         end
 
         %% this method uses (reference)
-        function obj = build_separatrix_m1(obj,separatrix_config,geo)
+        function obj = build_separatrix_m1(obj,separatrix_config)
 
             % extract parameters
             k1 = separatrix_config.k1;
@@ -79,8 +79,9 @@ classdef separatrix_target
             gammap1 = separatrix_config.gamma_p_1;
             gammap2 = separatrix_config.gamma_p_2;
 
-            R0 = geo.R0;
-            a = geo.a;
+            R0 = separatrix_config.R0;
+            Z0 = separatrix_config.Z0;
+            a = separatrix_config.a;
 
             % Inner upper part
 
@@ -93,14 +94,14 @@ classdef separatrix_target
 
                 thetax = asin(sqrt(1-2*tn1)/(1-tn1));
 
-                theta = 0:0.01:thetax;
+                theta = linspace(0,thetax,30);
 
                 Rnu = R0 + a*(alpha0n - alphan*cos(theta));
                 Znu = a*betan*sin(theta);
 
             elseif tn1 == 0.5
 
-                zeta = 0:0.01:k1;
+                zeta = linspace(0,k1,30);
                 xi = -1 + (1+d1)/k1^2*zeta^2;
 
                 Rnu = xi*a + R0;
@@ -114,14 +115,14 @@ classdef separatrix_target
 
                 phix = asinh(sqrt(2*tn1-1)/(1-tn1));
 
-                phi = 0:0.01:phix;
+                phi = linspace(0,phix,30);
 
                 Rnu = R0 + a*(alpha0n + alphan*cosh(phi));
                 Znu = a*betan*sinh(phi);
 
             elseif tn1 == 1
 
-                zeta = 0:0.01:k1;
+                zeta = linspace(0,k1,30);
                 xi = -1 + (1-d1)/k1 * zeta;
 
                 Rnu = xi*a + R0;
@@ -147,7 +148,7 @@ classdef separatrix_target
 
             elseif tn2 == 0.5
 
-                zeta = -k2:0.01:0;
+                zeta = linspace(-k2,0,30);
                 xi = -1 + (1+d2)/k2^2*zeta^2;
 
                 Rnl = xi*a + R0;
@@ -161,14 +162,14 @@ classdef separatrix_target
 
                 phix = asinh(sqrt(2*tn2-1)/(1-tn2));
 
-                phi = -phix:0.01:0;
+                phi = linspace(-phix,0,30);
 
                 Rnl = R0 + a*(alpha0n + alphan*cosh(phi));
                 Znl = a*betan*sinh(phi);
 
             elseif tn2 == 1
 
-                zeta = -k2:0.01:0;
+                zeta = linspace(-k2,0,30);
                 xi = -1 + (1-d2)/k2 * zeta;
 
                 Rnl = xi*a + R0;
@@ -187,14 +188,14 @@ classdef separatrix_target
 
                 thetax = asin(sqrt(1-2*tp1)/(1-tp1));
 
-                theta = 0:0.01:thetax;
+                theta = linspace(0,thetax,30);
 
                 Rpu = R0 + a*(alpha0p + alphap*cos(theta));
                 Zpu = a*betap*sin(theta);
 
             elseif tp1 == 0.5
 
-                zeta = 0:0.01:k1;
+                zeta = linspace(0,k1,30);
                 xi = -1 - (1+d1)/k1^2*zeta^2;
 
                 Rpu = xi*a + R0;
@@ -208,14 +209,14 @@ classdef separatrix_target
 
                 phix = asinh(sqrt(2*tp1-1)/(1-tp1));
 
-                phi = 0:0.01:phix;
+                phi = linspace(0,phix,30);
 
                 Rpu = R0 + a*(alpha0p + alphap*cosh(phi));
                 Zpu = a*betap*sinh(phi);
 
             elseif tn1 == 1
 
-                zeta = 0:0.01:k1;
+                zeta = linspace(0,k1,30);
                 xi = 1 - (1+d1)/k1 * zeta;
 
                 Rpu = xi*a + R0;
@@ -234,14 +235,14 @@ classdef separatrix_target
 
                 thetax = asin(sqrt(1-2*tp2)/(1-tp2));
 
-                theta = -thetax:0.01:0;
+                theta = linspace(-thetax,0,30);
 
                 Rpl = R0 + a*(alpha0p + alphap*cos(theta));
                 Zpl = a*betap*sin(theta);
 
             elseif tp2 == 0.5
 
-                zeta = -k2:0.01:0;
+                zeta = linspace(-k2,0,30);
                 xi = -1 - (1+d2)/k2^2*zeta^2;
 
                 Rpl = xi*a + R0;
@@ -255,14 +256,14 @@ classdef separatrix_target
 
                 phix = asinh(sqrt(2*tp2-1)/(1-tp2));
 
-                phi = -phix:0.01:0;
+                phi = linspace(-phix,0,30);
 
                 Rpl = R0 + a*(alpha0p + alphap*cosh(phi));
                 Zpl = a*betap*sinh(phi);
 
             elseif tp2 == 1
 
-                zeta = -k2:0.01:0;
+                zeta = linspace(-k2,0,30);
                 xi = 1 - (1+d2)/k2 * zeta;
 
                 Rpl = xi*a + R0;
@@ -272,8 +273,8 @@ classdef separatrix_target
 
             % Put Target Separatrix Coordinates togheters
             obj.R_sep_target = [Rnu  flip(Rpu) flip(Rpl) Rnl Rnu(1)];
-            obj.Z_sep_target = [Znu  flip(Zpu) flip(Zpl) Znl Znu(1)];
-
+            obj.Z_sep_target = Z0 + [Znu  flip(Zpu) flip(Zpl) Znl Znu(1)];
+           
         end
 
 
