@@ -21,7 +21,7 @@ function config = Tokalab_Scenario(separatrix,toroidal_current_method)
 
     elseif separatrix == 2
         % Double-null standard tokalab scenario
-        config.separatrix.scenario = 1;
+        config.separatrix.scenario = 2;
         config.separatrix.method = 1;
         config.separatrix.k1 = 1.7;
         config.separatrix.k2 = 1.7;
@@ -38,7 +38,7 @@ function config = Tokalab_Scenario(separatrix,toroidal_current_method)
 
       elseif separatrix == 3
         % Negative Triangularity
-        config.separatrix.scenario = 1;
+        config.separatrix.scenario = 3;
         config.separatrix.method = 1;
         config.separatrix.k1 = 1.7;
         config.separatrix.k2 = 2;

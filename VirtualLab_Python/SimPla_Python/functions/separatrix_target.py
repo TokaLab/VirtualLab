@@ -62,6 +62,7 @@ class separatrix_target:
         a = geo.a
         
         def inner_segment(k, d, gamma, upper=True):
+
             sign = 1 if upper else -1
             tn = (1 - d) / k * np.tan(gamma)
     
@@ -99,7 +100,7 @@ class separatrix_target:
         def outer_segment(k, d, gamma, upper=True):
             sign = 1 if upper else -1
             tp = (1 + d) / k * np.tan(gamma)
-        
+            
             if tp < 0.5:
                 alpha0 = -(d + (1 - d) * tp) / (1 - 2 * tp)
                 alpha = (1 + d) * (1 - tp) / (1 - 2 * tp)
@@ -113,10 +114,10 @@ class separatrix_target:
                 xi = -1 - (1 + d) / k**2 * zeta**2
                 R = xi * a + R0
                 Z = zeta * a
-            elif tp > 0.5 and tp < np.inf:
+            elif tp > 0.5 and tp < 1:
                 alpha0 = ((1 - d) * tp + d) / (2 * tp - 1)
-                alpha = -(1 - d) * (1 - tp) / (2 * tp - 1)
-                beta = -k * (1 - tp) / np.sqrt(2 * tp - 1)
+                alpha = -(1 + d) * (1 - tp) / (2 * tp - 1)
+                beta = k * (1 - tp) / np.sqrt(2 * tp - 1)
                 phix = np.arcsinh(np.sqrt(2 * tp - 1) / (1 - tp))
                 phi = np.linspace(0, phix, 100) * sign
                 R = R0 + a * (alpha0 + alpha * np.cosh(phi))

@@ -33,23 +33,23 @@ class tokamak:
         self.wall = geo.wall
         self.grid = geo.grid
 
-    def scenario_upload(self):
+    def scenario_upload(self,separatrix=1,Jt_method=1):
         if self.machine == "Tokalab":
             from tokamaks.equilibrium.Tokalab_Scenario import Tokalab_Scenario
-            config = Tokalab_Scenario()
+            config = Tokalab_Scenario(separatrix,Jt_method)
         elif self.machine == "NewMachine":
-            config = NewMachine_Scenario()
+            config = NewMachine_Scenario(separatrix,Jt_method)
         else:
             raise ValueError(f"Unknown machine: {self.machine}")
 
         self.config = config
 
-    def kinetic_upload(self):
+    def kinetic_upload(self,kinetic_scenario=1):
         if self.machine == "Tokalab":
             from tokamaks.kinetic.Tokalab_Kinetic import Tokalab_Kinetic
-            config = Tokalab_Kinetic()
+            config = Tokalab_Kinetic(kinetic_scenario)
         elif self.machine == "NewMachine":
-            config = NewMachine_Kinetic()
+            config = NewMachine_Kinetic(kinetic_scenario)
         else:
             raise ValueError(f"Unknown machine: {self.machine}")
 

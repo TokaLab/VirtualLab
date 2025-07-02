@@ -74,7 +74,6 @@ class equilibrium:
 
     def import_classes(self):
 
-
         self.separatrix = separatrix_target()
         self.utils = utilities()
         self.toroidal_curr = toroidal_current()
@@ -106,7 +105,7 @@ class equilibrium:
         M_boundary, indices, bool_boundary = self.geo.geo_operator()
         
         # first guess
-        if psi == None:
+        if psi is None:
             Jt = self.toroidal_curr.Jt_constant(self.geo, self.separatrix, self.config.toroidal_current)
             V_grad = -mu0 * R.ravel() * Jt.ravel()
         
@@ -283,7 +282,7 @@ class equilibrium:
 
     def critical_points(self, Ip, R, Z, inside_wall, Psi):
     
-        # 
+        #
         R0 = self.geo.R0
         
         R_b = self.separatrix.R_sep_target
@@ -325,12 +324,15 @@ class equilibrium:
         # Remove the Opoint index from ind
         ind = np.delete(ind, Opoint_ind)
         
-        #Xpoint is defined as closest Xpoint to the Opoint
-        #(alternative methods to be explored (closer to target
-        #separatrix?)
-        diff_sq = (Psi.ravel()[Opoint] - Psi.ravel()[ind]) ** 2
-        Xpoint_ind = np.argmin(diff_sq)
-        Xpoint = ind[Xpoint_ind]
+        if ind.size > 0:
+            #Xpoint is defined as closest Xpoint to the Opoint
+            #(alternative methods to be explored (closer to target
+            #separatrix?)
+            diff_sq = (Psi.ravel()[Opoint] - Psi.ravel()[ind]) ** 2
+            Xpoint_ind = np.argmin(diff_sq)
+            Xpoint = ind[Xpoint_ind]
+        else:
+            Xpoint = None
         
         # If Opoint is not found (None or empty), use geometric center
         if Opoint is None or (hasattr(Opoint, '__len__') and len(Opoint) == 0):
