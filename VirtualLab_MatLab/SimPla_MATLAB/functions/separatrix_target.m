@@ -13,11 +13,11 @@ classdef separatrix_target
         function obj = build_separatrix(obj,separatrix_config,geo) 
             
             % evaluate separatrix coordinates
-            if separatrix_config.method == 1
+            if separatrix_config.method == 0
+                obj = build_separatrix_m0(obj,separatrix_config);
+            elseif separatrix_config.method == 1
                 obj = build_separatrix_m1(obj,separatrix_config);
-            else
                 % new method can be added here
-
             end
 
             % evaluate grid points inside the separatrix
@@ -63,6 +63,17 @@ classdef separatrix_target
             inside = inpolygon(R,Z,R_sep,Z_sep);
 
             obj.inside = inside;
+
+        end
+
+        %% this method upload a separatrix from filename
+        
+        function obj = build_separatrix_m0(obj,separatrix_config)
+            
+            load(separatrix_config.filename,"Sep")
+            
+            obj.R_sep_target = Sep(:,1)';
+            obj.Z_sep_target = Sep(:,2)';
 
         end
 

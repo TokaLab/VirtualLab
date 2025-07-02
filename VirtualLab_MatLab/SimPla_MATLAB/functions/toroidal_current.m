@@ -16,7 +16,6 @@ classdef toroidal_current
             inside = sep.inside;
             Ip = Jt_config.Ip;
 
-
             Jt_plasma = abs(inside);
             Jt_plasma(~inside) = 0;
     

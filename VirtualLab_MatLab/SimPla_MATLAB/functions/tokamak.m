@@ -30,6 +30,8 @@ classdef tokamak
 
             if machine == "Tokalab"
                 geo = Tokalab_Geometry();
+            elseif machine == "TokaPug"
+                geo = TokaPug_Geometry();
             elseif machine == "NewMachine"
                 geo = NewMachine_Geometry();
             end
@@ -56,6 +58,8 @@ classdef tokamak
 
             if machine == "Tokalab"
                 config = Tokalab_Scenario(separatrix,Jt_method);
+            elseif machine == "TokaPug"
+                config = TokaPug_Scenario(separatrix,Jt_method);
             elseif machine == "NewMachine"
                 config = NewMachine_Scenario(separatrix,Jt_method);
             end
@@ -71,6 +75,8 @@ classdef tokamak
             machine = obj.machine;
 
             if machine == "Tokalab"
+                config = Tokalab_Kinetic();
+            elseif machine == "TokaPug"
                 config = Tokalab_Kinetic();
             elseif machine == "NewMachine"
                 config = Tokalab_Kinetic();
