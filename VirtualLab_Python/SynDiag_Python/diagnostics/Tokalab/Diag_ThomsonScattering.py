@@ -7,6 +7,7 @@ Created on Tue Jun  3 17:48:05 2025
 
 import numpy as np
 from scipy.interpolate import griddata
+import matplotlib.pyplot as plt
 
 class Diag_ThomsonScattering:
     def __init__(self):
@@ -53,3 +54,53 @@ class Diag_ThomsonScattering:
             self.config["Te_noise_random_absolute_intensity"] = 0
             self.config["ne_noise_random_proportional_intensity"] = 0
             self.config["Te_noise_random_proportional_intensity"] = 0
+            
+    #### Plotting function
+    def plot_geo(self):
+        plt.plot(self.R, self.Z, '.', markersize=16)
+        plt.grid(visible=True, which='both')
+        plt.xlabel("R")
+        plt.ylabel("Z")
+        plt.show()
+        
+    def plot_ne_meas(self):
+        plt.plot(self.ne, '.', markersize=16)
+        plt.grid(visible=True, which='both')
+        plt.xlabel("#")
+        plt.ylabel("n_e [m$^{-3}$]")
+        plt.show()
+        
+    def plot_Te_meas(self):
+        plt.plot(self.Te, '.', markersize=16)
+        plt.grid(visible=True, which='both')
+        plt.xlabel("#")
+        plt.ylabel("T_e [eV]")
+        plt.show()
+        
+    def plot_StandAlone(self):
+        fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    
+        # Te plot
+        axes[0].plot(self.ideal["Te"], '.b', markersize=16)
+        axes[0].plot(self.Te, 'or', linewidth=1.2)
+        axes[0].grid(visible=True, which='both')
+        axes[0].set_xlabel("#")
+        axes[0].set_ylabel(r"$T_e$ [eV]")
+    
+        # ne plot
+        axes[1].plot(self.ideal["ne"], '.b', markersize=16)
+        axes[1].plot(self.ne, 'or', linewidth=1.2)
+        axes[1].grid(visible=True, which='both')
+        axes[1].set_xlabel("#")
+        axes[1].set_ylabel(r"$n_e$ [m^{-3}]")
+    
+        plt.tight_layout()
+        plt.show()    
+        
+        
+        
+        
+        
+        
+        
+        

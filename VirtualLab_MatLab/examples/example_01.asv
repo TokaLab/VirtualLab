@@ -54,12 +54,10 @@ figure(3); clf; PickUp.plot_StandAlone();
 FluxLoops = Diag_FluxLoops();
 FluxLoops = FluxLoops.Upload(1);
 FluxLoops = FluxLoops.measure(equi);
-figure(4); clf; FluxLoops.plot_StandAlone();
 
 SaddleCoils = Diag_SaddleCoils();
 SaddleCoils = SaddleCoils.Upload(1);
 SaddleCoils = SaddleCoils.measure(equi);
-figure(5); clf; SaddleCoils.plot_geo();
 
 TS = Diag_ThomsonScattering();
 TS = TS.Upload(1);
@@ -69,4 +67,3 @@ figure(6); clf; TS.plot_StandAlone()
 IntPol = Diag_InterferometerPolarimeter();
 IntPol = IntPol.Upload(1);
 IntPol = IntPol.measure(equi);
-figure(7); clf; IntPol.plot_StandAlone;

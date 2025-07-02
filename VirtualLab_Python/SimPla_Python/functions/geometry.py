@@ -1,6 +1,7 @@
 from scipy.sparse import csr_matrix
 import numpy as np
 from matplotlib.path import Path
+import matplotlib.pyplot as plt
 
 class grid:
     def __init__(self):
@@ -78,3 +79,32 @@ class geometry:
         M_boundary = csr_matrix((np.ones(len(indices)), (np.arange(len(indices)), indices)),
                                 shape=(len(indices), R.size))
         return M_boundary, indices, boundary_mask
+    
+    ##### plotting methods
+    
+    def plot(self):
+        
+        plt.plot(self.grid.Rg.flatten(), self.grid.Zg.flatten(), '.b')
+        plt.plot(self.wall.R, self.wall.Z, '-k', linewidth=2)
+    
+        plt.axis('equal')
+        plt.grid(visible=True, which='both')
+        plt.xlabel('R []')
+        plt.ylabel('Z [m]')
+        
+        return plt
+        
+    def plot_wall(self):
+        
+        plt.plot(self.wall.R, self.wall.Z, '-r', linewidth=2)
+        plt.axis('equal')
+        plt.grid(visible=True, which='both')
+        plt.xlabel('R [m]')
+        plt.ylabel('Z [m]')
+        
+        return plt
+        
+    
+    
+    
+    

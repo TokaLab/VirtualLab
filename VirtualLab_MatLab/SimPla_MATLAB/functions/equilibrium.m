@@ -56,6 +56,8 @@ classdef equilibrium
             obj.config.GSsolver.update_rate = 1; % min 0, max 1
             obj.config.GSsolver.Lambda = 0;
 
+            obj.config.GSsolver.Plotting = 1;
+
         end
 
         function obj = import_classes(obj)
@@ -143,7 +145,9 @@ classdef equilibrium
             iteration = 0;
 
             % clear figure
-            figure(1); clf;
+            if obj.config.GSsolver.Plotting == 1
+                figure(Name="Equi solver")
+            end
 
             while convergence == 0
 
@@ -182,39 +186,42 @@ classdef equilibrium
                     convergence = 1;
                 end
 
-                figure(1)
-                subplot(1,3,1)
-                hold off
-                contourf(R,Z,psi,30)
-                hold on
-                plot(R(Xpoint),Z(Xpoint),'xr')
-                plot(R(Opoint),Z(Opoint),'or')
-                axis equal
-                xlabel("R [m]")
-                ylabel("z [m]")
-                title("\psi - previous iteration")
+                if obj.config.GSsolver.Plotting == 1
 
-                subplot(1,3,2)
-                hold off
-                contourf(R,Z,psi_new,30)
-                hold on
-                plot(R(Xpoint),Z(Xpoint),'xr')
-                plot(R(Opoint),Z(Opoint),'or')
-                plot(obj.geo.wall.R,obj.geo.wall.Z,'-k','LineWidth',1.2)
-                axis equal
-                xlabel("R [m]")
-                ylabel("z [m]")
-                title("\psi - new iteration")
+                    subplot(1,3,1)
+                    hold off
+                    contourf(R,Z,psi,30)
+                    hold on
+                    plot(R(Xpoint),Z(Xpoint),'xr')
+                    plot(R(Opoint),Z(Opoint),'or')
+                    axis equal
+                    xlabel("R [m]")
+                    ylabel("z [m]")
+                    title("\psi - previous iteration")
+    
+                    subplot(1,3,2)
+                    hold off
+                    contourf(R,Z,psi_new,30)
+                    hold on
+                    plot(R(Xpoint),Z(Xpoint),'xr')
+                    plot(R(Opoint),Z(Opoint),'or')
+                    plot(obj.geo.wall.R,obj.geo.wall.Z,'-k','LineWidth',1.2)
+                    axis equal
+                    xlabel("R [m]")
+                    ylabel("z [m]")
+                    title("\psi - new iteration")
+    
+                    subplot(1,3,3)
+                    semilogy(iteration,error_abs,'.b','markersize',16)
+                    hold on
+                    grid on
+                    grid minor
+                    xlabel("iteration")
+                    ylabel("error [Wb/rad]")
+    
+                    drawnow
 
-                subplot(1,3,3)
-                semilogy(iteration,error_abs,'.b','markersize',16)
-                hold on
-                grid on
-                grid minor
-                xlabel("iteration")
-                ylabel("error [Wb/rad]")
-
-                drawnow
+                end
 
                 % update the psi with update_rate
                 psi = update_rate.*psi_new + (1-update_rate)*psi;
@@ -400,6 +407,53 @@ classdef equilibrium
             obj.psi_n = psi_n;
 
         end
+
+        %% Plotting functions
+
+        % plot target separatrix
+        function plot_separatrix(obj)
+
+            plot(obj.separatrix.R_sep_target,...
+                obj.separatrix.Z_sep_target,'-','linewidth',1.2)
+            grid on
+            grid minor
+            xlabel("R")
+            ylabel("Z")
+            axis equal
+
+        end
+
+        % plot equilibrium
+        function plot_fields(obj,field,equi_lines)
+
+            if nargin < 2
+                field = "psi";
+                equi_lines = 1;
+            elseif nargin < 3
+                equi_lines = 1;
+            end
+
+            R = obj.geo.grid.Rg;
+            Z = obj.geo.grid.Zg;
+
+            psi_n = obj.psi_n;
+            levels = [linspace(0,1,11) 1.01, 1.05 1.1];
+            
+            F = obj.(field);
+
+            contourf(R,Z,F,30,"LineStyle",'none')
+            colorbar()
+            hold on
+            contour(R,Z,psi_n,levels,"r",'linewidth',0.5)
+            axis equal
+            xlabel("R [m]")
+            ylabel("z [m]")
+            title(field)
+            grid on
+            grid minor
+
+        end
+
 
     end
 

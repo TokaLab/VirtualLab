@@ -10,7 +10,7 @@ classdef Diag_SaddleCoils
         R2 % Horixontal coordinate
         Z2 % Vertical coordinate
 
-        Dpsi % Measured Flux 
+        Dpsi % Measured Flux
 
         unit % Unit Measure
 
@@ -29,12 +29,12 @@ classdef Diag_SaddleCoils
 
             psi_equi = equi.psi;
 
-            Dpsi = interp2(R_equi,Z_equi,psi_equi,obj.R2,obj.Z2) -... 
-            interp2(R_equi,Z_equi,psi_equi,obj.R1,obj.Z1);
+            Dpsi = interp2(R_equi,Z_equi,psi_equi,obj.R2,obj.Z2) -...
+                interp2(R_equi,Z_equi,psi_equi,obj.R1,obj.Z1);
 
             obj.ideal.Dpsi = Dpsi;
 
-            % noise absolute 
+            % noise absolute
             noise_abs = normrnd(0,obj.config.noise_random_absolute_intensity,size(obj.ideal.Dpsi));
 
             % noise proportional
@@ -55,18 +55,18 @@ classdef Diag_SaddleCoils
             end
 
             if configuration == 1
-                
+
                 obj.config.configuration = 1;
 
                 load("diagnostics_data\SaddleCoilsData_config_1.mat")
 
                 obj.R1 = R1;
                 obj.Z1 = Z1;
-                
+
                 obj.R2 = R2;
                 obj.Z2 = Z2;
 
-                obj.config.noise_random_absolute_intensity = 0; 
+                obj.config.noise_random_absolute_intensity = 0;
 
                 obj.config.noise_random_proportional_intensity = 0;
 
@@ -74,11 +74,43 @@ classdef Diag_SaddleCoils
 
         end
 
+        %% Plotting Functions
+
+        function plot_geo(obj)
+
+            plot([obj.R1; obj.R2],[obj.Z1; obj.Z2],...
+                '.-b','MarkerSize',16,'LineWidth',1.2)
+            grid on
+            grid minor
+            xlabel("R")
+            ylabel("Z")
+
+        end
+
+        function plot_meas(obj)
+
+            plot(obj.Dpsi,'.','MarkerSize',16)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("\psi [Wb/rad]")
+
+        end
+
+        function plot_StandAlone(obj)
+
+            hold off
+            plot(obj.ideal.Dpsi,'.b','MarkerSize',16)
+            hold on
+            plot(obj.Dpsi,'or','LineWidth',1.2)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("\psi [Wb/rad]")
+
+        end
+
     end
-
-
-
-
 
 end
 

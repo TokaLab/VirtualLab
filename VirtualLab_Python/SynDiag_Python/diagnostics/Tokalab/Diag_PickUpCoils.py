@@ -8,6 +8,7 @@ Created on Tue Jun  3 16:34:54 2025
 import numpy as np
 import os
 from scipy.interpolate import griddata
+import matplotlib.pyplot as plt
 
 class Diag_PickUpCoils:
     
@@ -71,3 +72,33 @@ class Diag_PickUpCoils:
             self.config['noise_random_proportional_intensity'] = 0.1
     
         return self
+    
+    #### Plotting Function
+    def plot_geo(self):
+        
+        plt.plot(self.R, self.Z, '.', markersize=16)
+        plt.grid(visible=True, which='both')
+        plt.xlabel("R")
+        plt.ylabel("Z")
+        plt.show()
+        
+    def plot_meas(self):
+        
+        plt.plot(self.B, '.', markersize=16)
+        plt.grid(visible=True, which='both')
+        plt.xlabel("#")
+        plt.ylabel(r"$N_e$ [m$^{-3}$]")  # LaTeX for N_e with units
+        plt.show()
+        
+    def plot_StandAlone(self):
+
+        # Plot ideal B values as blue dots
+        plt.plot(self.ideal['B'], '.b', markersize=16)
+    
+        # Overlay actual B values as red circles
+        plt.plot(self.B, 'or', linewidth=1.2)
+    
+        plt.grid(visible=True, which='both')
+        plt.xlabel("#")
+        plt.ylabel("B [T]")
+        plt.show()

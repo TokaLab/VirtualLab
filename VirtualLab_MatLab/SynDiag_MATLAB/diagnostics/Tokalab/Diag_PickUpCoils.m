@@ -6,7 +6,7 @@ classdef Diag_PickUpCoils
 
         R % Horixontal coordinate
         Z % Vertical coordinate
-        
+
         n % Coil normal versor
 
         B % Measured Magnetic Field
@@ -36,7 +36,7 @@ classdef Diag_PickUpCoils
 
             obj.ideal.B = sum([Br; Bt; Bz].*obj.n);
 
-            % noise absolute 
+            % noise absolute
             noise_abs = normrnd(0,obj.config.noise_random_absolute_intensity,size(obj.ideal.B));
 
             % noise proportional
@@ -57,7 +57,7 @@ classdef Diag_PickUpCoils
             end
 
             if configuration == 1
-                
+
                 obj.config.configuration = 1;
 
                 load("diagnostics_data\PickUpData_config_1.mat")
@@ -66,11 +66,46 @@ classdef Diag_PickUpCoils
                 obj.Z = Z;
                 obj.n = n;
 
-                obj.config.noise_random_absolute_intensity = 0; 
+                obj.config.noise_random_absolute_intensity = 0;
                 obj.config.noise_random_proportional_intensity = 0;
 
             end
 
+        end
+
+        %% Plotting Functions
+        
+        function plot_geo(obj)
+
+            plot(obj.R,obj.Z,'.','MarkerSize',16)
+            grid on
+            grid minor
+            xlabel("R")
+            ylabel("Z")
+
+        end
+
+        function plot_meas(obj)
+
+            plot(obj.B,'.','MarkerSize',16)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("N_e [m^{-3}]")
+
+        end
+
+        function plot_StandAlone(obj)
+           
+            hold off
+            plot(obj.ideal.B,'.b','MarkerSize',16)
+            hold on
+            plot(obj.B,'or','LineWidth',1.2)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("B [T]")
+        
         end
 
     end

@@ -7,7 +7,7 @@ classdef Diag_FluxLoops
         R % Horixontal coordinate
         Z % Vertical coordinate
 
-        psi % Measured Flux 
+        psi % Measured Flux
 
         unit % Unit Measure
 
@@ -30,7 +30,7 @@ classdef Diag_FluxLoops
 
             obj.ideal.psi = psi;
 
-            % noise absolute 
+            % noise absolute
             noise_abs = normrnd(0,obj.config.noise_random_absolute_intensity,size(obj.ideal.psi));
 
             % noise proportional
@@ -51,7 +51,7 @@ classdef Diag_FluxLoops
             end
 
             if configuration == 1
-                
+
                 obj.config.configuration = 1;
 
                 load("diagnostics_data\FluxLoopsData_config_1.mat")
@@ -59,18 +59,50 @@ classdef Diag_FluxLoops
                 obj.R = R;
                 obj.Z = Z;
 
-                obj.config.noise_random_absolute_intensity = 0; 
+                obj.config.noise_random_absolute_intensity = 0;
                 obj.config.noise_random_proportional_intensity = 0;
 
             end
 
         end
 
+
+        %% Plotting Functions
+
+        function plot_geo(obj)
+
+            plot(obj.R,obj.Z,'.','MarkerSize',16)
+            grid on
+            grid minor
+            xlabel("R")
+            ylabel("Z")
+
+        end
+
+        function plot_meas(obj)
+
+            plot(obj.psi,'.','MarkerSize',16)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("\psi [Wb/rad]")
+
+        end
+
+        function plot_StandAlone(obj)
+
+            hold off
+            plot(obj.ideal.psi,'.b','MarkerSize',16)
+            hold on
+            plot(obj.psi,'or','LineWidth',1.2)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("\psi [Wb/rad]")
+
+        end
+
     end
-
-
-
-
 
 end
 

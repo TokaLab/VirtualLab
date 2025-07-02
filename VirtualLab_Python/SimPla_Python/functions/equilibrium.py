@@ -12,7 +12,6 @@ from scipy.sparse import vstack
 from scipy.sparse.linalg import spsolve
 from scipy.signal import argrelextrema
 from matplotlib.path import Path
-from scipy.interpolate import interp2d ## from Scipy 1.14.0 has been removed
 from scipy.interpolate import RegularGridInterpolator
 
 import matplotlib.pyplot as plt
@@ -138,7 +137,7 @@ class equilibrium:
             iteration += 1
 
             # Critical points (Opoint, Xpoint are indices)
-            Opoint, Xpoint = self.critical_points(Ip, R, inside_wall, psi)
+            Opoint, Xpoint = self.critical_points(Ip, R, Z, inside_wall, psi)
 
             psi_0 = psi.ravel()[Opoint]
             psi_b = np.mean(psi.ravel()[ind_sep])  # mean along separatrix indices
@@ -228,7 +227,7 @@ class equilibrium:
         inside_wall_HR = path.contains_points(points).reshape(R_HR.shape)
     
         # Compute O and X points in HR grid
-        Opoint, Xpoint = self.critical_points(Ip, R_HR, inside_wall_HR, psi_HR)
+        Opoint, Xpoint = self.critical_points(Ip, R_HR, Z_HR, inside_wall_HR, psi_HR)
         Opoint_R, Opoint_Z = R_HR.ravel()[Opoint], Z_HR.ravel()[Opoint]
         Xpoint_R, Xpoint_Z = R_HR.ravel()[Xpoint], Z_HR.ravel()[Xpoint]
     
@@ -268,16 +267,12 @@ class equilibrium:
                         LCFS.R = R_line[i_start:i_end + 1]
                         LCFS.Z = Z_line[i_start:i_end + 1]
                         break  # remove if you want to continue checking for more loops
-                
-        #####################################################
-        # devo trovare una funzione per fare la LCFS
 
         # Build LCFS mask
         path = Path(np.column_stack((LCFS.R, LCFS.Z)))
         points = np.vstack((R.ravel(), Z.ravel())).T
         inside = path.contains_points(points).reshape(R.shape)
         
-    
         # Store results
         self.LCFS.inside= inside
         self.Opoint.R = Opoint_R
@@ -286,7 +281,7 @@ class equilibrium:
         self.Xpoint.Z = Xpoint_Z
         self.psi_n = psi_n
 
-    def critical_points(self, Ip, R, inside_wall, Psi):
+    def critical_points(self, Ip, R, Z, inside_wall, Psi):
     
         # 
         R0 = self.geo.R0
@@ -349,4 +344,55 @@ class equilibrium:
             Xpoint = np.argmin(diff)
         
         return Opoint, Xpoint
+    
+    ##### Plotting Functions
+
+    # plot target separatrix    
+    def plot_separatrix(self):
+        
+        plt.plot(self.separatrix.R_sep_target,
+                 self.separatrix.Z_sep_target,
+                 '-', linewidth=1.2)
+        plt.plot(self.geo.wall.R,self.geo.wall.Z)
+        plt.grid(visible=True, which='both')
+        plt.xlabel("R")
+        plt.ylabel("Z")
+        plt.axis('equal')
+    
+        plt.show()
+        
+    # plot field of interest
+    def plot_fields(self, field="psi", equi_lines=1):
+        
+        # Get R and Z grids from the object
+        R = self.geo.grid.Rg
+        Z = self.geo.grid.Zg
+    
+        # Normalized flux
+        psi_n = self.psi_n
+    
+        # Contour levels for psi_n
+        levels = np.concatenate([
+            np.linspace(0, 1, 11), 
+            [1.01, 1.05, 1.1]
+        ])
+    
+        # Select the field to plot (e.g., "psi", "j_phi", etc.)
+        F = getattr(self, field)
+    
+        plt.contourf(R, Z, F, levels=30, linestyles='none')
+        plt.colorbar()
+    
+        # Overlay contour lines of psi_n
+        if equi_lines:
+            plt.contour(R, Z, psi_n, levels=levels, colors='r', linewidths=0.5)
+    
+        plt.axis('equal')
+        plt.xlabel("R [m]")
+        plt.ylabel("z [m]")
+        plt.title(field)
+        plt.grid(visible=True, which='both')
+    
+        # Show the plot
+        plt.show()
     

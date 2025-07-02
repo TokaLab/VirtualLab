@@ -43,7 +43,7 @@ classdef Diag_InterferometerPolarimeter
         end
 
         function obj = measure_interferometry(obj,equi)
-            
+
             const = equi.const;
 
             R_in = obj.R_in;
@@ -291,6 +291,58 @@ classdef Diag_InterferometerPolarimeter
                 obj.config.CM_noise_random_proportional_intensity = 0;
 
             end
+
+        end
+
+        %% Plotting Functions
+
+        function plot_geo(obj)
+
+            plot([obj.R_in'; obj.R_out'],[obj.Z_in'; obj.Z_out'],...
+                '.-r','MarkerSize',16,'LineWidth',1.2)
+            grid on
+            grid minor
+            xlabel("R")
+            ylabel("Z")
+
+        end
+
+        function plot_StandAlone(obj)
+
+            subplot(1,3,1)
+            hold off
+            plot(obj.LIDc,'.-b','MarkerSize',12)
+            hold on
+            plot(obj.LIDh,'.-r','MarkerSize',12)
+            grid on
+            grid minor
+            legend("cold plasma","hot plasma")
+            xlabel("Channel #")
+            ylabel("LID [m^{-2}]")
+
+            subplot(1,3,2)
+            hold off
+            plot(obj.FARc_typeI,'.-k','MarkerSize',12)
+            hold on
+            plot(obj.FARc,'.-b','MarkerSize',12)
+            plot(obj.FARh,'.-r','MarkerSize',12)
+            grid on
+            grid minor
+            legend("type-I","cold plasma","hot plasma")
+            xlabel("Channel #")
+            ylabel("Faraday Rotation [rad]")
+    
+            subplot(1,3,3)
+            hold off
+            plot(obj.CMc_typeI,'.-k','MarkerSize',12)
+            hold on
+            plot(obj.CMc,'.-b','MarkerSize',12)
+            plot(obj.CMh,'.-r','MarkerSize',12)
+            grid on
+            grid minor
+            legend("type-I","cold plasma","hot plasma")
+            xlabel("Channel #")
+            ylabel("Cotton Mouton PS [rad]")
 
         end
 

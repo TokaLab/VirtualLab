@@ -49,6 +49,7 @@ classdef Diag_ThomsonScattering
 
         end
 
+        %% Functions
         function obj = Upload(obj,configuration)
 
             % default configuration
@@ -70,6 +71,62 @@ classdef Diag_ThomsonScattering
                 obj.config.Te_noise_random_proportional_intensity = 0;
 
             end
+
+        end
+
+        %% Plotting Functions
+
+        function plot_geo(obj)
+
+            plot(obj.R,obj.Z,'.','MarkerSize',16)
+            grid on
+            grid minor
+            xlabel("R")
+            ylabel("Z")
+
+        end
+
+        function plot_Ne_meas(obj)
+
+            plot(obj.ne,'.','MarkerSize',16)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("N_e [m^{-3}]")
+
+        end
+
+        function plot_Te_meas(obj)
+
+            plot(obj.Te,'.','MarkerSize',16)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("T_e [m^{-3}]")
+
+        end
+
+        function plot_StandAlone(obj)
+           
+            subplot(1,2,1)
+            hold off
+            plot(obj.ideal.Te,'.b','MarkerSize',16)
+            hold on
+            plot(obj.Te,'or','LineWidth',1.2)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("T_e [eV]")
+
+            subplot(1,2,2)
+            hold off
+            plot(obj.ideal.ne,'.b','MarkerSize',16)
+            hold on
+            plot(obj.ne,'or','LineWidth',1.2)
+            grid on
+            grid minor
+            xlabel("#")
+            ylabel("n_e [m^{-3}]")
 
         end
 

@@ -8,6 +8,7 @@ Created on Tue Jun  3 17:05:34 2025
 import numpy as np
 from scipy.interpolate import griddata
 import os
+import matplotlib.pyplot as plt
 
 class Diag_SaddleCoils:
     
@@ -80,3 +81,40 @@ class Diag_SaddleCoils:
             self.config['noise_random_proportional_intensity'] = 0
 
         return self
+    
+    #### Plotting functions
+    
+    def plot_geo(self):
+        R = np.concatenate([self.R1, self.R2])
+        Z = np.concatenate([self.Z1, self.Z2])
+    
+        plt.plot(R, Z, '.-b', markersize=16, linewidth=1.2)
+    
+        plt.grid(visible=True, which='both')
+        plt.xlabel("R")
+        plt.ylabel("Z")
+        plt.show()
+        
+    def plot_meas(self):
+        # Plot Dpsi values as dots
+        plt.plot(self.Dpsi.T, '.', markersize=16)
+    
+        plt.grid(visible=True, which='both')
+        plt.xlabel("#")
+        plt.ylabel(r"$\psi$ [Wb/rad]")
+        plt.show()
+    
+    def plot_StandAlone(self):
+        # Clear previous plot
+        plt.clf()
+    
+        # Plot ideal Dpsi values as blue dots
+        plt.plot(self.ideal['Dpsi'].T, '.b', markersize=16)
+    
+        # Plot actual Dpsi values as red circles
+        plt.plot(self.Dpsi.T, 'or', linewidth=1.2)
+    
+        plt.grid(visible=True, which='both')
+        plt.xlabel("#")
+        plt.ylabel(r"$\psi$ [Wb/rad]")
+        plt.show()
