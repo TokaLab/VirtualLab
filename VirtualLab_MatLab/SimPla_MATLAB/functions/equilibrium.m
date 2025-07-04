@@ -329,6 +329,9 @@ classdef equilibrium
             R_wall = obj.geo.wall.R;
             Z_wall = obj.geo.wall.Z;
 
+            R_sep_target = obj.separatrix.R_sep_target;
+            Z_sep_target = obj.separatrix.Z_sep_target;
+
             psi = obj.psi;
             Ip = obj.config.toroidal_current.Ip;
 
@@ -348,11 +351,26 @@ classdef equilibrium
             Opoint_Z = Z_HR(Opoint);
             Xpoint_R = R_HR(Xpoint);
             Xpoint_Z = Z_HR(Xpoint);
+            
+            %%%%%%%%%%%
+            
+            % check if X point is close to target separatrix. 
+            % if yes, X point is used for normalisation, otherwise we use
+            % separatrix psi values
+            Xpoint_Sep_distance = min(sqrt((R_sep_target-Xpoint_R).^2 + ...
+                                        (Z_sep_target-Xpoint_Z).^2));
 
-            psi_O = psi_HR(Opoint);
-            psi_X = psi_HR(Xpoint);
+            if Xpoint_Sep_distance < 0.1*obj.geo.a
+                psi_O = psi_HR(Opoint);
+                psi_X = psi_HR(Xpoint);
+            else
+                psi_O = psi_HR(Opoint);
+                psi_X = mean(interp2(R,Z,psi,R_sep_target,Z_sep_target));
+            end
 
             psi_n = (psi-psi_O)./(psi_X-psi_O);
+            
+            %%%%%%%%%%%%%
 
             % find last closed surface
             level_min = 0.99;

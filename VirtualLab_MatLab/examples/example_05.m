@@ -28,7 +28,7 @@ N_times = 5;
 % vertical circular plasma shape (without dynamic effects, only
 % equilibrium)
 R0s = linspace(6,5,N_times);
-Z0s = linspace(0,max(geo.wall.Z)-0.6,N_times);
+Z0s = linspace(0,max(geo.wall.Z)-0.5,N_times);
 as = linspace(2,0.5,N_times);
 k1s = linspace(1.7,1,N_times);
 k2s = linspace(2,1,N_times);
