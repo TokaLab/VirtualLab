@@ -146,7 +146,7 @@ figure(2)
 subplot(1,3,3)
 equi.plot_fields("pe",1)
 geo.plot_wall()
-title("Double Null")
+title("Negative Triangularity")
 xlabel("R [m]")
 ylabel("Z [m]")
 
