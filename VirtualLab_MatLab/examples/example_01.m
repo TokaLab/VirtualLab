@@ -39,7 +39,7 @@ equi  = equi.compute_profiles();
 % plot my equilibrium and profiles
 figure(2)
 clf
-equi.plot_fields("ne",1)
+equi.plot_fields("Te",1)
 hold on
 equi.geo.plot_wall
 
@@ -58,7 +58,7 @@ figure(4); clf; FluxLoops.plot_StandAlone();
 SaddleCoils = Diag_SaddleCoils();
 SaddleCoils = SaddleCoils.Upload(1);
 SaddleCoils = SaddleCoils.measure(equi);
-figure(5); clf; SaddleCoils.plot_geo();
+figure(5); clf; SaddleCoils.plot_StandAlone();
 
 TS = Diag_ThomsonScattering();
 TS = TS.Upload(1);
