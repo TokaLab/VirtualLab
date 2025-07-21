@@ -22,6 +22,8 @@ The MATLAB Module has been developed using:
 ## References
 
 [1] Jardin, S. (2010). Computational Methods in Plasma Physics (1st ed.). CRC Press. https://doi.org/10.1201/EBK1439810958
+
 [2] Jean, J. (2011). HELIOS: a zero-dimensional tool for next step and reactor studies. Fusion Science and Technology, 59(2), 308-349. https://doi.org/10.13182/FST11-A11650
+
 [3] Coleman, M., & McIntosh, S. (2020). The design and optimisation of tokamak poloidal field systems in the BLUEPRINT framework. Fusion Engineering and Design, 154, 111544. https://doi.org/10.1016/j.fusengdes.2020.111544
 
