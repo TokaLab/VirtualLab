@@ -1,3 +1,9 @@
+# Cite TokaLab
+
+If you use TokaLab for your work, you can cite it as: 
+
+TokaLab - An Open Access Virtual Tokamak for Education and Research (https://github.com/TokaLab)
+
 # References and Libraries
 
 ## Libraries
