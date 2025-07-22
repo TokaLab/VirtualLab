@@ -4,7 +4,7 @@ List of TokaLab contributors. If you want to contribute, take a look at the Cont
 
 ## TokaLab Team
 
-**Active Members**
+**Active Members**  
 Vasiliki Anagnostopoulou, University of Rome "Tor Vergata"  
 Valentina D'Agostino, University of Rome "Tor Vergata"  
 Simone Kaldas, University of Rome "Tor Vergata"  
