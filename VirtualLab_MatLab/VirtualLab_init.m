@@ -1,14 +1,20 @@
 
 
-function VLab = VirtualLab_init(machine)
+function VirtualLab_init(machine,restore_paths)
 
     if nargin < 1
         machine = "Tokalab";
+        restore_paths = 0;
+    elseif nargin < 2
+        restore_paths = 0;
     end
 
-    paths = path;
+    if restore_paths == 1
+        disp("restoring default paths")
+        restoredefaultpath
+    end
 
-    % Ottiene la directory di VirtualLab_init
+    % Directory for VirtualLab
     path_main = fileparts(mfilename('fullpath'));
 
     paths_to_add = ["\examples";...
