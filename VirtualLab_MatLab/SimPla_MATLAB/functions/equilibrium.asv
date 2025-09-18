@@ -41,9 +41,6 @@ classdef equilibrium
 
         LCFS % Last Close Flux Surface
 
-        psi_ref % Reference psi 
-        q_psi % profile of q on psi_ref
-        
     end
 
     methods
@@ -440,8 +437,8 @@ classdef equilibrium
 
             LCFS = obj.LCFS;
 
-            R = obj.geo.grid.Rg;
-            Z = obj.geo.grid.Zg;
+            R = equi.geo.grid.Rg;
+            Z = equi.geo.grid.Zg;
 
             % psi_n = 2 outside from LCFS
             inside_separatrix = inpolygon(R,Z,...
@@ -478,10 +475,6 @@ classdef equilibrium
 
             end
             close
-
-            obj.psi_ref = psi_levels;  
-            obj.q_psi = q_rec;
-
         end
 
         %% Plotting functions

@@ -61,7 +61,7 @@ function config = Tokalab_Scenario(separatrix,toroidal_current_method)
         % this method implement the function in (reference)
         config.toroidal_current.method = 1;
         
-        config.toroidal_current.Bt = 3;
+        config.toroidal_current.Bt = 5;
         config.toroidal_current.Ip = -12e6;
 
         config.toroidal_current.alpha_1 = 2;
@@ -71,7 +71,19 @@ function config = Tokalab_Scenario(separatrix,toroidal_current_method)
         config.toroidal_current.lambda = 1;
         
     elseif toroidal_current_method == 2
-        % New method to be implemented
+        % mwthod with reverse q profile
+        config.toroidal_current.method = 2;
+        
+        config.toroidal_current.Bt = 5;
+        config.toroidal_current.Ip = -12e6;
+
+        config.toroidal_current.alpha_1 = 2;
+        config.toroidal_current.alpha_2 = 2;
+        config.toroidal_current.beta_0 = 0.5;
+
+        config.toroidal_current.psi_n_peak = 0.3;
+    
+        config.toroidal_current.lambda = 1;
     end
 
 
