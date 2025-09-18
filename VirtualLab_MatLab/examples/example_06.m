@@ -33,7 +33,7 @@ equi  = equi.compute_profiles();
 equi = equi.q_profile();
 
 
-% plot my equilibrium and profiles
+%% plot my equilibrium and profiles
 figure(1)
 clf
 subplot(1,3,1)

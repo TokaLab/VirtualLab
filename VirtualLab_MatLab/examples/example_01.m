@@ -39,7 +39,7 @@ equi  = equi.compute_profiles();
 % plot my equilibrium and profiles
 figure(2)
 clf
-equi.plot_fields("Te",1)
+equi.plot_fields("pe",1)
 hold on
 equi.geo.plot_wall
 

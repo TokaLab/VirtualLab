@@ -75,7 +75,7 @@ function config = Tokalab_Scenario(separatrix,toroidal_current_method)
         config.toroidal_current.method = 2;
         
         config.toroidal_current.Bt = 5;
-        config.toroidal_current.Ip = -12e6;
+        config.toroidal_current.Ip = -15e6;
 
         config.toroidal_current.alpha_1 = 2;
         config.toroidal_current.alpha_2 = 2;

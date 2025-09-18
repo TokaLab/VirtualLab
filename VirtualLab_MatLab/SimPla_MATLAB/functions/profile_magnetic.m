@@ -139,7 +139,7 @@ classdef profile_magnetic
             dpsi = mean(diff(psi_1D));
 
             % lambda parameter
-            Jt_plasma = (beta0*R/R0 + (1-beta0)*R0./R).*(1-((psi_n-psi_n_peak)/(1-psi_n_peak)).^alpha1).^alpha2;
+            Jt_plasma = (beta0*R/R0 + (1-beta0)*R0./R).*(1-((psi_n-psi_n_peak)/(1-psi_n_peak)).^alpha1).^alpha2.*inside_wall;
             lambda = Ip./sum(Jt_plasma.*dR.*dZ,'all');
 
             % Evaluate dpdpsi and dF2dpsi
