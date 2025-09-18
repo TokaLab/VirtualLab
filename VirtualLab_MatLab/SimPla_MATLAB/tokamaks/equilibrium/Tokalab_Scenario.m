@@ -49,9 +49,9 @@ function config = Tokalab_Scenario(separatrix,toroidal_current_method)
         config.separatrix.gamma_p_1 = 0;
         config.separatrix.gamma_p_2 = pi/3;
 
-        config.separatrix.a = 2;
-        config.separatrix.R0 = 6;
-        config.separatrix.Z0 = 0;
+        config.separatrix.a = 1.9;
+        config.separatrix.R0 = 5.9;
+        config.separatrix.Z0 = 0.1;
 
     end
 

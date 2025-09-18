@@ -437,7 +437,6 @@ classdef equilibrium
             grid minor
             xlabel("R")
             ylabel("Z")
-            axis equal
 
         end
 

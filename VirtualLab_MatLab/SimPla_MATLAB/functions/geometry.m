@@ -111,15 +111,12 @@ classdef geometry
             grid minor
             xlabel('R (Major Radius)');
             ylabel('Z (Vertical Coordinate)');
-            xlim([-inf inf])
-            ylim([-inf inf])
 
         end
 
         function plot_wall(obj)
 
             plot(obj.wall.R, obj.wall.Z, '-k', 'LineWidth', 2) % Plot wall   
-            axis equal
             grid on
             grid minor
             xlabel('R (Major Radius)');
