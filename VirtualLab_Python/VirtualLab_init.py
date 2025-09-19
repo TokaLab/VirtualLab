@@ -28,6 +28,9 @@ paths_to_add = [
         f"SynDiag_Python/diagnostics/{machine}/diagnostics_data"
     ]
 
+if os.sep == '/':
+    paths_to_add = paths_to_add.replace('\\', '/')
+
 # Aggiunge i percorsi a sys.path se non già presenti
 for relative_path in paths_to_add:
     full_path = os.path.join(path_main, relative_path)
