@@ -22,7 +22,7 @@ equi.separatrix = equi.separatrix.build_separatrix(equi.config.separatrix,equi.g
 equi.config.GSsolver.Plotting = 0;
 
 % define number of time instants for visualisation
-N_times = 5;
+N_times = 100;
 
 % we want to see several equilibria evolving from a single-null to a
 % vertical circular plasma shape (without dynamic effects, only
@@ -42,12 +42,15 @@ FluxLoops = Diag_FluxLoops();
 FluxLoops = FluxLoops.Upload(1);
 
 % plot my equilibrium and profiles
-figure(2)
+
+figure( "Units", "normalized", "Position", [0.1, 0.1, 0.8, 0.8])
+
 clf
 legends = cell(1,2);
 legends{1} = "Wall";
 legends{2} = "Flux Loops";
 C = orderedcolors("gem");
+filename = 'example05_animation.gif'; % gif file initialisation
 
 subplot(1,3,2)
 equi.geo.plot_wall()
@@ -91,10 +94,20 @@ for i = 1 : N_times
     FluxLoops = FluxLoops.measure(equi);
     
     subplot(1,3,1)
+    % record psi evolution
     equi.plot_fields("psi")
     hold on
     equi.geo.plot_wall()
     drawnow
+    frame = getframe(gca); 
+    im = frame2im(frame);
+    [imind, cm] = rgb2ind(im, 256);
+    
+    if i == 1
+         imwrite(imind, cm, filename, 'gif', 'Loopcount', inf, 'DelayTime', 0.05);
+    else
+         imwrite(imind, cm, filename, 'gif', 'WriteMode', 'append', 'DelayTime', 0.05);
+    end
 
     legends{i+2} = "i = " + num2str(i);
     subplot(1,3,2)

@@ -91,7 +91,7 @@ classdef Diag_PickUpCoils
             grid on
             grid minor
             xlabel("#")
-            ylabel("N_e [m^{-3}]")
+            ylabel("B [T]")
 
         end
 
