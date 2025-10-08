@@ -277,8 +277,8 @@ classdef Diag_InterferometerPolarimeter
                 obj.config.phi = [0 0 0 0 0 0 0 0];
 
                 % Discretisation
-                obj.config.LID_N_discretisation = 10;
-                obj.config.POL_N_discretisation = 10;
+                obj.config.LID_N_discretisation = 30;
+                obj.config.POL_N_discretisation = 30;
 
                 % noise information
                 obj.config.LID_noise_random_absolute_intensity = 0;
