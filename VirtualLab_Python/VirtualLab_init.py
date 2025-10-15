@@ -34,6 +34,7 @@ if os.sep == '/':
 # Aggiunge i percorsi a sys.path se non già presenti
 for relative_path in paths_to_add:
     full_path = os.path.join(path_main, relative_path)
+    full_path = os.path.normpath(full_path)
     if full_path not in sys.path:
         sys.path.append(full_path)
         print(f"new added path : {full_path}")
