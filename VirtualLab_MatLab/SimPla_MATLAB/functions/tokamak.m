@@ -1,6 +1,16 @@
 
 classdef tokamak
-
+    % Class tokamak
+    %
+    % This is the class used to define the machine to be used (new machines
+    % can be easily added, see documentation and example 4), the scenario 
+    % (target separatrix), and the methodology to simulate or map kinetic
+    % profiles on the magnetic surfaces.
+    %
+    % Write help tokamak.(properties) to see info about each property
+    % Write doc toakamk to generate the MATLAB documentation for the
+    % tokamak class
+    
     properties
         machine % Tokamak name
 
@@ -13,14 +23,20 @@ classdef tokamak
 
         separatrix % here we store the target separatrix 
 
-        config  % this structure contains various configuration
-                % parameters for equilibrium 
+        config  % this structure contains various configuration and parameters for equilibrium 
 
     end
 
     methods
-        % upload machine geometry
+        
         function obj = machine_upload(obj,machine)
+            % Method machine_upload - tokamak.machine_upload(machine)
+            %
+            % machine - it indicates the machine to be uploaded.
+            % if machine is not used, tokamak.machine_upload(), machine = "Tokalab" is used  
+            % 
+            % Then, it uploadd the machine specific geometry (major and
+            % minor radii, grid information, and wall contours). 
             
             if nargin < 2
                 machine = "Tokalab";
@@ -44,8 +60,18 @@ classdef tokamak
 
         end
 
-        % upload equilibrium configuration file
         function obj = scenario_upload(obj,separatrix,Jt_method)
+            % Method scenario_upload - tokamak.scenario_upload(separatrix, Jt_method)
+            %
+            % separatrix - is a number (e.g. 1) which indicates the
+            % scenario to be used (see Tokalab_Scenario as example)
+            %
+            % Jt_method - is a number (e.g.) which defiens the
+            % functionality between toroidal current and poloidal flux 
+            % (see Tokalab_Scenario as example)
+            % 
+            % All this machine and scenario information are stored inside
+            % tokamak.config
 
             if nargin < 2
                 separatrix = 1;
@@ -69,9 +95,12 @@ classdef tokamak
             
         end
 
-        % upload the kinetic configuration
         function obj = kinetic_upload(obj)
-            
+            % Method kinetic_upload - tokamak.kinetic_upload()
+            %
+            % It uploads the scenario and tokamak specific paramters inside
+            % the tokamak.config variable. 
+
             machine = obj.machine;
 
             if machine == "Tokalab"
