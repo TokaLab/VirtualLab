@@ -1,7 +1,7 @@
 %% Equilibrium_dimless
 % this equilibrium class is equal to standard SimPla equilibrium classes
 % with the difference that the solution is based on the dimensionless grad
-% shafranov equation, as discussed in:  
+% shafranov equation, as discussed in:
 % Fixed boundary Grad-Shafranov solver using finite  difference method in nonhomogeneous meshgrid
 % J E López et al 2019 J. Phys.: Conf. Ser. 1159 012017
 
@@ -51,7 +51,7 @@ classdef equilibrium_dimless
     end
 
     methods
-        
+
         function obj = import_configuration(obj,geo,config)
             obj.geo = geo;
             obj.config = config;
@@ -261,83 +261,12 @@ classdef equilibrium_dimless
 
         end
 
-        %% evaluate profiles (MHD and then kinetic)
-        function obj = compute_profiles(obj)
 
-            [p,F2] = obj.MHD_prof.Evaluate_p_F(obj);
+    
+        %% Processing of \psi
+        % it finds the last closed surface and critical points O and X points
 
-            Bt = sign(obj.config.toroidal_current.Bt)*sqrt(F2)./obj.geo.grid.Rg;
-
-            obj.p = p;
-            obj.F2 = F2;
-            obj.Bt = Bt;
-            
-            [Br,Bz,Jr,Jz] = obj.MHD_prof.MHD_fields(obj);
-
-            obj.Br = Br;
-            obj.Bz = Bz;
-            obj.Jr = Jr;
-            obj.Jz = Jz;
-
-            Kinetics = obj.kin_prof.evaluate_profiles(obj);
-
-            obj.ne = Kinetics.ne;
-            obj.ni = Kinetics.ni;
-            obj.Te = Kinetics.Te;
-            obj.Ti = Kinetics.Ti;
-            obj.pe = Kinetics.pe;
-            obj.pi = Kinetics.pi;
-
-        end
-
-        %% function to evaluate critical points in standard grid
-
-        function [Opoint,Xpoint] = CriticalPoints(obj,Ip,R,Z,inside_wall,Psi)
-            
-            R_b = obj.separatrix.R_sep_target;
-            Z_b = obj.separatrix.Z_sep_target;
-            % R0 = 0.87;
-
-            % sign correction
-            if Ip > 0
-                Psi = -Psi;
-            end
-
-            % evaluate gradient of poloidal flux
-            [dPsidR,dPsidZ] = gradient(Psi);
-
-            % find zero values
-            gradPsi_2 = (dPsidR./R).^2+(dPsidZ./R).^2;
-            ismin = islocalmin(gradPsi_2,1) & islocalmin(gradPsi_2,2) & inside_wall;
-            ind = find(ismin);
-
-            % Opoint is defined as the point with the minimum value
-            % (negative psi considered)
-            [~,Opoint_ind] = min(Psi(ismin));
-            Opoint = ind(Opoint_ind);
-            ind(Opoint_ind) = [];
-
-            % Xpoint is defined as closest Xpoint to the Opoint
-            % (alternative methods to be explored (closer to target
-            % separatrix?)
-            [~,Xpoint_ind] = min((Psi(Opoint) - Psi(ind)).^2);
-            Xpoint = ind(Xpoint_ind);
-
-            % if Opoint is not found, geometrical centre is used
-            if isempty(Opoint)
-                [~,Opoint] = min((R-R0).^2 + (Z).^2,[],"all");
-            end
-
-            % if X point is not found, minimum value of target separatrix
-            % is used (to be optimised for more generability)
-            if isempty(Xpoint)
-                [~,Xpoint_boundary] = min(Z_b);
-                [~,Xpoint] = min((R-R_b(Xpoint_boundary)).^2 + (Z-Z_b(Xpoint_boundary)).^2,[],"all");
-            end
-
-        end
-
-        %% psi post-processing
+        % version 1
         function obj = equi_pp(obj)
 
             % variables
@@ -369,14 +298,14 @@ classdef equilibrium_dimless
             Opoint_Z = Z_HR(Opoint);
             Xpoint_R = R_HR(Xpoint);
             Xpoint_Z = Z_HR(Xpoint);
-            
+
             %%%%%%%%%%%
-            
-            % check if X point is close to target separatrix. 
+
+            % check if X point is close to target separatrix.
             % if yes, X point is used for normalisation, otherwise we use
             % separatrix psi values
             Xpoint_Sep_distance = min(sqrt((R_sep_target-Xpoint_R).^2 + ...
-                                        (Z_sep_target-Xpoint_Z).^2));
+                (Z_sep_target-Xpoint_Z).^2));
 
             if Xpoint_Sep_distance < 0.1*obj.geo.a
                 psi_O = psi_HR(Opoint);
@@ -387,7 +316,7 @@ classdef equilibrium_dimless
             end
 
             psi_n = (psi-psi_O)./(psi_X-psi_O);
-            
+
             %%%%%%%%%%%%%
 
             % find last closed surface
@@ -444,6 +373,271 @@ classdef equilibrium_dimless
 
         end
 
+        % version 2
+        function obj = equi_pp2(obj)
+
+            obj = obj.find_LCFS;
+
+            psi = obj.psi;
+            R = obj.geo.R;
+            Z = obj.geo.Z;
+            Ip = obj.config.toroidal_current.Ip;
+
+            % calculate inside LCFS at standard resolution
+            obj.LCFS.inside = inpolygon(obj.geo.grid.Rg,obj.geo.grid.Zg,...
+                                        obj.LCFS.R,obj.LCFS.Z);
+
+            % higher resolution grid
+            R_HR = linspace(min(R(:)),max(R(:)),500);
+            Z_HR = linspace(min(Z(:)),max(Z(:)),700);
+            [R_HR,Z_HR] = meshgrid(R_HR,Z_HR);
+            Psi = interp2(R,Z,psi,R_HR,Z_HR,"spline");
+
+            inside_LCFS = inpolygon(R_HR,Z_HR,obj.LCFS.R,obj.LCFS.Z);
+            inside_wall = inpolygon(R_HR,Z_HR,obj.geo.wall.R,obj.geo.wall.Z);
+
+            % sign correction
+            if Ip > 0
+                Psi = -Psi;
+            end
+
+            % evaluate gradient of poloidal flux
+            [dPsidR,dPsidZ] = gradient(Psi);
+
+            R = R_HR;
+            Z = Z_HR;
+
+            % find zero values
+            gradPsi_2 = (dPsidR./R).^2+(dPsidZ./R).^2;
+            ismin = islocalmin(gradPsi_2,1) & islocalmin(gradPsi_2,2) & inside_wall;
+            ind = find(ismin);
+
+            % Opoint is defined as the point with the minimum value
+            % (negative psi considered) inside the LCFS
+            Opoint_ind = find(Psi(ind) == min(Psi(ismin & inside_LCFS)));
+            Opoint= ind(Opoint_ind);
+            ind(Opoint_ind) = [];
+
+            % Xpoint is defined as closest Xpoint to the LCFS
+            [~,Xpoint_ind] = min((obj.LCFS.psi - Psi(ind)).^2);
+            Xpoint = ind(Xpoint_ind);
+
+            % if Opoint is not found, geometrical centre is used
+            if isempty(Opoint)
+                [~,Opoint] = min((R-obj.geo.R0).^2 + (Z-obj.geo.Z0).^2,[],"all");
+            end
+
+            % if X point is not found, bottom point of LCSF
+            % is used (to be optimised for more generability)
+            if isempty(Xpoint)
+                [~,Xpoint_bottom] = min(obj.LCFS.Z);
+                [~,Xpoint] = min((R-obj.LCFS.R(Xpoint_bottom)).^2 + (Z-obj.LCFS.Z(Xpoint_bottom)).^2,[],"all");
+            end
+
+            Opoint_R = R_HR(Opoint);
+            Opoint_Z = Z_HR(Opoint);
+            Xpoint_R = R_HR(Xpoint);
+            Xpoint_Z = Z_HR(Xpoint);
+
+            psi_O = Psi(Opoint);
+            psi_X = Psi(Xpoint);
+
+            psi_n = (psi-psi_O)./(psi_X-psi_O);
+
+            obj.Xpoint.R = Xpoint_R;
+            obj.Xpoint.Z = Xpoint_Z;
+            obj.Opoint.R = Opoint_R;
+            obj.Opoint.Z = Opoint_Z;
+
+            obj.psi_n = psi_n;
+            obj.Psi = psi*2*pi;
+           
+        end
+
+        %% Profiles computation
+        % computes electron and ion density, temperature, pressure and F2
+    
+        % version 1 - anaytic functions
+        function obj = compute_profiles(obj)
+
+            [p,F2] = obj.MHD_prof.Evaluate_p_F(obj);
+
+            Bt = sign(obj.config.toroidal_current.Bt)*sqrt(F2)./obj.geo.grid.Rg;
+
+            obj.p = p;
+            obj.F2 = F2;
+            obj.Bt = Bt;
+
+            [Br,Bz,Jr,Jz] = obj.MHD_prof.MHD_fields(obj);
+
+            obj.Br = Br;
+            obj.Bz = Bz;
+            obj.Jr = Jr;
+            obj.Jz = Jz;
+
+            Kinetics = obj.kin_prof.evaluate_profiles(obj);
+
+            obj.ne = Kinetics.ne;
+            obj.ni = Kinetics.ni;
+            obj.Te = Kinetics.Te;
+            obj.Ti = Kinetics.Ti;
+            obj.pe = Kinetics.pe;
+            obj.pi = Kinetics.pi;
+
+        end
+
+        %% Utilities
+        % some utilitiess
+
+        % CriticalPoints - v1 - it calculates the O and X points
+        function [Opoint,Xpoint] = CriticalPoints(obj,Ip,R,Z,inside_wall,Psi)
+
+            R_b = obj.separatrix.R_sep_target;
+            Z_b = obj.separatrix.Z_sep_target;
+
+            % sign correction
+            if Ip > 0
+                Psi = -Psi;
+            end
+
+            % evaluate gradient of poloidal flux
+            [dPsidR,dPsidZ] = gradient(Psi);
+
+            % find zero values
+            gradPsi_2 = (dPsidR./R).^2+(dPsidZ./R).^2;
+            ismin = islocalmin(gradPsi_2,1) & islocalmin(gradPsi_2,2) & inside_wall;
+            ind = find(ismin);
+
+            % Opoint is defined as the point with the minimum value
+            % (negative psi considered)
+            [~,Opoint_ind] = min(Psi(ismin));
+            Opoint = ind(Opoint_ind);
+            ind(Opoint_ind) = [];
+
+            % Xpoint is defined as closest Xpoint to the Opoint
+            % (alternative methods to be explored (closer to target
+            % separatrix?)
+            [~,Xpoint_ind] = min((Psi(Opoint) - Psi(ind)).^2);
+            Xpoint = ind(Xpoint_ind);
+
+            % if Opoint is not found, geometrical centre is used
+            if isempty(Opoint)
+                [~,Opoint] = min((R-R0).^2 + (Z).^2,[],"all");
+            end
+
+            % if X point is not found, minimum value of target separatrix
+            % is used (to be optimised for more generability)
+            if isempty(Xpoint)
+                [~,Xpoint_boundary] = min(Z_b);
+                [~,Xpoint] = min((R-R_b(Xpoint_boundary)).^2 + (Z-Z_b(Xpoint_boundary)).^2,[],"all");
+            end
+
+        end
+
+        % Find Last-Closed-Flux-Surface from psi
+        % It calculates the LCFS has the closed line with the largest 
+        % area inside the wall.
+        function obj = find_LCFS(obj)
+            
+            % extract inputs
+            psi = obj.psi;
+            R = obj.geo.R;
+            Z = obj.geo.Z;
+            inside = obj.geo.wall.inside;
+
+            % maximum and minimum levels of psi inside the wall
+            level_min = min(psi(inside));
+            level_max = max(psi(inside));
+
+            % number of levels for first iteration
+            n_levels = 30;
+            levels_coarse = linspace(level_min,level_max,n_levels);
+
+            % extract iso-psi
+            lines = contourc(R,Z,psi,levels_coarse);
+            ind_level = 1;
+            stop_condition = 0;
+            Area = 0;
+
+            while stop_condition == 0
+
+                Level = lines(1,ind_level);
+                length_level = lines(2,ind_level);
+
+                R_line = lines(1,ind_level + 1 : ind_level + length_level);
+                Z_line = lines(2,ind_level + 1 : ind_level + length_level);
+
+                inside = inpolygon(R_line,Z_line, obj.geo.wall.R ,obj.geo.wall.Z );
+
+                Closness = abs(R_line(1)-R_line(end)) + abs(Z_line(1)-Z_line(end));
+                Close = Closness <= 0.001;
+
+                if Close && all(inside)
+                    Area_now = abs(polyarea(R_line,Z_line));
+                    if Area_now > Area
+                        obj.LCFS.R = R_line;
+                        obj.LCFS.Z = R_line;
+                        obj.LCFS.psi = Level;
+                        Area = Area_now;
+                    end
+                end
+                
+                % update new ind level position
+                ind_level = ind_level + length_level + 1;
+
+                % stop condition
+                if ind_level >= length(lines(1,:))
+                    stop_condition = 1;
+                end
+
+            end
+
+            % a new iteration is done for psi values close to the
+            % previously find LCFS
+            i = find(levels_coarse == obj.LCFS.psi);
+            n_levels = 30;
+            levels_fine = linspace(levels_coarse(i-1),levels_coarse(i+1),n_levels);
+            lines = contourc(R,Z,psi,levels_fine);
+
+            ind_level = 1;
+            stop_condition = 0;
+            Area = 0;
+
+            while stop_condition == 0
+
+                Level = lines(1,ind_level);
+
+                length_level = lines(2,ind_level);
+
+                R_line = lines(1,ind_level + 1 : ind_level + length_level);
+                Z_line = lines(2,ind_level + 1 : ind_level + length_level);
+
+                inside = inpolygon(R_line,Z_line, obj.geo.wall.R ,obj.geo.wall.Z );
+
+                Closness = abs(R_line(1)-R_line(end)) + abs(Z_line(1)-Z_line(end));
+                Close = Closness <= 0.001;
+
+                if Close && all(inside)
+                    Area_now = abs(polyarea(R_line,Z_line));
+                    if Area_now > Area
+                        obj.LCFS.R = R_line;
+                        obj.LCFS.Z = Z_line;
+                        obj.LCFS.psi = Level;
+                        Area = Area_now;
+                    end
+                end
+
+
+                ind_level = ind_level + length_level + 1;
+
+                if ind_level >= length(lines(1,:))
+                    stop_condition = 1;
+                end
+
+            end
+            
+        end
+
         %% Plotting functions
 
         % plot target separatrix
@@ -471,7 +665,7 @@ classdef equilibrium_dimless
 
             R = obj.geo.grid.Rg;
             Z = obj.geo.grid.Zg;
-        
+
             F = obj.(field);
 
             contourf(R,Z,F,30,"LineStyle",'none')
