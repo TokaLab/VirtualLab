@@ -60,7 +60,7 @@ classdef Diag_PickUpCoils
 
                 obj.config.configuration = 1;
 
-                load("diagnostics_data\PickUpData_config_1.mat")
+                load("diagnostics_data/PickUpData_config_1.mat")
 
                 obj.R = R;
                 obj.Z = Z;

@@ -58,7 +58,7 @@ classdef Diag_SaddleCoils
 
                 obj.config.configuration = 1;
 
-                load("diagnostics_data\SaddleCoilsData_config_1.mat")
+                load("diagnostics_data/SaddleCoilsData_config_1.mat")
 
                 obj.R1 = R1;
                 obj.Z1 = Z1;

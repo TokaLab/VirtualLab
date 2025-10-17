@@ -54,7 +54,7 @@ classdef Diag_FluxLoops
 
                 obj.config.configuration = 1;
 
-                load("diagnostics_data\FluxLoopsData_config_1.mat")
+                load("diagnostics_data/FluxLoopsData_config_1.mat")
 
                 obj.R = R;
                 obj.Z = Z;
