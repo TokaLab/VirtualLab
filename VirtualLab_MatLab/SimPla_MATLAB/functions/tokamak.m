@@ -8,7 +8,7 @@ classdef tokamak
     % profiles on the magnetic surfaces.
     %
     % Write help tokamak.(properties) to see info about each property
-    % Write doc toakamk to generate the MATLAB documentation for the
+    % Write doc tokamak to generate the MATLAB documentation for the
     % tokamak class
     
     properties
@@ -20,8 +20,6 @@ classdef tokamak
         wall    % structure containing wall information
         
         grid    % grid of the geometry
-
-        separatrix % here we store the target separatrix 
 
         config  % this structure contains various configuration and parameters for equilibrium 
 

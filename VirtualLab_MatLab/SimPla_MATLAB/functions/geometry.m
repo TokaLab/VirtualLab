@@ -1,4 +1,13 @@
 classdef geometry
+    % Class geometry
+    %
+    % This class allows to prepare the computational geometry for SimPla
+    % (and other module dependent on SimPla, like SynDiag). This class is
+    % machine independent since takes the input from the class tokamak
+    %
+    % Write help geometry.(properties) to see info about each property
+    % Write doc geometry to generate the MATLAB documentation for the
+    % geometry class
 
     properties
 
@@ -18,22 +27,32 @@ classdef geometry
     end
 
     methods
-        % this function import the geometry from the tokamak class
+        
         function obj = import_geometry(obj,tok)
+            % Method import_geometry - geometry.import_geometry(tokamak)
+            %
+            % tokamak is a tokamak class to be initialise and prepared
+            % before running this method. 
+            %
+            % The method imports some fundamental information from the
+            % tokamak class: R0, a, grid and wall, and store them in the
+            % new class geometry
+
             obj.R0 = tok.R0;
             obj.a = tok.a;
-
             obj.grid = tok.grid;
-
             obj.wall = tok.wall;
 
         end
-        % this function generate the horizontal and vertical coordinates
-        % and the grid
-        function obj = build_geometry(obj)
 
-            % put object information in local variables
-            % (just for improved readability)
+        function obj = build_geometry(obj)
+            % Method build_geometry - geometry.build_geometry()
+            %
+            % This method builds the computational grid by using R0, a, and
+            % the hyperparameters inside grid. 
+            %
+            % See live-scripts or the wiki for details
+
             R0 = obj.R0;
             a = obj.a;
 
@@ -62,9 +81,14 @@ classdef geometry
 
         end
 
-        % this function calculate a mask for point of the grid inside the
-        % wall
         function obj = inside_wall(obj)
+            % Method inside_wall - geometry.inside_wall()
+            %
+            % This method creates a mask of ones for points inside the wall
+            % and zeros outside, used several times for both computational
+            % and graphics purposes. 
+            %
+            % See live-scripts or the wiki for details
 
             R = obj.grid.Rg;
             Z = obj.grid.Zg;
@@ -77,9 +101,16 @@ classdef geometry
             obj.wall.inside = inside;
         end
 
-        % define the geometry boundary operator
+       
         function [M_boundary,indices,ind_bool] = geo_operator(obj)
-
+            % Method inside_wall - geometry.geo_operator()
+            %
+            % This method generates a mask of ones for the boundary of 
+            % the geometry and zeros for the rest, used in some cases during
+            % Grad-Shavranov equation solver 
+            %
+            % See live-scripts or the wiki for details
+            
             R = obj.grid.Rg;
             Z = obj.grid.Zg;
 
@@ -102,6 +133,9 @@ classdef geometry
         %% Plotting methods
 
         function plot(obj)
+            % Method inside_wall - geometry.plot()
+            %
+            % Plot the grid points and the wall contours
 
             plot(obj.grid.Rg(:),obj.grid.Zg(:),'.b')
             hold on
@@ -115,6 +149,9 @@ classdef geometry
         end
 
         function plot_wall(obj)
+            % Method inside_wall - geometry.plot_wall()
+            %
+            % Plot the wall on the open figure
 
             plot(obj.wall.R, obj.wall.Z, '-k', 'LineWidth', 2) % Plot wall   
             grid on
