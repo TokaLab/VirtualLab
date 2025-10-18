@@ -87,6 +87,4 @@ Happy experimenting in the VirtualLab!!
 
 
 
-
-
-[![Open in MATLAB Online](https://matlab.mathworks.com/open/github/v1/badge.svg)](https://matlab.mathworks.com/open/github/v1?repo=TokaLab/VirtualLab)
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=TokaLab/VirtualLab)
