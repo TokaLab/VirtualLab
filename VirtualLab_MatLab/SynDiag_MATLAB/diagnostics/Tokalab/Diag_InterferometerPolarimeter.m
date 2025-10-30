@@ -81,7 +81,7 @@ classdef Diag_InterferometerPolarimeter
             obj.ideal.LIDh = LIDh;
 
             % noise absolute
-            noise_abs = normrnd(0,obj.config.LID_noise_random_absolute_intensity);
+            noise_abs = normrnd(0,obj.config.LID_noise_random_absolute_intensity,size(LIDc));
 
             % noise proportional
             noise_prop_c = normrnd(0,abs(obj.ideal.LIDc).*obj.config.LID_noise_random_proportional_intensity);
@@ -214,8 +214,8 @@ classdef Diag_InterferometerPolarimeter
             %% noise
 
             % noise absolute
-            FAR_noise_abs = normrnd(0,obj.config.FAR_noise_random_absolute_intensity);
-            CM_noise_abs = normrnd(0,obj.config.CM_noise_random_absolute_intensity);
+            FAR_noise_abs = normrnd(0,obj.config.FAR_noise_random_absolute_intensity,size(obj.ideal.FARc));
+            CM_noise_abs = normrnd(0,obj.config.CM_noise_random_absolute_intensity,size(obj.ideal.CMc));
 
             % noise proportional
             FARc_noise_prop = normrnd(0,abs(obj.ideal.FARc).*obj.config.FAR_noise_random_proportional_intensity);

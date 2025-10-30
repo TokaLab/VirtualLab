@@ -64,7 +64,7 @@ class Toroidal_Current:
     def __init__(self, method=1):
         if method == 1:
             self.method = 1
-            self.Bt = 3
+            self.Bt = 5
             self.Ip = -12e6
             self.alpha_1 = 2
             self.alpha_2 = 2

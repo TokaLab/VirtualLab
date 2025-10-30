@@ -42,12 +42,13 @@ equi.equi_pp()
 equi.compute_profiles()
 
 # plot field
-equi.plot_fields('ne')
+equi.plot_fields('Bt')
 
 from diagnostics.Tokalab.Diag_PickUpCoils import Diag_PickUpCoils
 from diagnostics.Tokalab.Diag_SaddleCoils import Diag_SaddleCoils
 from diagnostics.Tokalab.Diag_FluxLoops import Diag_FluxLoops
 from diagnostics.Tokalab.Diag_ThomsonScattering import Diag_ThomsonScattering
+from diagnostics.Tokalab.Diag_InterferometerPolarimeter import Diag_InterferometerPolarimeter
 
 # diagnostics
 PickUp = Diag_PickUpCoils()
@@ -70,6 +71,9 @@ TS.upload()
 TS.measure(equi)
 TS.plot_StandAlone()
 
-
+IP = Diag_InterferometerPolarimeter()
+IP.upload()
+IP.measure(equi)
+IP.plot_StandAlone()
 
 

@@ -82,8 +82,8 @@ NT = NT.import_configuration(geo,tok.config);
 NT = NT.import_classes();
 NT.separatrix = NT.separatrix.build_separatrix(NT.config.separatrix,NT.geo);
 NT.config.GSsolver.Plotting = 0;
-NT = NT.solve_equilibrium();
-NT = NT.equi_pp();
+NT = NT.solve_equilibrium_dimless();
+NT = NT.equi_pp2();
 NT = NT.compute_profiles();
 
 disp("Nagative Triangularity - Solved")

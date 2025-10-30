@@ -1,6 +1,5 @@
 %% 
 
-
 function VirtualLab_init(machine,restore_paths)
 
     if nargin < 1

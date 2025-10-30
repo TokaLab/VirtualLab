@@ -15,7 +15,7 @@ geo = geo.build_geometry();
 geo = geo.inside_wall();
 
 % initialise the class equilibrium
-equi = equilibrium_dimless;
+equi = equilibrium;
 equi = equi.import_configuration(geo,tok.config);
 equi = equi.import_classes();
 equi.separatrix = equi.separatrix.build_separatrix(equi.config.separatrix,equi.geo);
@@ -39,7 +39,7 @@ equi  = equi.compute_profiles();
 % plot my equilibrium and profiles
 figure(2)
 clf
-equi.plot_fields("ne",1)
+equi.plot_fields("Bt",1)
 hold on
 equi.geo.plot_wall
 
