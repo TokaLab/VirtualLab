@@ -1,6 +1,6 @@
 # TokaLab Contributors
 
-List of TokaLab contributors. If you want to contribute, take a look at the Contributing.md file or contact us.
+List of TokaLab contributors. If you want to contribute, take a look at the [Contributing](./Contributing.md) file or contact us.
 
 ## TokaLab Team
 
