@@ -70,7 +70,7 @@ See the [License](./License) file for full details.
 
 ---
 ## 👥 TokaLab Team
-The team and list of contributors are available [here](./Contributors).  
+The team and list of contributors are available [here](./Contributors.md).  
 
 --- 
 ## 🧪 Research Outputs
