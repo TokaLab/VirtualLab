@@ -60,7 +60,7 @@ VirtualLab/
 ## 🤝 Contributing
 
 TokaLab is open-access and open-source — we warmly welcome new contributors!
-Please check the [Contributing](./Contributing) guidelines to learn how to get started.
+Please check the [Contributing](./Contributing.md) guidelines to learn how to get started.
 
 ---
 ## 📄 License
