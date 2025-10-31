@@ -32,7 +32,7 @@ equi.separatrix.build_separatrix(equi.config.separatrix,equi.geo)
 equi.plot_separatrix()
 
 # solve equilibrium
-equi.solve_equilibrium()
+equi.solve_equilibrium_dimless()
 Opoint, Xpoint = equi.critical_points(equi.config.toroidal_current.Ip, equi.geo.grid.Rg, equi.geo.grid.Zg, equi.geo.wall.inside, equi.psi)
 
 # pp equilibrium
@@ -42,7 +42,7 @@ equi.equi_pp()
 equi.compute_profiles()
 
 # plot field
-equi.plot_fields('Bt')
+equi.plot_fields('ne')
 
 from diagnostics.Tokalab.Diag_PickUpCoils import Diag_PickUpCoils
 from diagnostics.Tokalab.Diag_SaddleCoils import Diag_SaddleCoils

@@ -31,14 +31,11 @@ geo = geo.import_geometry(tok);
 geo = geo.build_geometry();
 geo = geo.inside_wall();
 
-% equilibrium class
-equi = equilibrium;
-
 %% Single Null (SN)
 
 disp("Single Null - Solving")
 
-SN = equi;
+SN = equilibrium;
 
 tok = tok.scenario_upload(1,1);
 tok = tok.kinetic_upload();
@@ -56,7 +53,7 @@ disp("Single Null - Solved")
 
 disp("Double Null - Solving")
 
-DN = equi;
+DN = equilibrium;
 
 tok = tok.scenario_upload(2,1);
 tok = tok.kinetic_upload();
@@ -74,7 +71,7 @@ disp("Double Null - Solved")
 
 disp("Nagative Triangularity - Solving")
 
-NT = equi;
+NT = equilibrium;
 
 tok = tok.scenario_upload(3,1);
 tok = tok.kinetic_upload();

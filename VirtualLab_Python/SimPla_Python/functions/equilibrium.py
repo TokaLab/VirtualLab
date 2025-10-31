@@ -60,6 +60,9 @@ class equilibrium:
         
         self.LCFS = LCFS()
 
+# Methods 
+    # Initiisalisation Methods
+    
     def import_configuration(self, geo, config):
         self.geo = geo
         self.config = config
@@ -71,7 +74,7 @@ class equilibrium:
         self.config.GSsolver.rel_tol = 0
         self.config.GSsolver.update_rate = 1.0
         self.config.GSsolver.Lambda = 0;
-
+        
     def import_classes(self):
 
         self.separatrix = separatrix_target()
@@ -80,6 +83,8 @@ class equilibrium:
         self.const = constants()
         self.MHD_prof = profile_magnetic()
         self.kin_prof = profile_kinetic()
+
+    # Grad-Shafranov Solver Methods
 
     def solve_equilibrium(self, psi=None):
         # extract variables
@@ -180,6 +185,112 @@ class equilibrium:
         self.psi_n = psi_n
         self.Jt=Jt
         
+    def solve_equilibrium_dimless(self, psi=None):
+        # extract variables
+        R = self.geo.grid.Rg;
+        Z = self.geo.grid.Zg;
+        mu0 = self.const.mu0;
+        Ip = self.config.toroidal_current.Ip;
+        inside_wall = self.geo.wall.inside;
+        R0 = self.geo.R0
+        
+        # define the separatrix target
+        self.separatrix.build_separatrix(self.config.separatrix,self.geo)
+        
+        # Grad-Shafranov Operator
+        d_dR,d_dZ,d2_dR2,d2_dZ2 = self.utils.differential_operators(self.geo)
+        Delta_star = d2_dR2 - d_dR / R.ravel()[:, np.newaxis] + d2_dZ2
+        Delta_star = csr_matrix(Delta_star) 
+        
+        # Separatrix Operator
+        M_sep, V_sep, ind_sep = self.separatrix.sep_operators(self.geo)
+        M_sep = csr_matrix(M_sep)
+        
+        # Geometry operator
+        M_boundary, indices, bool_boundary = self.geo.geo_operator()
+        
+        # Normalising Factors
+        Jc = abs(Ip/R0**2)
+        Psic = abs(mu0*Jc*R0**3)
+        DeltaPsic = abs(Psic/R0**2)
+        C_Delta = 1/(DeltaPsic*R.size)
+        C_sep = 1/(Psic*V_sep.size)
+        
+        # first guess
+        if psi is None:
+            Jt = self.toroidal_curr.Jt_constant(self.geo, self.separatrix, self.config.toroidal_current)
+            V_grad = -mu0 * R.ravel() * Jt.ravel()
+        
+            M = vstack([C_Delta*Delta_star, C_sep*csr_matrix(M_sep)])
+            V = np.concatenate([C_Delta*V_grad, C_sep*V_sep.ravel()])
+        
+            A = M.T @ M
+            b = M.T @ V
+            psi_v = spsolve(A, b) 
+            psi = psi_v.reshape(R.shape)
+        
+        
+        # iterative calculation
+
+        maxIter = self.config.GSsolver.maxIter;
+        abs_tol = self.config.GSsolver.abs_tol;
+        rel_tol = self.config.GSsolver.rel_tol;
+        update_rate = self.config.GSsolver.update_rate;
+        Lambda = self.config.GSsolver.Lambda;
+
+        convergence = 0;
+        iteration = 0;
+        
+        iteration = 0
+        convergence = False
+
+        while not convergence:
+            iteration += 1
+
+            # Critical points (Opoint, Xpoint are indices)
+            Opoint, Xpoint = self.critical_points(Ip, R, Z, inside_wall, psi)
+
+            psi_0 = psi.ravel()[Opoint]
+            psi_b = np.mean(psi.ravel()[ind_sep])  # mean along separatrix indices
+
+            psi_n = (psi - psi_0) / (psi_b - psi_0)
+
+            # Compute new Jt from updated psi_n
+            Jt = self.toroidal_curr.Jt_compute(psi_n, self.config.toroidal_current, self.geo, self.separatrix)
+
+            # Right-hand term (flatten R and Jt)
+            V_grad = -mu0 * R.ravel() * Jt.ravel()
+
+            # Boundary values from current psi
+            V_boundary = psi.ravel()[bool_boundary]
+
+            # Build full system
+            M = vstack([C_Delta*Delta_star, C_sep*csr_matrix(M_sep), C_sep*Lambda*M_boundary])
+            V = np.concatenate([C_Delta*V_grad, C_sep*V_sep.ravel(), C_sep*Lambda*V_boundary])
+
+            # Solve the linear system
+            A = M.T @ M
+            b = M.T @ V
+            psi_v = spsolve(A, b) 
+
+            # Reshape back to grid
+            psi_new = psi_v.reshape(R.shape)
+        
+            # Compute convergence metrics
+            error_abs = np.mean((psi_new - psi)**2)
+            error_rel = error_abs / np.std(psi)
+
+            if error_abs < abs_tol or error_rel < rel_tol or iteration >= maxIter:
+                convergence = True
+        
+            # Optional: update psi (e.g., under-relaxation)
+            psi = update_rate * psi_new + (1 - update_rate) * psi
+            
+            print(iteration)
+                
+        self.psi = psi
+        self.psi_n = psi_n
+        self.Jt=Jt
         
     def compute_profiles(self):
         
@@ -195,8 +306,6 @@ class equilibrium:
         self.ni = kinetics['ni']
         self.Te = kinetics['Te']
         self.Ti = kinetics['Ti']
-        self.pe = kinetics['pe']
-        self.pi = kinetics['pi']
 
     def equi_pp(self):
         

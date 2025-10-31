@@ -27,6 +27,8 @@ class toroidal_current:
     def Jt_compute(self, psi_n, Jt_config, geo, sep):
         if Jt_config.method == 1:
             return self.Jt_method_1(psi_n, Jt_config, geo, sep)
+        elif Jt_config.method == 2:
+            return self.Jt_method_2(psi_n, Jt_config, geo, sep)
         else:
             raise NotImplementedError("Toroidal current method not implemented.")
 
@@ -48,4 +50,24 @@ class toroidal_current:
 
         volume_integral = np.sum(Jt_plasma * dR * dZ)
         Jt = Jt_plasma * Ip / volume_integral
+        return Jt
+    
+    def Jt_method_2(self, psi_n, Jt_config, geo, sep):
+        alpha1 = Jt_config.alpha_1
+        alpha2 = Jt_config.alpha_2
+        beta0 = Jt_config.beta_0
+        Ip = Jt_config.Ip
+        dR = geo.dR
+        dZ = geo.dZ
+        
+        psi_n_peak = Jt_config.psi_n_peak;
+
+        R = geo.R
+        R0 = geo.R0
+
+        Jt_plasma = (beta0 * R / R0 + (1 - beta0) * R0 / R) * \
+                     (1 - ((psi_n - psi_n_peak) / (1 - psi_n_peak)) ** alpha1) ** alpha2
+        Jt_plasma = Jt_plasma * sep.inside
+        Jt = Jt_plasma * Ip / np.sum(Jt_plasma * dR * dZ)
+
         return Jt

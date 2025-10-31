@@ -377,11 +377,6 @@ classdef equilibrium
             inside_wall = obj.geo.wall.inside;
             R0 = obj.geo.R0;
 
-            % Normalisation factors
-            Jc = abs(Ip./R0.^2);
-            Psic = abs(mu0.*Jc.*R0.^3);
-            DeltaPsic = abs(Psic./R0.^2);
-
             % define the separatrix target
             obj.separatrix = obj.separatrix.build_separatrix(obj.config.separatrix,obj.geo);
 
@@ -398,15 +393,18 @@ classdef equilibrium
             % extract boundary operator
             [M_boundary, ind_boundary, bool_boundary]= obj.geo.geo_operator();
 
+            % Normalisation factors
+            Jc = abs(Ip./R0.^2);
+            Psic = abs(mu0.*Jc.*R0.^3);
+            DeltaPsic = abs(Psic./R0.^2);
+            C_Delta = 1./(DeltaPsic.*length(R(:)));
+            C_sep = 1./(Psic.*length(V_sep));
+
             % first guess (it applies only if psi is not given as input)
             if compute_first_guess == 1
                 % Right-hand term of Grad-Shafranov (normalsied flux equation used)
                 Jt = obj.toroidal_curr.Jt_constant(obj.geo,obj.separatrix, obj.config.toroidal_current);
                 V_grad = -mu0.*R(:).*Jt(:);
-
-                % normalise system
-                C_Delta = 1./(DeltaPsic.*length(V_grad));
-                C_sep = 1./(Psic.*length(V_sep));
 
                 % solve system
                 M = [C_Delta.*Delta_star; C_sep.*M_sep];

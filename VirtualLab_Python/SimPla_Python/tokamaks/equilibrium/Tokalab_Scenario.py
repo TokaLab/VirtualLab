@@ -71,6 +71,16 @@ class Toroidal_Current:
             self.beta_0 = 0.5
             self.lambda_ = 1
         elif method == 2:
+            self.method = 2
+            self.Bt = 5
+            self.Ip = -15e6
+            self.alpha_1 = 2
+            self.alpha_2 = 2
+            self.beta_0 = 0.5
+            self.lambda_ = 1
+            self.psi_n_peak = 0.3
+            
+        elif method == 3:
             # Placeholder for a new method
             pass
 
