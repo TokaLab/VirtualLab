@@ -1,6 +1,10 @@
 classdef equilibrium
     % Class equilibrium
     %
+    % Authors: TokaLab team, 
+    % https://github.com/TokaLab/VirtualLab
+    % Date: 31/10/2025
+    %
     % This class handles most of the computational work in SimPla.
     % It performs the following tasks:
     %   1. Generates the target separatrix based on input from

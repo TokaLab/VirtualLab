@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun  5 10:40:41 2025
-
-@author: ricca
+Authors: TokaLab team, 
+https://github.com/TokaLab/VirtualLab
+Date: 31/10/2025
 """
 
 from functions.tokamak import tokamak

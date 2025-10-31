@@ -1,10 +1,10 @@
 classdef geometry
     % Class geometry
-    %
+    % 
     % This class allows to prepare the computational geometry for SimPla
     % (and other module dependent on SimPla, like SynDiag). This class is
     % machine independent since takes the input from the class tokamak
-    %
+    % 
     % Write help geometry.(properties) to see info about each property
     % Write doc geometry to generate the MATLAB documentation for the
     % geometry class

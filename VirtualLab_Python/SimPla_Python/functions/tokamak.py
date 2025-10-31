@@ -1,8 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun  2 14:40:29 2025
+tokamak.py
 
-@author: ricca
+Authors: TokaLab team, 
+https://github.com/TokaLab/VirtualLab
+Date: 31/10/2025
+
+Description:
+-------------
+This is the class used to define the machine to be used (new machines
+can be easily added, see documentation and example 4), the scenario 
+(target separatrix), and the methodology to simulate or map kinetic
+profiles on the magnetic surfaces.
+
+Write help tokamak.(properties) to see info about each property
+Write doc tokamak to generate the MATLAB documentation for the
+tokamak class
 """
 
 class tokamak:

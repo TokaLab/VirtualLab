@@ -1,6 +1,16 @@
 %% 
 
 function VirtualLab_init(machine,restore_paths)
+    % VirtualLab_init.m
+    % 
+    % Authors: TokaLab team, 
+    % https://github.com/TokaLab/VirtualLab
+    % Date: 31/10/2025
+    % 
+    % This script serves as the initialization file for the TokaLab environment.
+    % It must be run at the beginning of any session to:
+    % 1. Set up the MATLAB paths for all project-specific modules.
+
 
     if nargin < 1
         machine = "Tokalab";

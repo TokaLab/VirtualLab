@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+Authors: TokaLab team, 
+https://github.com/TokaLab/VirtualLab
+Date: 31/10/2025
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt

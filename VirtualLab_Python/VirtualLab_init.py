@@ -2,14 +2,14 @@
 """
 VirtualLab_init.py
 
+Authors: TokaLab team, 
+https://github.com/TokaLab/VirtualLab
+Date: 31/10/2025
+
 This script serves as the initialization file for the TokaLab environment.
 It must be run at the beginning of any session to:
 1. Set up the Python paths for all project-specific modules.
 2. Check that required packages are installed with the correct versions.
-
-Authors: TokaLab team, 
-https://github.com/TokaLab/VirtualLab
-Date: 31/10/2025
 """
 
 import os

@@ -1,8 +1,27 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Oct 31 09:50:29 2025
+SimPla_Validation_01.py
 
-@author: ricca
+Authors: TokaLab team, 
+https://github.com/TokaLab/VirtualLab
+Date: 31/10/2025
+
+Description:
+-------------
+% This script should be ran everytime a function in SimPla is modified. 
+% It aims at evaluating the equilibrium in three different scenarios:
+% - Single Null
+% - Double Null
+% - Negative Traingularity
+%
+% A first check can be done just by comparing the output (figure 1) with
+% the figure 1 in the document Validation_checks.docx (or
+% Validation_checks.pdf)
+%
+% Final validations are done by SimPla module responsibles: 
+% Riccardo Rossi        (r.rossi@ing.uniroma2.it)
+% Ivan Wyss             (ivan.wyss@uniroma2.it)
+
 """
 
 from functions.tokamak import tokamak

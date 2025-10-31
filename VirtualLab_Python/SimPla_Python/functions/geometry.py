@@ -1,3 +1,22 @@
+"""
+geometry.py
+
+Authors: TokaLab team, 
+https://github.com/TokaLab/VirtualLab
+Date: 31/10/2025
+
+Description:
+-------------
+This class allows to prepare the computational geometry for SimPla
+(and other module dependent on SimPla, like SynDiag). This class is
+machine independent since takes the input from the class tokamak
+
+Write help geometry.(properties) to see info about each property
+Write doc geometry to generate the MATLAB documentation for the
+geometry class
+"""
+
+
 from scipy.sparse import csr_matrix
 import numpy as np
 from matplotlib.path import Path

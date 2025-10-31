@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun  2 19:23:20 2025
+constants.py
 
-@author: ricca
+Authors: TokaLab team, 
+https://github.com/TokaLab/VirtualLab
+Date: 31/10/2025
+
+
+Description:
+-------------
+Constants used in TokaLab
 """
 import math as math
 

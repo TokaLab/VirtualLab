@@ -1,8 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun  2 15:25:36 2025
+equilibrium.py
 
-@author: ricca
+Authors: TokaLab team, 
+https://github.com/TokaLab/VirtualLab
+Date: 31/10/2025
+
+Description:
+-------------
+This class handles most of the computational work in SimPla.
+It performs the following tasks:
+ 1. Generates the target separatrix based on input from the tokamak and geometry classes.
+ 2. Solves the plasma equilibrium using a Grad-Shafranov solver.
+ 3. Computes and maps remaining quantities (fields, currents, pressure, kinetic profiles) based on the selected model.
+
 """
 
 
