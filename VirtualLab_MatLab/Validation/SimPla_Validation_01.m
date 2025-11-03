@@ -103,7 +103,7 @@ xlabel("R [m]")
 ylabel("Z [m]")
 axis equal
 colorbar()
-title("SN - n_e [m^{-3}]")
+title("Single Null - n_e [m^{-3}]")
 
 subplot(1,3,2)
 contourf(DN.geo.grid.Rg,DN.geo.grid.Zg,DN.Te,30,'LineStyle','none')
@@ -119,7 +119,7 @@ xlabel("R [m]")
 ylabel("Z [m]")
 axis equal
 colorbar()
-title("DN - T_e [eV]")
+title("Double Null - T_e [eV]")
 
 subplot(1,3,3)
 contourf(NT.geo.grid.Rg,NT.geo.grid.Zg,NT.Jt,30,'LineStyle','none')
@@ -135,4 +135,4 @@ xlabel("R [m]")
 ylabel("Z [m]")
 axis equal
 colorbar()
-title("NT - J_{\phi} [A/m^2]")
+title("Negative Triangularity - J_{\phi} [A/m^2]")
