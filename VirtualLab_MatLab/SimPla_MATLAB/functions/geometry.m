@@ -24,6 +24,8 @@ classdef geometry
 
         wall    % structure containing the wall information
 
+        operators % structure containing differential operators 
+
     end
 
     methods
@@ -72,6 +74,16 @@ classdef geometry
             % store new information in the class
             obj.grid.Rg = Rg;
             obj.grid.Zg = Zg;
+
+            % prepare differential operator for the grid
+            U = utilities;
+            [d_dR, d_dZ, d2_dR2, d2_dZ2] = U.differential_operators_fast(obj);
+            
+            obj.operators.d_dR = d_dR;
+            obj.operators.d_dZ = d_dZ;
+            obj.operators.d2_dR2 = d2_dR2;
+            obj.operators.d2_dZ2 = d2_dZ2;
+
 
             obj.R = R;
             obj.Z = Z;

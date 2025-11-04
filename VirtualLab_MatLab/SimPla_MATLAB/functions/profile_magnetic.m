@@ -164,7 +164,8 @@ classdef profile_magnetic
 
             R = equi.geo.grid.Rg;
 
-            [d_dR, d_dZ]  = equi.utils.differential_operators(equi.geo);
+            d_dR = equi.geo.operators.d_dR;
+            d_dZ = equi.geo.operators.d_dZ;
 
             Br = -reshape((d_dZ*equi.psi(:)),size(R))./R;
             Bz = reshape((d_dR*equi.psi(:)),size(R))./R;

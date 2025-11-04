@@ -185,27 +185,22 @@ classdef equilibrium
             mu0 = obj.const.mu0;
             Ip = obj.config.toroidal_current.Ip;
             inside_wall = obj.geo.wall.inside;
-            operators = obj.geo.operators;
 
             % define the separatrix target
             obj.separatrix = obj.separatrix.build_separatrix(obj.config.separatrix,obj.geo);
            
-            %%% old version
-            % % % % % % % % % % % define Grad-Shafranov operator
-            % % % % % % % % % % %     % Slow method
-            % % % % % % % % % % % [d_dR,~,d2_dR2,d2_dZ2] = obj.utils.differential_operators(obj.geo);
-            % % % % % % % % % % % disp("A = " + toc)
-            % % % % % % % % % % % Delta_star = d2_dR2 - d_dR./R(:) + d2_dZ2;
-            % % % % % % % % % % % Delta_star = sparse(Delta_star);
-            % % % % % % % % % % % clear d_dR d2_dR2 d2_dZ2
-            % % % % % % % % % % 
-            % % % % % % % % % %     % Fast method
-            % % % % % % % % % % [d_dR,~,d2_dR2,d2_dZ2] = obj.utils.differential_operators_fast(obj.geo);
-            % % % % % % % % % % Delta_star = d2_dR2 - d_dR./R(:) + d2_dZ2;
-            
-            % import differential operators
-            Delta_star = operators.d2_dR2 - operators.d_dR./R(:) + operators.d2_dZ2;
+            % define Grad-Shafranov operator
+            %     % Slow method
+            % [d_dR,~,d2_dR2,d2_dZ2] = obj.utils.differential_operators(obj.geo);
+            % disp("A = " + toc)
+            % Delta_star = d2_dR2 - d_dR./R(:) + d2_dZ2;
+            % Delta_star = sparse(Delta_star);
+            % clear d_dR d2_dR2 d2_dZ2
 
+                % Fast method
+            [d_dR,~,d2_dR2,d2_dZ2] = obj.utils.differential_operators_fast(obj.geo);
+            Delta_star = d2_dR2 - d_dR./R(:) + d2_dZ2;
+            
             % extract separatrix operator
             [M_sep,V_sep,ind_sep] = obj.separatrix.sep_operators(obj.geo);
             M_sep = sparse(M_sep);
@@ -391,19 +386,15 @@ classdef equilibrium
             Ip = obj.config.toroidal_current.Ip;
             inside_wall = obj.geo.wall.inside;
             R0 = obj.geo.R0;
-            operators = obj.geo.operators;
 
             % define the separatrix target
             obj.separatrix = obj.separatrix.build_separatrix(obj.config.separatrix,obj.geo);
 
-            % % % % % % % % define Grad-Shafranov operator
-            % % % % % % % [d_dR,~,d2_dR2,d2_dZ2] = obj.utils.differential_operators(obj.geo);
-            % % % % % % % Delta_star = d2_dR2 - d_dR./R(:) + d2_dZ2;
-            % % % % % % % Delta_star = sparse(Delta_star);
-            % % % % % % % clear d_dR d2_dR2 d2_dZ2
-
-            % import differential operators
-            Delta_star = operators.d2_dR2 - operators.d_dR./R(:) + operators.d2_dZ2;
+            % define Grad-Shafranov operator
+            [d_dR,~,d2_dR2,d2_dZ2] = obj.utils.differential_operators(obj.geo);
+            Delta_star = d2_dR2 - d_dR./R(:) + d2_dZ2;
+            Delta_star = sparse(Delta_star);
+            clear d_dR d2_dR2 d2_dZ2
 
             % extract separatrix operator
             [M_sep,V_sep,ind_sep] = obj.separatrix.sep_operators(obj.geo);

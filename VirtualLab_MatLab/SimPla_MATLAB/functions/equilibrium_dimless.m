@@ -239,12 +239,13 @@ classdef equilibrium_dimless
                     drawnow
 
                 end
-
+        
                 % update the psi with update_rate
                 psi = update_rate.*psi_new + (1-update_rate)*psi;
 
             end
-
+            
+   
             % find critical points (O-point, X-point)
             [Opoint,Xpoint] = obj.CriticalPoints(Ip,R,Z,inside_wall,psi);
 
@@ -259,6 +260,7 @@ classdef equilibrium_dimless
             obj.psi_n = psi_n;
             obj.Jt = Jt;
 
+  
         end
 
 

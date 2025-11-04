@@ -11,10 +11,10 @@ classdef utilities
         function [d_dR, d_dZ, d2_dR2, d2_dZ2] = differential_operators(~,geo)
 
             % extract information for improved readability
-            
+
             R = geo.grid.Rg;
             Z = geo.grid.Zg;
-            
+
             dR = R(1,2)-R(1,1);
             dZ = Z(2,1)-Z(1,1);
 
@@ -137,6 +137,44 @@ classdef utilities
 
 
         end
+
+
+        % alternative method - faster
+        function [d_dR, d_dZ, d2_dR2, d2_dZ2] = differential_operators_fast(~,geo)
+          
+            R = geo.grid.Rg;
+            Z = geo.grid.Zg;
+
+            [nz, nr] = size(R); % per meshgrid: nz righe (Z), nr colonne (R)
+
+            dR = R(1,2) - R(1,1);
+            dZ = Z(2,1) - Z(1,1);
+
+            % Derivative matrices 1D
+            eR = ones(nr,1);
+            D1R = spdiags([-eR eR],[-1 1],nr,nr)/(2*dR);
+            D1R(1,1:3) = [-3 4 -1]/(2*dR);
+            D1R(end,end-2:end) = [1 -4 3]/(2*dR);
+            D2R = spdiags([eR -2*eR eR],[-1 0 1],nr,nr)/(dR^2);
+            D2R(1,1:4) = [2 -5 4 -1]/(dR^2);
+            D2R(end,end-3:end) = [-1 4 -5 2]/(dR^2);
+
+            eZ = ones(nz,1);
+            D1Z = spdiags([-eZ eZ],[-1 1],nz,nz)/(2*dZ);
+            D1Z(1,1:3) = [-3 4 -1]/(2*dZ);
+            D1Z(end,end-2:end) = [1 -4 3]/(2*dZ);
+            D2Z = spdiags([eZ -2*eZ eZ],[-1 0 1],nz,nz)/(dZ^2);
+            D2Z(1,1:4) = [2 -5 4 -1]/(dZ^2);
+            D2Z(end,end-3:end) = [-1 4 -5 2]/(dZ^2);
+
+            % ⚠️ Se usi MESHGRID, il flattening avviene colonna per colonna (Z cambia più lentamente)
+            % Quindi:
+            d_dR   = kron(D1R, speye(nz));   % derivata lungo R
+            d2_dR2 = kron(D2R, speye(nz));
+            d_dZ   = kron(speye(nr), D1Z);   % derivata lungo Z
+            d2_dZ2 = kron(speye(nr), D2Z);
+        end
+
 
     end
 
