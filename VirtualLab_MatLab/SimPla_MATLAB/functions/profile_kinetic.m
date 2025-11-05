@@ -20,6 +20,8 @@ classdef profile_kinetic
 
         function profiles_kinetic = profile_kinetic_m1(~,equi)
 
+            %% 2D field calculations
+
             % variables 
             a1 = equi.config.kinetic.a1;
             a2 = equi.config.kinetic.a2;

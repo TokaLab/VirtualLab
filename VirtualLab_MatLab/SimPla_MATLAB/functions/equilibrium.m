@@ -23,6 +23,8 @@ classdef equilibrium
         const   % constant structure
         MHD_prof % class used to evaluate pressure and F2 from psi
         kin_prof % class used to evaluate kinetic profiles (ne, ni, Te, Ti)
+        profiles_1D % contains the kinetic profiles vs psi_n (inside the separatrix)
+
 
         % variables
         psi % poloidal flux [Wb/(2 pi)]
@@ -786,7 +788,7 @@ classdef equilibrium
 
         end
 
-        %% evaluate profiles (MHD and then kinetic)
+        %% Compute profiles (MHD and then kinetic)
 
         function obj = compute_profiles(obj)
             % compute_profiles  Evaluate MHD and kinetic profiles for the equilibrium
@@ -836,6 +838,40 @@ classdef equilibrium
             obj.pe = Kinetics.pe;
             obj.pi = Kinetics.pi;
             
+        end
+        
+        %% Evaluate 1D Profiles
+
+        function obj = evaluate_profiles_1D(obj)
+
+            psi_n = obj.psi_n;
+            inside = obj.LCFS.inside;
+            profiles = ["ne";"Te";"ni";"Ti";"pe";"pi"];
+
+            %% flattening psi
+
+            psi_n(~inside) = 1.1;
+            psi_n_flat = psi_n(:);
+
+            [psi_n_flat, unique_incides] = unique(psi_n_flat);
+
+            %% reference psi_n 
+            N = 100;
+            profiles_1D.psi_n = linspace(0,1,N);
+
+            %% interpolation
+            for j = 1 : length(profiles)
+
+                y = obj.(profiles(j));
+                y_flat = y(:);
+
+                profiles_1D.(profiles(j)) = interp1(psi_n_flat,y_flat(unique_incides),profiles_1D.psi_n);
+
+            end
+
+            %% save
+            obj.profiles_1D = profiles_1D;
+
         end
 
         %% Utilities
