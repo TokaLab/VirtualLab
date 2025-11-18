@@ -11,6 +11,8 @@ classdef Diag_PickUpCoils
 
         B % Measured Magnetic Field
 
+        sigma_B % Associated Uncertainty to Measured Magnetic Field
+
         unit % Unit Measure
 
         config % contains the various information such as noise, etc.
@@ -44,6 +46,9 @@ classdef Diag_PickUpCoils
 
             % real measurement
             obj.B = obj.ideal.B + noise_abs + noise_prop;
+
+            %associated uncertainty
+            obj.sigma_B = noise_abs + noise_prop;
 
             obj.unit = "T";
 

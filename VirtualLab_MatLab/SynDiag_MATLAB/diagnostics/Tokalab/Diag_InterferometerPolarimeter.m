@@ -26,15 +26,15 @@ classdef Diag_InterferometerPolarimeter
         sLIDc % Uncertainty associated to Line-Integrated Density (cold-plasma approximation)
         sLIDh % Uncertainty associated to Line-Integrated Density (hot-plasma approximation)
 
-        sFARc % Uncertainty associated to Faraday - Cold Plasma Approximation
-        sFARc_typeI % Uncertainty associated to Faraday - Cold Plasma and TypeI Approximation
-        sFARh % Uncertainty associated to Faraday - Hot Plasma Approximation
-        sFARh_typeI % Uncertainty associated to Faraday - Hot Plasma and TypeI Approximation
+        sigma_FARc % Uncertainty associated to Faraday - Cold Plasma Approximation
+        sigma_FARc_typeI % Uncertainty associated to Faraday - Cold Plasma and TypeI Approximation
+        sigma_FARh % Uncertainty associated to Faraday - Hot Plasma Approximation
+        sigma_FARh_typeI % Uncertainty associated to Faraday - Hot Plasma and TypeI Approximation
 
-        sCMc % Uncertainty associated to Cotton Mouton - Cold Plasma Approximation
-        sCMc_typeI % Uncertainty associated to Cotton Mouton - Cold Plasma and TypeI Approximation
-        sCMh % Uncertainty associated to Cotton Mouton - Hot Plasma Approximation
-        sCMh_typeI % Uncertainty associated to Cotton Mouton - Hot Plasma and TypeI Approximation
+        sigma_CMc % Uncertainty associated to Cotton Mouton - Cold Plasma Approximation
+        sigma_CMc_typeI % Uncertainty associated to Cotton Mouton - Cold Plasma and TypeI Approximation
+        sigma_CMh % Uncertainty associated to Cotton Mouton - Hot Plasma Approximation
+        sigma_CMh_typeI % Uncertainty associated to Cotton Mouton - Hot Plasma and TypeI Approximation
 
 
         unit_LID % Unit Measure of Line-Integrated Density
@@ -260,15 +260,15 @@ classdef Diag_InterferometerPolarimeter
             obj.CMh_typeI = obj.ideal.CMh_typeI + CM_noise_abs + CMh_typeI_noise_prop;
 
             % associated uncertainties
-            obj.sFARc = FAR_noise_abs + FARc_noise_prop;
-            obj.sFARc_typeI = FAR_noise_abs + FARc_typeI_noise_prop;
-            obj.sFARh = FAR_noise_abs + FARh_noise_prop;
-            obj.sFARh_typeI = FAR_noise_abs + FARh_typeI_noise_prop;
+            obj.sigma_FARc = FAR_noise_abs + FARc_noise_prop;
+            obj.sigma_FARc_typeI = FAR_noise_abs + FARc_typeI_noise_prop;
+            obj.sigma_FARh = FAR_noise_abs + FARh_noise_prop;
+            obj.sigma_FARh_typeI = FAR_noise_abs + FARh_typeI_noise_prop;
 
-            obj.sCMc = CM_noise_abs + CMc_noise_prop;
-            obj.sCMc_typeI = CM_noise_abs + CMc_typeI_noise_prop;
-            obj.sCMh = CM_noise_abs + CMh_noise_prop;
-            obj.sCMh_typeI = CM_noise_abs + CMh_typeI_noise_prop;
+            obj.sigma_CMc = CM_noise_abs + CMc_noise_prop;
+            obj.sigma_CMc_typeI = CM_noise_abs + CMc_typeI_noise_prop;
+            obj.sigma_CMh = CM_noise_abs + CMh_noise_prop;
+            obj.sigma_CMh_typeI = CM_noise_abs + CMh_typeI_noise_prop;
 
             
             %%

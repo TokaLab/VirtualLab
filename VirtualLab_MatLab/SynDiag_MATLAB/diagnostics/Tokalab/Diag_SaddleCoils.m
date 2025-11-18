@@ -12,6 +12,8 @@ classdef Diag_SaddleCoils
 
         Dpsi % Measured Flux
 
+        sigma_Dpsi % Associated Uncertainty to Measured Flux
+
         unit % Unit Measure
 
         config % contains the various information such as noise, etc.
@@ -42,6 +44,9 @@ classdef Diag_SaddleCoils
 
             % real measurement
             obj.Dpsi = obj.ideal.Dpsi + noise_abs + noise_prop;
+
+            % associated uncertainty
+            obj.sigma_Dpsi = noise_abs + noise_prop;
 
             obj.unit = "Wb/rad";
 

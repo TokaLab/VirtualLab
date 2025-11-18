@@ -7,8 +7,11 @@ classdef Diag_ThomsonScattering
         R % Horixontal coordinate
         Z % Vertical coordinate
 
-        ne % Measured Electron Temperature
-        Te % Measured Electron Density 
+        ne % Measured Electron Density
+        Te % Measured Electron Temperature 
+
+        sigma_ne % Associated Uncertainty to Measured Electron Density
+        sigma_Te % Associated Uncertainty to Measured Electron Temperature
 
         unit_Te % Unit Measure Electron Temperature
         unit_ne % Unit Measure Electron Density
@@ -43,6 +46,10 @@ classdef Diag_ThomsonScattering
             % real measurement
             obj.ne = obj.ideal.ne + noise_abs_ne + noise_prop_ne;
             obj.Te = obj.ideal.Te + noise_abs_Te + noise_prop_Te;
+
+            % associated uncertainties
+            obj.sigma_ne = obj.ideal.ne + noise_abs_ne + noise_prop_ne;
+            obj.sigma_Te = obj.ideal.Te + noise_abs_Te + noise_prop_Te;
 
             obj.unit_Te = "eV";
             obj.unit_ne = "m^{-3}";
