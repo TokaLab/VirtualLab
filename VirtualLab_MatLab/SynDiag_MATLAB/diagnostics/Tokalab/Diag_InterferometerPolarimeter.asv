@@ -260,15 +260,15 @@ classdef Diag_InterferometerPolarimeter
             obj.CMh_typeI = obj.ideal.CMh_typeI + CM_noise_abs + CMh_typeI_noise_prop;
 
             % associated uncertainties
-            obj.sFARc = FAR_noise_abs + FARc_noise_prop;
-            obj.sFARc_typeI = FAR_noise_abs + FARc_typeI_noise_prop;
-            obj.sFARh = FAR_noise_abs + FARh_noise_prop;
-            obj.sFARh_typeI = FAR_noise_abs + FARh_typeI_noise_prop;
+            obj.sFARc = obj.ideal.FARc + FAR_noise_abs + FARc_noise_prop;
+            obj.sFARc_typeI = obj.ideal.FARc_typeI + FAR_noise_abs + FARc_typeI_noise_prop;
+            obj.sFARh = obj.ideal.FARh + FAR_noise_abs + FARh_noise_prop;
+            obj.FARh_typeI = obj.ideal.FARh_typeI + FAR_noise_abs + FARh_typeI_noise_prop;
 
-            obj.sCMc = CM_noise_abs + CMc_noise_prop;
-            obj.sCMc_typeI = CM_noise_abs + CMc_typeI_noise_prop;
-            obj.sCMh = CM_noise_abs + CMh_noise_prop;
-            obj.sCMh_typeI = CM_noise_abs + CMh_typeI_noise_prop;
+            obj.CMc = obj.ideal.CMc + CM_noise_abs + CMc_noise_prop;
+            obj.CMc_typeI = obj.ideal.CMc_typeI + CM_noise_abs + CMc_typeI_noise_prop;
+            obj.CMh = obj.ideal.CMh + CM_noise_abs + CMh_noise_prop;
+            obj.CMh_typeI = obj.ideal.CMh_typeI + CM_noise_abs + CMh_typeI_noise_prop;
 
             
             %%

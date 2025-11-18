@@ -2,7 +2,12 @@ classdef TokaPlot
 
     properties
 
-
+        field
+        fig
+        config
+        equi
+        diag
+        meas
 
     end
 
