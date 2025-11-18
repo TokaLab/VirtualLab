@@ -54,6 +54,10 @@ IntPol = IntPol.measure(equi);
 
 %%
 
+clearvars fig fig2 fig3
+close all
+clc
+
 TP = TokaPlot;
 
 fig.config.psi_lines = [0.88 0.9 0.99 1 1.01 1.1];
@@ -63,3 +67,14 @@ fig.fig = figure();
 
 
 fig = TP.PlotField(equi,"ne", fig.fig, fig.config);
+
+fig2.fig = figure();
+fig2.config.plot_wall = 1;
+
+fig2 = TP.PlotDiagnostics(equi,FluxLoops, fig2.fig, fig2.config);
+
+fig3.fig = figure();
+fig3.config.subplot = [1 3 1];
+fig3.config.axis_label = "ch";
+
+fig3 = TP.PlotMeasurements(IntPol, "FARc", fig3.fig, fig3.config);

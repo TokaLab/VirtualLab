@@ -24,7 +24,9 @@ classdef Diag_InterferometerPolarimeter
         CMh_typeI % Measured Cotton Mouton - Hot Plasma and TypeI Approximation
 
         unit_LID % Unit Measure of Line-Integrated Density
-
+        unit_FAR % Unit Measure of Faraday Rotation
+        unit_CM % Unit Measure of Cotton-Mouton phase shift
+     
         config % contains the various information such as noise, etc.
 
         ideal % contains the measurements without the noise
@@ -239,6 +241,11 @@ classdef Diag_InterferometerPolarimeter
             obj.CMh = obj.ideal.CMh + CM_noise_abs + CMh_noise_prop;
             obj.CMh_typeI = obj.ideal.CMh_typeI + CM_noise_abs + CMh_typeI_noise_prop;
 
+            %%
+
+            obj.unit_FAR = "rad";
+            obj.unit_CM = "rad";
+            
         end
 
         function obj = Upload(obj,configuration)

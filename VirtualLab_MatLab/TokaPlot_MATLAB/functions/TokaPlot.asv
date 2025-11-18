@@ -195,15 +195,15 @@ classdef TokaPlot
                 Unit = diag.unit;
 
             elseif isa(diag, "Diag_ThomsonScattering")
-                titlep = "Thomson Scattering " + meas;
+                titlep = "Thomson Scattering";
                 SpecificColor = "#D95319";
                 Unit = diag.("unit_" + meas);
 
             elseif isa(diag, "Diag_InterferometerPolarimeter")
 
-                titlep = extractBefore(meas, 4);
+                titlep = "Interferometer-Polarimeter";
                 SpecificColor = "#A2142F";
-                Unit = diag.("unit_" + extractBefore(meas, 4));
+                Unit = diag.("unit_" + extractbefore(meas, 4));
             end
 
 
