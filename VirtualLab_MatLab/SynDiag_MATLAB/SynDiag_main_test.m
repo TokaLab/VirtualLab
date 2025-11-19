@@ -29,3 +29,8 @@ TS = TS.measure(equi);
 IntPol = Diag_InterferometerPolarimeter();
 IntPol = IntPol.Upload(1);
 IntPol = IntPol.measure(equi);
+
+Bolo = Diag_Bolo();
+Bolo  = Bolo.Upload(1);
+Bolo = Bolo.measure(equi);
+

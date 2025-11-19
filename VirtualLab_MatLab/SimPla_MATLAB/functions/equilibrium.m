@@ -23,6 +23,7 @@ classdef equilibrium
         const   % constant structure
         MHD_prof % class used to evaluate pressure and F2 from psi
         kin_prof % class used to evaluate kinetic profiles (ne, ni, Te, Ti)
+        Rad_prof % class used to evaluate Radiation profile
         profiles_1D % contains the kinetic profiles vs psi_n (inside the separatrix)
 
 
@@ -44,12 +45,14 @@ classdef equilibrium
 
         ne % electron density
         ni % ion density
-
+        Zeff % Zeff
         Te % electron temperature
         Ti % ion temperature
 
         pe % electron pressure
         pi % ion pressure
+
+        Rad % Plasma emissivity    
 
         Opoint % O-point
         Xpoint % X-point
@@ -131,6 +134,9 @@ classdef equilibrium
 
             % import kinetic profiles
             obj.kin_prof = profile_kinetic;
+              
+            % import rad profile
+            obj.Rad_prof = profile_radiation;
 
         end
 
@@ -837,6 +843,11 @@ classdef equilibrium
             obj.Ti = Kinetics.Ti;
             obj.pe = Kinetics.pe;
             obj.pi = Kinetics.pi;
+
+
+            Radiation = obj.Rad_prof.evaluate_profiles(obj);
+
+            obj.Rad= Radiation.Rad;
             
         end
         

@@ -70,4 +70,6 @@ IntPol = IntPol.Upload(1);
 IntPol = IntPol.measure(equi);
 figure(7); clf; IntPol.plot_StandAlone;
 
-
+Bolo = Diag_Bolo();
+Bolo  = Bolo.Upload(1);
+Bolo = Bolo.measure(equi);
