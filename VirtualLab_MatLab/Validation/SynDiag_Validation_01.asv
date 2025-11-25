@@ -218,12 +218,11 @@ TS = TS.measure(equi);
 IntPol = IntPol.measure(equi);
 Bolo = Bolo.measure(equi);
 
-res = 1e-3; % target residual. In this case we expect an error lower that 0.1%
+res = 1e-3; % target residual. In 
 
 % cont is a vector that quantifies how much the expected value is different
 % from the measurement. If it is equal to 1 for all the diagnostics, than
-% the noisy measurements are validated
-
+% the measurements with the absolute noise are validated
 cont =  mean([mean((PickUp.B - (PickUp.ideal.B + PickUp.sigma_B))./(PickUp.ideal.B) < res)...
     mean((FluxLoops.psi - (FluxLoops.ideal.psi + FluxLoops.sigma_psi))./(FluxLoops.ideal.psi)<res)...
     mean((SaddleCoils.Dpsi - (SaddleCoils.ideal.Dpsi + SaddleCoils.sigma_Dpsi))./(SaddleCoils.ideal.Dpsi)<res)... 
