@@ -5,7 +5,7 @@ clear; clc;
 machine = "Tokalab";
 paths = SynDiag_init(machine);
 
-addpath equilibrium\
+addpath("equilibrium\")
 load("Tokalab_equi_scenario1.mat")
 
 % run your diagnostics

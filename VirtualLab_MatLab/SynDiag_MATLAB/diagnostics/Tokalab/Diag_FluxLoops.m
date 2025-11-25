@@ -9,6 +9,8 @@ classdef Diag_FluxLoops
 
         psi % Measured Flux
 
+        sigma_psi % Associated uncertainty for Measured Flux
+
         unit % Unit Measure
 
         config % contains the various information such as noise, etc.
@@ -38,6 +40,9 @@ classdef Diag_FluxLoops
 
             % real measurement
             obj.psi = obj.ideal.psi + noise_abs + noise_prop;
+
+            %associated uncertainty
+            obj.sigma_psi = noise_abs + noise_prop;
 
             obj.unit = "Wb/rad";
 

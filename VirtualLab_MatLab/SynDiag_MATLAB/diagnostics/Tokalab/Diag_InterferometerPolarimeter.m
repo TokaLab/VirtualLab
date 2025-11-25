@@ -23,8 +23,24 @@ classdef Diag_InterferometerPolarimeter
         CMh % Measured Cotton Mouton - Hot Plasma Approximation
         CMh_typeI % Measured Cotton Mouton - Hot Plasma and TypeI Approximation
 
-        unit_LID % Unit Measure of Line-Integrated Density
+        sigma_LIDc % Uncertainty associated to Line-Integrated Density (cold-plasma approximation)
+        sigma_LIDh % Uncertainty associated to Line-Integrated Density (hot-plasma approximation)
 
+        sigma_FARc % Uncertainty associated to Faraday - Cold Plasma Approximation
+        sigma_FARc_typeI % Uncertainty associated to Faraday - Cold Plasma and TypeI Approximation
+        sigma_FARh % Uncertainty associated to Faraday - Hot Plasma Approximation
+        sigma_FARh_typeI % Uncertainty associated to Faraday - Hot Plasma and TypeI Approximation
+
+        sigma_CMc % Uncertainty associated to Cotton Mouton - Cold Plasma Approximation
+        sigma_CMc_typeI % Uncertainty associated to Cotton Mouton - Cold Plasma and TypeI Approximation
+        sigma_CMh % Uncertainty associated to Cotton Mouton - Hot Plasma Approximation
+        sigma_CMh_typeI % Uncertainty associated to Cotton Mouton - Hot Plasma and TypeI Approximation
+
+
+        unit_LID % Unit Measure of Line-Integrated Density
+        unit_FAR % Unit Measure of Faraday Rotation
+        unit_CM % Unit Measure of Cotton-Mouton phase shift
+     
         config % contains the various information such as noise, etc.
 
         ideal % contains the measurements without the noise
@@ -90,6 +106,10 @@ classdef Diag_InterferometerPolarimeter
             % real measurement
             obj.LIDc = obj.ideal.LIDc + noise_abs + noise_prop_c;
             obj.LIDh = obj.ideal.LIDh + noise_abs + noise_prop_h;
+
+            % associated uncertainty
+            obj.sigma_LIDc = noise_abs + noise_prop_c;
+            obj.sigma_LIDh = noise_abs + noise_prop_h;
 
             % unit measure
             obj.unit_LID = "m^{-2}";
@@ -239,6 +259,23 @@ classdef Diag_InterferometerPolarimeter
             obj.CMh = obj.ideal.CMh + CM_noise_abs + CMh_noise_prop;
             obj.CMh_typeI = obj.ideal.CMh_typeI + CM_noise_abs + CMh_typeI_noise_prop;
 
+            % associated uncertainties
+            obj.sigma_FARc = FAR_noise_abs + FARc_noise_prop;
+            obj.sigma_FARc_typeI = FAR_noise_abs + FARc_typeI_noise_prop;
+            obj.sigma_FARh = FAR_noise_abs + FARh_noise_prop;
+            obj.sigma_FARh_typeI = FAR_noise_abs + FARh_typeI_noise_prop;
+
+            obj.sigma_CMc = CM_noise_abs + CMc_noise_prop;
+            obj.sigma_CMc_typeI = CM_noise_abs + CMc_typeI_noise_prop;
+            obj.sigma_CMh = CM_noise_abs + CMh_noise_prop;
+            obj.sigma_CMh_typeI = CM_noise_abs + CMh_typeI_noise_prop;
+
+            
+            %%
+
+            obj.unit_FAR = "rad";
+            obj.unit_CM = "rad";
+            
         end
 
         function obj = Upload(obj,configuration)
