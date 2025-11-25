@@ -64,7 +64,7 @@ TP = TokaPlot;
 % fig.config.psi_lines = [0.88 0.9 0.99 1 1.01 1.1];
 figura.config.subplot = [1 1 1];
 figura.config.plot_wall = 0;
-figura1 = figure();
+figura2 = figure();
 figura.config.hold = "on";
 
 
@@ -73,8 +73,8 @@ figura.config.hold = "on";
 figure2.config.plot_wall = 1;
 % figure2.config.hold = "on";
 
-figura1 = TP.PlotField(equi,"ne", figura1, figura.config);
-figura1 = TP.PlotDiagnostics(equi,IntPol, figura1, figure2.config);
+figura2 = TP.PlotField(equi,"ne", figura2, figura.config);
+figura2 = TP.PlotDiagnostics(equi,IntPol, figura2, figure2.config);
 
 
 % fig3 = figure();
