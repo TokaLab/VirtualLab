@@ -4,11 +4,11 @@ classdef TokaPlot
 
         field % plasma field to plot
 
-        fig % figure 
+        fig % figure
 
         config % a structure containing plot information and preferences
 
-        equi % structure 
+        equi % structure
 
         diag % diagnostic to plot
 
@@ -22,12 +22,12 @@ classdef TokaPlot
 
         function fig = PlotField(~,equi,field,fig,config)
 
-           
+
             if nargin < 2
                 disp("missing input")
                 return
             elseif nargin == 2
-                field = "ne"; 
+                field = "ne";
                 fig = figure();
                 config = struct;
             elseif nargin == 3
@@ -71,6 +71,11 @@ classdef TokaPlot
             end
 
             % complete the plot
+            if isfield(config, "hold") == 1 && config.hold == "on"
+                hold on
+            else 
+                hold off
+            end
             title(field)
             colorbar()
             colormap("jet")
@@ -85,7 +90,7 @@ classdef TokaPlot
 
         function fig = PlotDiagnostics(~,equi,diag,fig,config)
 
-            
+
             if nargin < 2
                 disp("missing input")
                 return
@@ -93,7 +98,7 @@ classdef TokaPlot
                 fig = figure();
                 config = struct;
             elseif nargin == 4
-                fig = figure();
+                
                 config = struct;
             end
 
@@ -151,6 +156,11 @@ classdef TokaPlot
                 hold on
             end
 
+            if isfield(config, "hold") == 1 && config.hold == "on"
+                hold on
+            else 
+                hold off
+            end
             axis equal
             xlim([min(x1) max(x1)])
             ylim([min(y1) max(y1)])
@@ -226,11 +236,11 @@ classdef TokaPlot
 
             elseif isa(diag, "Diag_InterferometerPolarimeter")
                 auxiliary_string_for_name = regexp(meas, '[A-Z]', 'match'); % procedure to extract the desiderd string
-                auxiliary_string_for_name = [auxiliary_string_for_name{:}];            
+                auxiliary_string_for_name = [auxiliary_string_for_name{:}];
                 if auxiliary_string_for_name(end) == "I"
                     auxiliary_string_for_name = auxiliary_string_for_name(1:end-1);
                 end
-                
+
                 titlep = auxiliary_string_for_name;
                 SpecificColor = "#A2142F";
                 Unit = diag.("unit_" + auxiliary_string_for_name);
@@ -247,7 +257,11 @@ classdef TokaPlot
             end
 
             % complete the plot
-            
+            if isfield(config, "hold") == 1 && config.hold == "on"
+                hold on
+            else 
+                hold off
+            end
             title(titlep)
             ylabel("[" + Unit +"]")
             xlabel(labelx)

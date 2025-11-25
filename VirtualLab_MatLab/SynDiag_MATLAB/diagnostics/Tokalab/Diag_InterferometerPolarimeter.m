@@ -23,8 +23,8 @@ classdef Diag_InterferometerPolarimeter
         CMh % Measured Cotton Mouton - Hot Plasma Approximation
         CMh_typeI % Measured Cotton Mouton - Hot Plasma and TypeI Approximation
 
-        sLIDc % Uncertainty associated to Line-Integrated Density (cold-plasma approximation)
-        sLIDh % Uncertainty associated to Line-Integrated Density (hot-plasma approximation)
+        sigma_LIDc % Uncertainty associated to Line-Integrated Density (cold-plasma approximation)
+        sigma_LIDh % Uncertainty associated to Line-Integrated Density (hot-plasma approximation)
 
         sigma_FARc % Uncertainty associated to Faraday - Cold Plasma Approximation
         sigma_FARc_typeI % Uncertainty associated to Faraday - Cold Plasma and TypeI Approximation
@@ -108,8 +108,8 @@ classdef Diag_InterferometerPolarimeter
             obj.LIDh = obj.ideal.LIDh + noise_abs + noise_prop_h;
 
             % associated uncertainty
-            obj.sLIDc = noise_abs + noise_prop_c;
-            obj.sLIDh = noise_abs + noise_prop_h;
+            obj.sigma_LIDc = noise_abs + noise_prop_c;
+            obj.sigma_LIDh = noise_abs + noise_prop_h;
 
             % unit measure
             obj.unit_LID = "m^{-2}";
