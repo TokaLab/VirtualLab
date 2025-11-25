@@ -6,9 +6,8 @@
 % -Noise proportional
 % -Noise proportional + Noise absolute
 %
-% A first check can be done just by comparing the output (figure 1) with
-% the figure 1 in the document Validation_checks.docx (or
-% Validation_checks.pdf)
+% A final validation test is made by printing the unit of measurements of
+% the quantities of interest.
 %
 % Final validations are done by SimPla module responsibles:
 % Riccardo Rossi        (r.rossi@ing.uniroma2.it)
