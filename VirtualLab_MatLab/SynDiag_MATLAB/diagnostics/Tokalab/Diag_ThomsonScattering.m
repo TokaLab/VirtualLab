@@ -48,8 +48,8 @@ classdef Diag_ThomsonScattering
             obj.Te = obj.ideal.Te + noise_abs_Te + noise_prop_Te;
 
             % associated uncertainties
-            obj.sigma_ne = obj.ideal.ne + noise_abs_ne + noise_prop_ne;
-            obj.sigma_Te = obj.ideal.Te + noise_abs_Te + noise_prop_Te;
+            obj.sigma_ne = noise_abs_ne + noise_prop_ne;
+            obj.sigma_Te = noise_abs_Te + noise_prop_Te;
 
             obj.unit_Te = "eV";
             obj.unit_ne = "m^{-3}";

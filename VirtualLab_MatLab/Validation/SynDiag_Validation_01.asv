@@ -94,6 +94,39 @@ if cont == 1
     disp("Ideal Measurements Validated")
 end
 
+% figure(1)
+% subplot(2,4,1)
+% plot(PickUp.B, '.-b')
+% hold on
+%
+% subplot(2,4,2)
+% plot(FluxLoops.psi, '.-b')
+% hold on
+%
+% subplot(2,4,3)
+% plot(SaddleCoils.Dpsi, '.-b')
+% hold on
+%
+% subplot(2,4,4)
+% plot(TS.ne, '.-b')
+% hold on
+%
+% subplot(2,4,5)
+% plot(TS.Te, '.-b')
+% hold on
+%
+% subplot(2,4,6)
+% plot(IntPol.LIDh, '.-b')
+% hold on
+%
+% subplot(2,4,7)
+% plot(IntPol.FARh, '.-b')
+% hold on
+%
+% subplot(2,4,8)
+% plot(IntPol.CMh, '.-b')
+% hold on
+
 %% Noise Absolute Measurements
 
 % diagnostics
@@ -223,11 +256,6 @@ end
 
 %% Verify Unit of measurements
 
-disp(PickUp.unit)
-disp(FluxLoops.unit)
-disp(SaddleCoils.unit)
-disp(TS.unit_ne)
-disp(TS.unit_Te)
-disp(IntPol.unit_LID)
-disp(IntPol.unit_FAR)
-disp(IntPol.unit_CM)
+measurements = ["B"; "psi"; "Dpsi"; "ne"; "Te"; "LIDh"; "FARh"; "CMh"; "LIDc"; "FARc"; "CMc"; "FARh_typeI"; "CMh_typeI"; "FARc_typeI"; "CMc_typeI"];
+
+disp(PickUp.("unit_"+measurem))
