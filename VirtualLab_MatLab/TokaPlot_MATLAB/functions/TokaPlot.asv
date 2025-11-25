@@ -153,21 +153,24 @@ classdef TokaPlot
 
             elseif isa(diag, "Diag_Bolo")
 
-               
-                x = [min([diag.R_in' diag.R_end']) max([diag.R_in' diag.R_end'])];
-                y = [min([diag.Z_in' diag.Z_end']) max([diag.Z_in' diag.Z_end'])];
+
+                R = [diag.R_in' diag.R_end'];
+                Z = [diag.Z_in' diag.Z_end'];
+
+                x = [min(R) max(R)];
+                y = [min(Z) max(Z)];
 
                 [Z, ~, iZ] = unique(diag.Z_in);
 
-                groups = arrayfun(@(k) find(iZ == k), 1:numel(Z), 'UniformOutput', false);
+                gruppi = arrayfun(@(k) find(iZ == k), 1:numel(Z), 'UniformOutput', false);
 
-                RGB = get(groot,"FactoryAxesColorOrder");
-                
-                for i = 1: length(groups)
-
-                    plot([diag.R_in(groups{i}) diag.R_end(groups{i})]', [diag.Z_in(groups{i}) diag.Z_end(groups{i})]', '-', 'LineWidth', 2, 'MarkerSize', 16, 'Color', RGB(i,:))
+                for i = 1: length(gruppi)
+                    R_in(:,i) = ;
+                    Z_in(:,i) = diag.Z_in(gruppi{i});
+                    R_end(:,i) = diag.R_end(gruppi{i});
+                    Z_end(:,i) = diag.Z_end(gruppi{i});
                 end
-               
+                plot([diag.R_in(gruppi{i}); R_end(:)], [Z_in(:); Z_end(:)], '-', 'LineWidth', 2, 'MarkerSize', 16)
                 title("Bolometers")
             end
 
@@ -211,7 +214,7 @@ classdef TokaPlot
                 if isa(diag,"Diag_SaddleCoils")
                     R = (diag.R2 + diag.R1)./2;
                     labelx = "R [m]";
-                elseif isa(diag,"Diag_InterferometerPolarimeter") || isa(diag,"Diag_Bolo") 
+                elseif isa(diag,"Diag_InterferometerPolarimeter")
                     disp("For this diagnostic only the ch x label option is available")
                     R = 1 : length(diag.R_in);
                     labelx = "ch";
@@ -259,11 +262,6 @@ classdef TokaPlot
                 titlep = auxiliary_string_for_name;
                 SpecificColor = "#A2142F";
                 Unit = diag.("unit_" + auxiliary_string_for_name);
-
-                elseif isa(diag, "Diag_Bolo")
-                    titlep = "Bolometers";
-                    SpecificColor = "#A2142F";
-                    Unit = diag.unit;
             end
 
 

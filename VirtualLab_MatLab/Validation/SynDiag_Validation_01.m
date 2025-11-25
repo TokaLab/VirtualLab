@@ -65,6 +65,9 @@ TS = TS.Upload(1);
 IntPol = Diag_InterferometerPolarimeter();
 IntPol = IntPol.Upload(1);
 
+Bolo = Diag_Bolo();
+Bolo = Bolo.Upload(1);
+
 %
 
 PickUp = PickUp.measure(equi);
@@ -72,6 +75,7 @@ FluxLoops = FluxLoops.measure(equi);
 SaddleCoils = SaddleCoils.measure(equi);
 TS = TS.measure(equi);
 IntPol = IntPol.measure(equi);
+Bolo = Bolo.measure(equi);
 
 cont =  mean([mean(PickUp.B == (PickUp.ideal.B + PickUp.sigma_B))...
     mean(FluxLoops.psi == (FluxLoops.ideal.psi + FluxLoops.sigma_psi))...
@@ -87,7 +91,8 @@ cont =  mean([mean(PickUp.B == (PickUp.ideal.B + PickUp.sigma_B))...
     mean(IntPol.FARh_typeI == (IntPol.ideal.FARh_typeI + IntPol.sigma_FARh_typeI))...
     mean(IntPol.CMh_typeI == (IntPol.ideal.CMh_typeI + IntPol.sigma_CMh_typeI))...
     mean(IntPol.FARc_typeI == (IntPol.ideal.FARc_typeI + IntPol.sigma_FARc_typeI))...
-    mean(IntPol.CMc_typeI == (IntPol.ideal.CMc_typeI + IntPol.sigma_CMc_typeI))]);
+    mean(IntPol.CMc_typeI == (IntPol.ideal.CMc_typeI + IntPol.sigma_CMc_typeI))...
+    mean(Bolo.prj == (Bolo.ideal.prj + Bolo.sigma_prj))]);
 
 if cont == 1
     disp("Ideal Measurements Validated")
@@ -124,11 +129,14 @@ IntPol.config.LID_noise_random_absolute_intensity = 1e19;
 IntPol.config.FAR_noise_random_absolute_intensity = 5e-3;
 IntPol.config.CM_noise_random_absolute_intensity = 5e-3;
 
+Bolo.config.prj_noise_random_absolute_intensity = 100;
+
 PickUp = PickUp.measure(equi);
 FluxLoops = FluxLoops.measure(equi);
 SaddleCoils = SaddleCoils.measure(equi);
 TS = TS.measure(equi);
 IntPol = IntPol.measure(equi);
+Bolo = Bolo.measure(equi);
 
 cont =  mean([mean(PickUp.B == (PickUp.ideal.B + PickUp.sigma_B))...
     mean(FluxLoops.psi == (FluxLoops.ideal.psi + FluxLoops.sigma_psi))...
@@ -144,7 +152,8 @@ cont =  mean([mean(PickUp.B == (PickUp.ideal.B + PickUp.sigma_B))...
     mean(IntPol.FARh_typeI == (IntPol.ideal.FARh_typeI + IntPol.sigma_FARh_typeI))...
     mean(IntPol.CMh_typeI == (IntPol.ideal.CMh_typeI + IntPol.sigma_CMh_typeI))...
     mean(IntPol.FARc_typeI == (IntPol.ideal.FARc_typeI + IntPol.sigma_FARc_typeI))...
-    mean(IntPol.CMc_typeI == (IntPol.ideal.CMc_typeI + IntPol.sigma_CMc_typeI))]);
+    mean(IntPol.CMc_typeI == (IntPol.ideal.CMc_typeI + IntPol.sigma_CMc_typeI))...
+    mean(Bolo.prj == (Bolo.ideal.prj + Bolo.sigma_prj))]);
 
 if cont == 1
     disp("Noise Absolute Measurements Validated")
@@ -193,11 +202,15 @@ IntPol.config.LID_noise_random_proportional_intensity = 5e-2;
 IntPol.config.FAR_noise_random_proportional_intensity = 10e-2;
 IntPol.config.CM_noise_random_proportional_intensity = 10e-2;
 
+Bolo.config.prj_noise_random_absolute_intensity = 100;
+Bolo.config.prj_noise_random_relative_intensity = 1e-2;
+
 PickUp = PickUp.measure(equi);
 FluxLoops = FluxLoops.measure(equi);
 SaddleCoils = SaddleCoils.measure(equi);
 TS = TS.measure(equi);
 IntPol = IntPol.measure(equi);
+Bolo = Bolo.measure(equi);
 
 res = 1e-3;
 cont =  mean([mean((PickUp.B - (PickUp.ideal.B + PickUp.sigma_B))./(PickUp.ideal.B) < res)...
@@ -214,7 +227,8 @@ cont =  mean([mean((PickUp.B - (PickUp.ideal.B + PickUp.sigma_B))./(PickUp.ideal
     mean((IntPol.FARh_typeI - (IntPol.ideal.FARh_typeI + IntPol.sigma_FARh_typeI))./(IntPol.ideal.FARh_typeI)<res)...
     mean((IntPol.CMh_typeI - (IntPol.ideal.CMh_typeI + IntPol.sigma_CMh_typeI))./(IntPol.ideal.CMh_typeI)<res)...
     mean((IntPol.FARc_typeI - (IntPol.ideal.FARc_typeI + IntPol.sigma_FARc_typeI))./(IntPol.ideal.FARc_typeI)<res)...
-    mean((IntPol.CMc_typeI - (IntPol.ideal.CMc_typeI + IntPol.sigma_CMc_typeI))./(IntPol.ideal.CMc_typeI)<res)]);
+    mean((IntPol.CMc_typeI - (IntPol.ideal.CMc_typeI + IntPol.sigma_CMc_typeI))./(IntPol.ideal.CMc_typeI)<res)...
+    mean(Bolo.prj == (Bolo.ideal.prj + Bolo.sigma_prj))]);
 
 if cont == 1
     disp("Noise Absolute + Proportional Measurements Validated")
@@ -230,3 +244,4 @@ disp(TS.unit_Te)
 disp(IntPol.unit_LID)
 disp(IntPol.unit_FAR)
 disp(IntPol.unit_CM)
+disp(Bolo.unit)

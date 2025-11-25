@@ -53,10 +53,11 @@ IntPol = Diag_InterferometerPolarimeter();
 IntPol = IntPol.Upload(1);
 IntPol = IntPol.measure(equi);
 
-%%
+Bolo = Diag_Bolo();
+Bolo = Bolo.Upload(1);
+Bolo = Bolo.measure(equi);
 
-clearvars fig fig2 fig3 figure2 figura1 figure
-close all
+%%
 clc
 
 TP = TokaPlot;
@@ -73,23 +74,9 @@ figura.config.hold = "on";
 figure2.config.plot_wall = 1;
 % figure2.config.hold = "on";
 
-figura2 = TP.PlotField(equi,"ne", figura2, figura.config);
-figura2 = TP.PlotDiagnostics(equi,IntPol, figura2, figure2.config);
+% figura2 = TP.PlotField(equi,"ne", figura2, figura.config);
+figura2 = TP.PlotDiagnostics(equi,Bolo, figura2, figure2.config);
 
+clf
 
-% fig3 = figure();
-% figure3.config.subplot = [1 3 1];
-% figure3.config.axis_label = "ch";
-% figure3.config.errorplot = 0;
-% figure3.config.hold = "off";
-% 
-% figure4.config.subplot = [1 3 1];
-% figure4.config.axis_label = "ch";
-% figure4.config.errorplot = 0;
-% figure4.config.hold = "on";
-% 
-% fig3 = TP.PlotDiagnostics(equi,TS, fig3, figure2.config);
-% fig3 = TP.PlotDiagnostics(equi,IntPol, fig3, figure2.config);
-% 
-% 
-% 
+figura2 = TP.PlotMeasurements(Bolo,"prj",figura2,figure2.config)

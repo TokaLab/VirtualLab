@@ -8,9 +8,12 @@ classdef Diag_Bolo
         R_end
         Weights % Weight Matrix
         W
+
         prj % Measured Intensity 
 
-        unit_prj % Unit Measure Electron Temperature
+        sigma_prj % Associated uncertainty to measured Intensity
+
+        unit % Unit Measure Electron Temperature
         
         config % contains the various information such as noise, etc.
 
@@ -32,9 +35,12 @@ classdef Diag_Bolo
             % noise proportional
             noise_prop_prj = normrnd(0,abs(obj.ideal.prj).*obj.config.prj_noise_random_proportional_intensity);
                       % real measurement
+                      
             obj.prj = obj.ideal.prj + noise_abs_prj + noise_prop_prj;
-            obj.unit_prj = "W/m^2";
+            
+            obj.unit = "W/m^2";
            
+            obj.sigma_prj = noise_abs_prj + noise_prop_prj;
 
         end
 
