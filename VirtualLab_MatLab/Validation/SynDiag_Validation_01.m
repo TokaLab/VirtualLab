@@ -9,7 +9,7 @@
 % A final validation test is made by printing the unit of measurements of
 % the quantities of interest.
 %
-% Final validations are done by SimPla module responsibles:
+% Final validations are done by SynDiag module responsibles:
 % Riccardo Rossi        (r.rossi@ing.uniroma2.it)
 % Simone Kaldas         (simone.kaldas@students.uniroma2.eu)
 % Ivan Wyss             (ivan.wyss@uniroma2.it)
