@@ -60,9 +60,9 @@ clc
 
 TP = TokaPlot;
 
-fig.config.psi_lines = [0.88 0.9 0.99 1 1.01 1.1];
-fig.config.subplot = [2 2 1];
-fig.config.plot_wall = 1;
+% fig.config.psi_lines = [0.88 0.9 0.99 1 1.01 1.1];
+fig.config.subplot = [1 1 1];
+fig.config.plot_wall = 0;
 fig.fig = figure();
 
 
@@ -71,10 +71,11 @@ fig = TP.PlotField(equi,"ne", fig.fig, fig.config);
 fig2.fig = figure();
 fig2.config.plot_wall = 1;
 
-fig2 = TP.PlotDiagnostics(equi,FluxLoops, fig2.fig, fig2.config);
+fig2 = TP.PlotDiagnostics(equi,TS, fig2.fig, fig2.config);
 
 fig3.fig = figure();
 fig3.config.subplot = [1 3 1];
 fig3.config.axis_label = "ch";
+fig3.config.errorplot = 1;
 
-fig3 = TP.PlotMeasurements(IntPol, "FARc", fig3.fig, fig3.config);
+fig3 = TP.PlotMeasurements(IntPol, "CMh", fig3.fig, fig3.config);

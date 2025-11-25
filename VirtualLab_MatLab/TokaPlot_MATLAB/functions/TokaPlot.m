@@ -2,48 +2,56 @@ classdef TokaPlot
 
     properties
 
-        field
-        fig
-        config
-        equi
-        diag
-        meas
+        field % plasma field to plot
+
+        fig % figure 
+
+        config % a structure containing plot information and preferences
+
+        equi % structure 
+
+        diag % diagnostic to plot
+
+        meas % measurement to plot
 
     end
 
     methods
 
-        %% Fields
+        %% Fields Plotting
 
         function fig = PlotField(~,equi,field,fig,config)
 
-            disp(nargin)
-
+           
             if nargin < 2
                 disp("missing input")
                 return
             elseif nargin == 2
-                field = "ne";
-                fig = figure()
+                field = "ne"; 
+                fig = figure();
                 config = struct;
             elseif nargin == 3
-                fig = figure()
+                fig = figure();
                 config = struct;
             elseif nargin == 4
                 config = struct;
             end
 
-            %%
+            %% Get the subplot information and set if not specified
 
             if isfield(config, "subplot")==0
                 config.subplot = [1 1 1];
             end
 
-            figure(fig)
+            %% Plot
 
+            figure(fig)
             subplot(config.subplot(1),config.subplot(2), config.subplot(3))
+
             contourf(equi.geo.grid.Rg,equi.geo.grid.Zg,equi.(field).*equi.geo.wall.inside, 50, "LineStyle", "none")
             hold on
+
+            % plot walls, if asked
 
             if isfield(config, "plot_wall")==1 && config.plot_wall == 1
 
@@ -55,10 +63,14 @@ classdef TokaPlot
                 plot([equi.geo.wall.R(1) equi.geo.wall.R(end) equi.geo.wall.R(end) equi.geo.wall.R(1) equi.geo.wall.R(1)], [equi.geo.wall.Z(1) equi.geo.wall.Z(1) equi.geo.wall.Z(end) equi.geo.wall.Z(end) equi.geo.wall.Z(1)], '-k', 'LineWidth', 1, "HandleVisibility","off")
 
             end
+
+            % plot magnetic flux lines, if asked
+
             if isfield(config, "psi_lines")==1
                 contour(equi.geo.grid.Rg, equi.geo.grid.Zg, equi.psi_n, config.psi_lines, '-w', 'LineWidth', 1.5)
             end
 
+            % complete the plot
             title(field)
             colorbar()
             colormap("jet")
@@ -69,31 +81,34 @@ classdef TokaPlot
         end
 
 
-        %% Diagnostics
+        %% Plot Diagnostics
 
         function fig = PlotDiagnostics(~,equi,diag,fig,config)
 
-            disp(nargin)
-
+            
             if nargin < 2
                 disp("missing input")
                 return
             elseif nargin == 3
-                fig = figure()
+                fig = figure();
                 config = struct;
             elseif nargin == 4
-                fig = figure()
+                fig = figure();
                 config = struct;
             end
 
-            %%
+            %% Get the subplot information and set if not specified
 
             if isfield(config, "subplot")==0
                 config.subplot = [1 1 1];
             end
 
+            %% Plot
+
             figure(fig)
             subplot(config.subplot(1),config.subplot(2), config.subplot(3))
+
+            % plot walls, if asked
 
             x1 = [equi.geo.R(1) equi.geo.R(end) equi.geo.R(end) equi.geo.R(1) equi.geo.R(1)];
             y1 = [equi.geo.Z(1) equi.geo.Z(1) equi.geo.Z(end) equi.geo.Z(end) equi.geo.Z(1)];
@@ -125,7 +140,6 @@ classdef TokaPlot
                 title("Saddle Loops")
                 hold on
 
-
             elseif isa(diag, "Diag_ThomsonScattering")
                 plot(diag.R, diag.Z, '.', 'MarkerSize', 12, 'Color', 	"#D95319")
                 title("Thomson Scattering")
@@ -146,21 +160,27 @@ classdef TokaPlot
 
         end
 
+        %% Plot Measurements
+
         function fig = PlotMeasurements(~,diag,meas,fig,config)
 
             if nargin < 3
                 disp("missing input")
                 return
             elseif nargin == 3
-                fig = figure()
+                fig = figure();
                 config = struct;
             elseif nargin == 4
                 config = struct;
             end
 
+            %% Get the subplot information and set if not specified
+
             if isfield(config, "subplot")==0
                 config.subplot = [1 1 1];
             end
+
+            %% Get the x axis label information
 
             if isfield(config, "axis_label") == 1 && config.axis_label == "R"
                 if isa(diag,"Diag_SaddleCoils")
@@ -168,33 +188,33 @@ classdef TokaPlot
                     labelx = "R [m]";
                 elseif isa(diag,"Diag_InterferometerPolarimeter")
                     disp("For this diagnostic only the ch x label option is available")
-                    return
+                    R = 1 : length(diag.R_in);
+                    labelx = "ch";
                 else
                     R = diag.R;
-                labelx = "R [m]";
+                    labelx = "R [m]";
                 end
             else
                 R = 1 : length(diag.(meas));
                 labelx = "ch";
             end
 
+            %% Plot
+
             figure(fig)
             subplot(config.subplot(1),config.subplot(2), config.subplot(3))
 
             if isa(diag, "Diag_PickUpCoils")
-
-                titlep = "Pick-Up Coils";
-                SpecificColor = "b";
-                Unit = diag.unit;
+                titlep = "Pick-Up Coils"; % panel title
+                SpecificColor = "b"; % color plot
+                Unit = diag.unit; % unit of measurement for y axis label
 
             elseif isa(diag, "Diag_FluxLoops")
-
                 titlep = "Flux Loops";
                 SpecificColor = "#77AC30";
                 Unit = diag.unit;
 
             elseif isa(diag, "Diag_SaddleCoils")
-
                 titlep = "Saddle Loops";
                 SpecificColor = "r";
                 Unit = diag.unit;
@@ -205,17 +225,30 @@ classdef TokaPlot
                 Unit = diag.("unit_" + meas);
 
             elseif isa(diag, "Diag_InterferometerPolarimeter")
-
-                titlep = extractBefore(meas, 4);
+                auxiliary_string_for_name = regexp(meas, '[A-Z]', 'match'); % procedure to extract the desiderd string
+                auxiliary_string_for_name = [auxiliary_string_for_name{:}];            
+                if auxiliary_string_for_name(end) == "I"
+                    auxiliary_string_for_name = auxiliary_string_for_name(1:end-1);
+                end
+                
+                titlep = auxiliary_string_for_name;
                 SpecificColor = "#A2142F";
-                Unit = diag.("unit_" + extractBefore(meas, 4));
+                Unit = diag.("unit_" + auxiliary_string_for_name);
             end
 
 
             [R, R_sort] = sort(R);
-            plot(R, diag.(meas)(R_sort), '.-', 'markersize', 16, 'LineWidth', 1.5, "Color", SpecificColor)
-            title(titlep)
 
+            % two options available: errorbar or plot
+            if isfield(config, "errorplot") == 1 && config.errorplot == 1
+                errorbar(R, diag.(meas)(R_sort), diag.("sigma_" + meas)(R_sort), '.-','markersize', 10, 'LineWidth', 1, "Color", SpecificColor)
+            else
+                plot(R, diag.(meas)(R_sort), '.-', 'markersize', 16, 'LineWidth', 1.5, "Color", SpecificColor)
+            end
+
+            % complete the plot
+            
+            title(titlep)
             ylabel("[" + Unit +"]")
             xlabel(labelx)
 
