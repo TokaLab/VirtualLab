@@ -47,26 +47,20 @@ classdef TokaPlot
 
             figure(fig)
             subplot(config.subplot(1),config.subplot(2), config.subplot(3))
-
             contourf(equi.geo.grid.Rg,equi.geo.grid.Zg,equi.(field).*equi.geo.wall.inside, 50, "LineStyle", "none")
-            hold on
-
+            
             % plot walls, if asked
 
             if isfield(config, "plot_wall")==1 && config.plot_wall == 1
-
-                x1 = [equi.geo.R(1) equi.geo.R(end) equi.geo.R(end) equi.geo.R(1) equi.geo.R(1)];
-                y1 = [equi.geo.Z(1) equi.geo.Z(1) equi.geo.Z(end) equi.geo.Z(end) equi.geo.Z(1)];
-                patch([x1 equi.geo.wall.R], [y1 equi.geo.wall.Z], [0.75 0.75 0.75], "HandleVisibility","off")
-                plot([2.75 3.4], [-5.65 -4], 'color', [0.75 0.75 0.75], 'LineWidth', 2, "HandleVisibility","off")
-                plot(equi.geo.wall.R, equi.geo.wall.Z, '-k', 'LIneWidth', 1, "HandleVisibility","off")
-                plot([equi.geo.wall.R(1) equi.geo.wall.R(end) equi.geo.wall.R(end) equi.geo.wall.R(1) equi.geo.wall.R(1)], [equi.geo.wall.Z(1) equi.geo.wall.Z(1) equi.geo.wall.Z(end) equi.geo.wall.Z(end) equi.geo.wall.Z(1)], '-k', 'LineWidth', 1, "HandleVisibility","off")
-
+                hold on
+                fig = obj.PlotWalls(equi,fig, config)
             end
+
 
             % plot magnetic flux lines, if asked
 
             if isfield(config, "psi_lines")==1
+                hold on
                 contour(equi.geo.grid.Rg, equi.geo.grid.Zg, equi.psi_n, config.psi_lines, '-w', 'LineWidth', 1.5)
             end
 
@@ -76,6 +70,9 @@ classdef TokaPlot
             else
                 hold off
             end
+            
+            %complete the plot
+
             title(field)
             colorbar()
             colormap("jet")
@@ -88,7 +85,7 @@ classdef TokaPlot
 
         %% Plot Diagnostics
 
-        function fig = PlotDiagnostics(~,equi,diag,fig,config)
+        function fig = PlotDiagnostics(obj,equi,diag,fig,config)
 
 
             if nargin < 2
@@ -98,7 +95,6 @@ classdef TokaPlot
                 fig = figure();
                 config = struct;
             elseif nargin == 4
-
                 config = struct;
             end
 
@@ -115,59 +111,55 @@ classdef TokaPlot
 
             % plot walls, if asked
 
-            x1 = [equi.geo.R(1) equi.geo.R(end) equi.geo.R(end) equi.geo.R(1) equi.geo.R(1)];
-            y1 = [equi.geo.Z(1) equi.geo.Z(1) equi.geo.Z(end) equi.geo.Z(end) equi.geo.Z(1)];
-
             if isfield(config, "plot_wall")==1 && config.plot_wall == 1
-                patch([x1 equi.geo.wall.R], [y1 equi.geo.wall.Z], [0.75 0.75 0.75], "HandleVisibility","off")
-                hold on
-                plot([2.75 3.4], [-5.65 -4], 'color', [0.75 0.75 0.75], 'LineWidth', 2, "HandleVisibility","off")
-                plot(equi.geo.wall.R, equi.geo.wall.Z, '-k', 'LIneWidth', 1, "HandleVisibility","off")
-                plot([equi.geo.wall.R(1) equi.geo.wall.R(end) equi.geo.wall.R(end) equi.geo.wall.R(1) equi.geo.wall.R(1)], [equi.geo.wall.Z(1) equi.geo.wall.Z(1) equi.geo.wall.Z(end) equi.geo.wall.Z(end) equi.geo.wall.Z(1)], '-k', 'LineWidth', 1, "HandleVisibility","off")
-
+                fig = obj.PlotWalls(equi,fig, config)
             end
 
+            if isfield(config,"number_of_colours")
+                num = config.number_of_colours;
+            else
+                num = 1;
+                if isa(diag,"Diag_Bolo") 
+                    num = 7;
+                end
+            end
+
+            SpecificColor = obj.TokaColor(diag,num);
+
             if isa(diag, "Diag_PickUpCoils")
-                quiver(diag.R, diag.Z, diag.n(1,:), diag.n(3,:), 'color', 'b','LineWidth', 0.3,'ShowArrowHead','on','AutoScaleFactor',0.3)
+                quiver(diag.R, diag.Z, diag.n(1,:), diag.n(3,:), 'color', SpecificColor,'LineWidth', 0.3,'ShowArrowHead','on','AutoScaleFactor',0.3)
                 title("Pick-Up Coils")
                 hold on
-                plot(diag.R(1:end-5), diag.Z(1:end-5), '.r', 'MarkerSize', 12)
-                plot(diag.R(end-4:end), diag.Z(end-4:end), 'or', 'LineWidth',1, "HandleVisibility","off")
-                plot(diag.R(end-4:end), diag.Z(end-4:end), '.b', 'LineWidth',1, "HandleVisibility","off")
+                plot(diag.R(1:end-5), diag.Z(1:end-5), '.', 'Color', SpecificColor, 'MarkerSize', 12)
+                plot(diag.R(end-4:end), diag.Z(end-4:end), 'o', 'Color', SpecificColor, 'LineWidth',1, "HandleVisibility","off")
+                plot(diag.R(end-4:end), diag.Z(end-4:end), '.', 'Color', SpecificColor, 'LineWidth',1, "HandleVisibility","off")
 
             elseif isa(diag, "Diag_FluxLoops")
-                plot(diag.R, diag.Z, 's', 'LineWidth', 2, 'Color', "#77AC30")
+                plot(diag.R, diag.Z, 's', 'LineWidth', 2, 'Color', SpecificColor)
                 title("Flux Loops")
 
             elseif isa(diag, "Diag_SaddleCoils")
-                plot([diag.R1; diag.R2], [diag.Z1; diag.Z2], '.-r', 'LineWidth', 2, 'MarkerSize', 16)
+                plot([diag.R1; diag.R2], [diag.Z1; diag.Z2], '.-', 'LineWidth', 2, 'MarkerSize', 16, 'Color', SpecificColor)
                 title("Saddle Loops")
 
             elseif isa(diag, "Diag_ThomsonScattering")
-                plot(diag.R, diag.Z, '.', 'MarkerSize', 12, 'Color', 	"#D95319")
+                plot(diag.R, diag.Z, '.', 'MarkerSize', 12, 'Color', 	SpecificColor)
                 title("Thomson Scattering")
 
             elseif isa(diag, "Diag_InterferometerPolarimeter")
-                plot([diag.R_in diag.R_out]', [diag.Z_in diag.Z_out]', '-', 'LineWidth', 2, 'Color', "#A2142F")
+                plot([diag.R_in diag.R_out]', [diag.Z_in diag.Z_out]', '-', 'LineWidth', 2, 'Color', SpecificColor)
                 title("Interferometer-Polarimeter")
 
             elseif isa(diag, "Diag_Bolo")
 
-               
-                x = [min([diag.R_in' diag.R_end']) max([diag.R_in' diag.R_end'])];
-                y = [min([diag.Z_in' diag.Z_end']) max([diag.Z_in' diag.Z_end'])];
-
                 [Z, ~, iZ] = unique(diag.Z_in);
-
                 groups = arrayfun(@(k) find(iZ == k), 1:numel(Z), 'UniformOutput', false);
-
-                RGB = get(groot,"FactoryAxesColorOrder");
-                
-                for i = 1: length(groups)
-
-                    plot([diag.R_in(groups{i}) diag.R_end(groups{i})]', [diag.Z_in(groups{i}) diag.Z_end(groups{i})]', '-', 'LineWidth', 2, 'MarkerSize', 16, 'Color', RGB(i,:))
-                end
                
+                for i = 1: length(groups)
+                    plot([diag.R_in(groups{i}) diag.R_end(groups{i})]', [diag.Z_in(groups{i}) diag.Z_end(groups{i})]', '-', 'LineWidth', 1, 'MarkerSize', 16, 'Color', SpecificColor(i,:))
+                     hold on
+                end
+
                 title("Bolometers")
             end
 
@@ -176,11 +168,14 @@ classdef TokaPlot
             else
                 hold off
             end
+
+            % complete the plot
             axis equal
-            xlim([min(min(x1),x(1)) max(max(x1),x(2))])
-            ylim([min(min(y1),y(1)) max(max(y1),y(2))])
+            xlim([-inf inf])
+            ylim([-inf inf])
             xlabel("R [m]")
             ylabel("z [m]")
+            colormap("jet")
 
 
         end
@@ -199,19 +194,19 @@ classdef TokaPlot
                 config = struct;
             end
 
-            %% Get the subplot information and set if not specified
+            % Get the subplot information and set if not specified
 
             if isfield(config, "subplot")==0
                 config.subplot = [1 1 1];
             end
 
-            %% Get the x axis label information
+            % Get the x axis label information
 
             if isfield(config, "axis_label") == 1 && config.axis_label == "R"
                 if isa(diag,"Diag_SaddleCoils")
                     R = (diag.R2 + diag.R1)./2;
                     labelx = "R [m]";
-                elseif isa(diag,"Diag_InterferometerPolarimeter") || isa(diag,"Diag_Bolo") 
+                elseif isa(diag,"Diag_InterferometerPolarimeter") || isa(diag,"Diag_Bolo")
                     disp("For this diagnostic only the ch x label option is available")
                     R = 1 : length(diag.R_in);
                     labelx = "ch";
@@ -224,7 +219,7 @@ classdef TokaPlot
                 labelx = "ch";
             end
 
-            %% Plot
+            % Plot
 
             figure(fig)
             subplot(config.subplot(1),config.subplot(2), config.subplot(3))
@@ -260,10 +255,10 @@ classdef TokaPlot
                 SpecificColor = "#A2142F";
                 Unit = diag.("unit_" + auxiliary_string_for_name);
 
-                elseif isa(diag, "Diag_Bolo")
-                    titlep = "Bolometers";
-                    SpecificColor = "#A2142F";
-                    Unit = diag.unit;
+            elseif isa(diag, "Diag_Bolo")
+                titlep = "Bolometers";
+                SpecificColor = "#A2142F";
+                Unit = diag.unit;
             end
 
 
@@ -285,9 +280,56 @@ classdef TokaPlot
             title(titlep)
             ylabel("[" + Unit +"]")
             xlabel(labelx)
+            colormap("jet")
 
         end
 
+        %% Function Plot Walls
+
+        function fig = PlotWalls(obj,equi, fig, config)
+            
+            x1 = [equi.geo.R(1) equi.geo.R(end) equi.geo.R(end) equi.geo.R(1) equi.geo.R(1)];
+            y1 = [equi.geo.Z(1) equi.geo.Z(1) equi.geo.Z(end) equi.geo.Z(end) equi.geo.Z(1)];
+            
+            figure(fig)
+            subplot(config.subplot(1),config.subplot(2),config.subplot(3))
+            patch([x1 equi.geo.wall.R], [y1 equi.geo.wall.Z], [0.75 0.75 0.75], "HandleVisibility","off")
+            hold on
+            plot([2.75 3.4], [-5.65 -4], 'color', [0.75 0.75 0.75], 'LineWidth', 2, "HandleVisibility","off")
+            plot(equi.geo.wall.R, equi.geo.wall.Z, '-k', 'LIneWidth', 1, "HandleVisibility","off")
+            plot([equi.geo.wall.R(1) equi.geo.wall.R(end) equi.geo.wall.R(end) equi.geo.wall.R(1) equi.geo.wall.R(1)], [equi.geo.wall.Z(1) equi.geo.wall.Z(1) equi.geo.wall.Z(end) equi.geo.wall.Z(end) equi.geo.wall.Z(1)], '-k', 'LineWidth', 1, "HandleVisibility","off")
+
+        end
+
+        %% Function Specify Colors
+
+        function SpecificColor = TokaColor(obj,diag,num)
+
+            if isa(diag, "Diag_Bolo")
+                SpecificColor = colormap(autumn(num));
+            
+            elseif isa(diag, "Diag_FluxLoops")
+                SpecificColor = colormap(summer(num));
+
+            elseif isa(diag, "Diag_SaddleCoils")
+                SpecificColor = "r";
+
+            elseif isa(diag, "Diag_ThomsonScattering")
+                SpecificColor = colormap("lines");
+                SpecificColor = SpecificColor(3,:);
+
+            elseif isa(diag, "Diag_PickUpCoils")
+                SpecificColor = "b";
+
+            elseif isa(diag,"Diag_InterferometerPolarimeter")
+                SpecificColor = colormap(pink(100));
+                SpecificColor = SpecificColor(30,:);
+
+            end
+
+
+        end
+        
     end
 end
 

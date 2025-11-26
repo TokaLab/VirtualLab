@@ -2,36 +2,16 @@ clear
 clc
 close all
 
-% initialise the class tokamak
-tok = tokamak;
 
-% upload the geometry information of your tokamak
-tok = tok.machine_upload();
-tok = tok.scenario_upload();
-tok = tok.kinetic_upload();
+% load equilibrium (calculated from SimPla)
 
-% initialise the class geometry
-geo = geometry;
-geo = geo.import_geometry(tok);
-geo = geo.build_geometry();
-geo = geo.inside_wall();
+machine = "Tokalab";
+paths = SynDiag_init(machine);
 
-% initialise the class equilibrium
-equi = equilibrium;
-equi = equi.import_configuration(geo,tok.config);
-equi = equi.import_classes();
-equi.separatrix = equi.separatrix.build_separatrix(equi.config.separatrix,equi.geo);
+addpath("equilibrium\")
+load("Tokalab_equi_scenario1.mat")
 
-% solve equilibrium
-equi = equi.solve_equilibrium();
-
-% post processing (Opoint, Xpoint, LFCS)
-equi = equi.equi_pp2();
-
-% mhd and kinetic profiles
-equi  = equi.compute_profiles();
-
-%% run your diagnostics
+% run your diagnostics
 
 PickUp = Diag_PickUpCoils();
 PickUp = PickUp.Upload(1);
@@ -54,7 +34,7 @@ IntPol = IntPol.Upload(1);
 IntPol = IntPol.measure(equi);
 
 Bolo = Diag_Bolo();
-Bolo = Bolo.Upload(1);
+Bolo  = Bolo.Upload(1);
 Bolo = Bolo.measure(equi);
 
 %%
@@ -74,9 +54,9 @@ figura.config.hold = "on";
 figure2.config.plot_wall = 1;
 % figure2.config.hold = "on";
 
-% figura2 = TP.PlotField(equi,"ne", figura2, figura.config);
-figura2 = TP.PlotDiagnostics(equi,Bolo, figura2, figure2.config);
+figura2 = TP.PlotField(equi,"ne", figura2, figura.config);
+figura2 = TP.PlotDiagnostics(equi,IntPol, figura2, figure2.config);
 
-clf
+% clf
 
 figura2 = TP.PlotMeasurements(Bolo,"prj",figura2,figure2.config)
