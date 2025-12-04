@@ -4,6 +4,7 @@ Authors: TokaLab team,
 https://github.com/TokaLab/VirtualLab
 Date: 31/10/2025
 """
+import VirtualLab_init
 
 from functions.tokamak import tokamak
 from functions.geometry import geometry
