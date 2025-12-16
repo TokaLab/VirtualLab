@@ -21,7 +21,7 @@ function coils = DTT_Coils()
     PFconfig.Z =  [2.760, 2.534, 1.015, -1.015, -2.534, -2.760];
 
     PFconfig.width =  [0.510, 0.279, 0.390, 0.390, 0.279, 0.510];    
-    PFconfig.height =  [0.590, 0.517, 0.452, 0.452, 0.517, 0.590];
+    PFconfig.heigth =  [0.590, 0.517, 0.452, 0.452, 0.517, 0.590];
     
     PFconfig.NpixelR = [5, 4, 3, 3, 4, 5];         
     PFconfig.NpixelZ = [6, 5, 4, 4, 5, 6];
