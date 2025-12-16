@@ -28,8 +28,8 @@ classdef coils
                 Zlower = obj.PFconfig.Z(i) - obj.PFconfig.height(i)/2;
                 Zupper = obj.PFconfig.Z(i) + obj.PFconfig.height(i)/2;
 
-                obj.system.("PF"+i).R = linspace(Rleft, Rright, obj.PFconfig.NpixelR(i));
-                obj.system.("PF"+i).Z = linspace(Zlower, Zupper, obj.PFconfig.NpixelZ(i));
+                obj.system.(obj.PFconfig.names{i}).R = linspace(Rleft, Rright, obj.PFconfig.NpixelR(i));
+                obj.system.(obj.PFconfig.names{i}).Z = linspace(Zlower, Zupper, obj.PFconfig.NpixelZ(i));
             end
 
 
@@ -41,8 +41,8 @@ classdef coils
                 Zlower = obj.CSconfig.Z(i) - obj.CSconfig.heigth(i)/2;
                 Zupper = obj.CSconfig.Z(i) + obj.CSconfig.heigth(i)/2;
 
-                obj.system.("CS"+i).R = linspace(Rleft, Rright, obj.CSconfig.NpixelR(i));
-                obj.system.("CS"+i).Z = linspace(Zlower, Zupper, obj.CSconfig.NpixelZ(i));
+                obj.system.(obj.CSconfig.names{i}).R = linspace(Rleft, Rright, obj.CSconfig.NpixelR(i));
+                obj.system.(obj.CSconfig.names{i}).Z = linspace(Zlower, Zupper, obj.CSconfig.NpixelZ(i));
             end
         end
 

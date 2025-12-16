@@ -3,6 +3,7 @@ function coils = Tokalab_Coils()
     %% TokaLab Coils
     
     % Poloidal Field Coils
+    PFconfig.names = {"PF1","PF2","PF3","PF4","PF5","PF6"};
     PFconfig.R =  [  4, 8.5, 12, 12, 8.5, 4];          
     PFconfig.Z =  [7.5, 6.5, 3.5, -3.5, -6.5, -7.5];
 
@@ -14,6 +15,7 @@ function coils = Tokalab_Coils()
     
     
     % Central Solenoid
+    CSconfig.names = {"CS1","CS2","CS3","CS4","CS5","CS6"};
     CSconfig.R =  [1.7, 1.7, 1.7, 1.7, 1.7, 1.7];          
     CSconfig.Z =  [5, 3, 1, -1, -3, -5];
 
