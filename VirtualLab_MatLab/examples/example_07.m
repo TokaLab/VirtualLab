@@ -87,7 +87,9 @@ for c = 1:nCoils
     coil = coils.system.(coilNames{c});
     hold on
 
-    fill([coil.R(1) coil.R(end) coil.R(end) coil.R(1)], ...
-        [coil.Z(1) coil.Z(1) coil.Z(end) coil.Z(end)], [0.6 0.6 0.6]);
+    fill([coil.edge.R(1) coil.edge.R(end) coil.edge.R(end) coil.edge.R(1)], ...
+        [coil.edge.Z(1) coil.edge.Z(1) coil.edge.Z(end) coil.edge.Z(end)], [0.6 0.6 0.6]);
+    [RR,ZZ] = meshgrid(coil.R,coil.Z);
+    plot(RR,ZZ,'.r')
 end
 end

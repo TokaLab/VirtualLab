@@ -23,30 +23,42 @@ classdef coils
             % Poloidal Field Coils
             nPF = length(obj.PFconfig.R);
             for i = 1:nPF
+
                 Rleft = obj.PFconfig.R(i) - obj.PFconfig.width(i)/2;
                 Rright = obj.PFconfig.R(i) + obj.PFconfig.width(i)/2;
-                Zlower = obj.PFconfig.Z(i) - obj.PFconfig.height(i)/2;
-                Zupper = obj.PFconfig.Z(i) + obj.PFconfig.height(i)/2;
+                Zlower = obj.PFconfig.Z(i) - obj.PFconfig.heigth(i)/2;
+                Zupper = obj.PFconfig.Z(i) + obj.PFconfig.heigth(i)/2;
 
-                obj.system.(obj.PFconfig.names{i}).R = linspace(Rleft, Rright, obj.PFconfig.NpixelR(i));
-                obj.system.(obj.PFconfig.names{i}).Z = linspace(Zlower, Zupper, obj.PFconfig.NpixelZ(i));
+                obj.system.(obj.PFconfig.names{i}).edge.R = linspace(Rleft, Rright, obj.PFconfig.NpixelR(i)+1);
+                obj.system.(obj.PFconfig.names{i}).edge.Z = linspace(Zlower, Zupper, obj.PFconfig.NpixelZ(i)+1);
+
+                obj.system.(obj.PFconfig.names{i}).R = (obj.system.(obj.PFconfig.names{i}).edge.R(1:end-1)+...
+                    obj.system.(obj.PFconfig.names{i}).edge.R(2:end))/2;
+                obj.system.(obj.PFconfig.names{i}).Z = (obj.system.(obj.PFconfig.names{i}).edge.Z(1:end-1)+...
+                    obj.system.(obj.PFconfig.names{i}).edge.Z(2:end))/2;
             end
 
 
             % Central Solenoid Coils
             nCS = length(obj.CSconfig.R);
             for i = 1:nCS
+
                 Rleft = obj.CSconfig.R(i) - obj.CSconfig.width(i)/2;
                 Rright = obj.CSconfig.R(i) + obj.CSconfig.width(i)/2;
                 Zlower = obj.CSconfig.Z(i) - obj.CSconfig.heigth(i)/2;
                 Zupper = obj.CSconfig.Z(i) + obj.CSconfig.heigth(i)/2;
 
-                obj.system.(obj.CSconfig.names{i}).R = linspace(Rleft, Rright, obj.CSconfig.NpixelR(i));
-                obj.system.(obj.CSconfig.names{i}).Z = linspace(Zlower, Zupper, obj.CSconfig.NpixelZ(i));
+                obj.system.(obj.CSconfig.names{i}).edge.R = linspace(Rleft, Rright, obj.CSconfig.NpixelR(i)+1);
+                obj.system.(obj.CSconfig.names{i}).edge.Z = linspace(Zlower, Zupper, obj.CSconfig.NpixelZ(i)+1);
+
+                obj.system.(obj.CSconfig.names{i}).R = (obj.system.(obj.CSconfig.names{i}).edge.R(1:end-1)+...
+                    obj.system.(obj.CSconfig.names{i}).edge.R(2:end))/2;
+                obj.system.(obj.CSconfig.names{i}).Z = (obj.system.(obj.CSconfig.names{i}).edge.Z(1:end-1)+...
+                    obj.system.(obj.CSconfig.names{i}).edge.Z(2:end))/2;
             end
         end
 
-        
+
         function plotCoils(obj)
             % Plot all coils
             figure; hold on; axis equal;
@@ -61,6 +73,5 @@ classdef coils
             title('Coils Layout');
             grid on;
         end
-        
     end
 end

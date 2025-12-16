@@ -8,7 +8,7 @@ function coils = Tokalab_Coils()
     PFconfig.Z =  [7.5, 6.5, 3.5, -3.5, -6.5, -7.5];
 
     PFconfig.width =  [1, 0.65, 0.7, 0.65, 0.8, 1.6];    
-    PFconfig.height =  [1, 0.6, 1.1, 1.1, 1, 1];
+    PFconfig.heigth =  [1, 0.6, 1.1, 1.1, 1, 1];
     
     PFconfig.NpixelR = [4, 3, 3, 3, 3, 6];         
     PFconfig.NpixelZ =  [4, 3, 4, 4, 4, 4];
