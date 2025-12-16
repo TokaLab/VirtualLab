@@ -139,6 +139,10 @@ classdef tokamak
                 coils = Tokalab_Coils();
             elseif machine == "TokaPug"
                 coils = TokaPug_Coils();
+            elseif machine == "DTT-like"
+                coils = DTT_like_Coils();
+            elseif machine == "JET-like"
+                coils = JET_like_Coils();
             elseif machine == "NewMachine"
                 coils = NewMachine_Coils();
             end

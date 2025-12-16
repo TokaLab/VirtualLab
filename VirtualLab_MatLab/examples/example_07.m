@@ -1,11 +1,14 @@
 clear; clc;
 
+
+machine = "DTT-like";
+
 % initialise the class tokamak
-tok = tokamak;
+tok = tokamak();
 
 % upload the geometry information of your tokamak
-tok = tok.machine_upload();
-tok = tok.scenario_upload();
+tok = tok.machine_upload(machine);
+tok = tok.scenario_upload(1);
 tok = tok.kinetic_upload();
 tok = tok.coils_upload();
 
