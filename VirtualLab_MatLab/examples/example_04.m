@@ -2,14 +2,14 @@ clear; clc;
 
 %% here we test a new tokamak, TOKAPUG!
 
-machine = "TokaPug";
+machine = "DTT-like";
 
 % initialise the class tokamak
 tok = tokamak();
 
 % upload the geometry information of your tokamak
 tok = tok.machine_upload(machine);
-tok = tok.scenario_upload(2);
+tok = tok.scenario_upload(1);
 tok = tok.kinetic_upload();
 
 % initialise the class geometry
@@ -51,4 +51,4 @@ clf
 equi.plot_fields("pe",1)
 hold on
 geo.plot_wall()
-title("TokaPug - "+field)
+title(machine + " - "+  field)
