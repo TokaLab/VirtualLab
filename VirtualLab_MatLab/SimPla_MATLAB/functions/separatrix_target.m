@@ -4,6 +4,9 @@ classdef separatrix_target
         R_sep_target
         Z_sep_target
 
+        R_additional
+        Z_additional
+
         inside
     end
 
@@ -29,8 +32,8 @@ classdef separatrix_target
 
         function [M_sep,V_sep,ind_sep] = sep_operators(obj,geo)
 
-            R_sep = obj.R_sep_target;
-            Z_sep = obj.Z_sep_target;
+            R_sep = [obj.R_sep_target obj.R_additional];
+            Z_sep = [obj.Z_sep_target obj.Z_additional];
 
             R = geo.grid.Rg;
             Z = geo.grid.Zg;

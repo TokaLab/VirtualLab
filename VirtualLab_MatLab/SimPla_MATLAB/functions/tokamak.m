@@ -3,39 +3,41 @@ classdef tokamak
     % Class tokamak
     %
     % This is the class used to define the machine to be used (new machines
-    % can be easily added, see documentation and example 4), the scenario 
+    % can be easily added, see documentation and example 4), the scenario
     % (target separatrix), and the methodology to simulate or map kinetic
     % profiles on the magnetic surfaces.
     %
     % Write help tokamak.(properties) to see info about each property
     % Write doc tokamak to generate the MATLAB documentation for the
     % tokamak class
-    
+
     properties
         machine % Tokamak name
 
         R0      % Major radius of the tokamak
         a       % Minor radius of the tokamak
-        
+
         wall    % structure containing wall information
-        
+
         grid    % grid of the geometry
 
-        config  % this structure contains various configuration and parameters for equilibrium 
+        coils   % coils geometry
+
+        config  % this structure contains various configuration and parameters for equilibrium
 
     end
 
     methods
-        
+
         function obj = machine_upload(obj,machine)
             % Method machine_upload - tokamak.machine_upload(machine)
             %
             % machine - it indicates the machine to be uploaded.
-            % if machine is not used, tokamak.machine_upload(), machine = "Tokalab" is used  
-            % 
+            % if machine is not used, tokamak.machine_upload(), machine = "Tokalab" is used
+            %
             % Then, it uploadd the machine specific geometry (major and
-            % minor radii, grid information, and wall contours). 
-            
+            % minor radii, grid information, and wall contours).
+
             if nargin < 2
                 machine = "Tokalab";
             end
@@ -65,9 +67,9 @@ classdef tokamak
             % scenario to be used (see Tokalab_Scenario as example)
             %
             % Jt_method - is a number (e.g.) which defiens the
-            % functionality between toroidal current and poloidal flux 
+            % functionality between toroidal current and poloidal flux
             % (see Tokalab_Scenario as example)
-            % 
+            %
             % All this machine and scenario information are stored inside
             % tokamak.config
 
@@ -90,14 +92,14 @@ classdef tokamak
 
             % store parameters in the class
             obj.config = config;
-            
+
         end
 
         function obj = kinetic_upload(obj)
             % Method kinetic_upload - tokamak.kinetic_upload()
             %
             % It uploads the scenario and tokamak specific paramters inside
-            % the tokamak.config variable. 
+            % the tokamak.config variable.
 
             machine = obj.machine;
 
@@ -111,10 +113,33 @@ classdef tokamak
 
             % store parameters in the class
             obj.config.kinetic = config.kinetic;
-            
+
         end
+
+        function obj = coils_upload(obj)
+            % Method coils_upload - tokamak.coils_upload()
+            %
+            % It uploads the tokamak specific configuration of PF and CS
+            % coils system
+
+            machine = obj.machine;
+
+            if machine == "Tokalab"
+                coils = Tokalab_Coils();
+            elseif machine == "TokaPug"
+                coils = TokaPug_Coils();
+            elseif machine == "NewMachine"
+                coils = NewMachine_Coils();
+            end
+
+            % store parameters in the class
+            obj.coils = coils;
+
+        end
+
+
 
     end
 end
 
-            
+

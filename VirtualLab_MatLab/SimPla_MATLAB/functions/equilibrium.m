@@ -1,7 +1,7 @@
 classdef equilibrium
     % Class equilibrium
     %
-    % Authors: TokaLab team, 
+    % Authors: TokaLab team,
     % https://github.com/TokaLab/VirtualLab
     % Date: 31/10/2025
     %
@@ -25,7 +25,7 @@ classdef equilibrium
         kin_prof % class used to evaluate kinetic profiles (ne, ni, Te, Ti)
         Rad_prof % class used to evaluate Radiation profile
         profiles_1D % contains the kinetic profiles vs psi_n (inside the separatrix)
-
+        GreenFun % Greens function to evaluate coils contribution
 
         % variables
         psi % poloidal flux [Wb/(2 pi)]
@@ -52,7 +52,7 @@ classdef equilibrium
         pe % electron pressure
         pi % ion pressure
 
-        Rad % Plasma emissivity    
+        Rad % Plasma emissivity
 
         Opoint % O-point
         Xpoint % X-point
@@ -95,6 +95,10 @@ classdef equilibrium
             obj.config.GSsolver.update_rate = 1; % min 0, max 1
             obj.config.GSsolver.Lambda = 0;
 
+            % used only for coil tuning
+            obj.config.GSsover.CoilTuning_lambda = 1;
+
+            % plotting options
             obj.config.GSsolver.Plotting = 1;
 
         end
@@ -134,13 +138,16 @@ classdef equilibrium
 
             % import kinetic profiles
             obj.kin_prof = profile_kinetic;
-              
+
             % import rad profile
             obj.Rad_prof = profile_radiation;
 
+            % import Greens function for coils
+            obj.GreenFun = greens_function;
+
         end
 
-        %% Grad-Shafranov Solver methods
+        %% Grad-Shafranov Solver methods - Fixed Boundary
 
         function obj = solve_equilibrium(obj,psi)
             % solve_equilibrium  Solve the plasma equilibrium using Grad-Shafranov
@@ -197,7 +204,7 @@ classdef equilibrium
 
             % define the separatrix target
             obj.separatrix = obj.separatrix.build_separatrix(obj.config.separatrix,obj.geo);
-           
+
             %%% old version
             % % % % % % % % % % % define Grad-Shafranov operator
             % % % % % % % % % % %     % Slow method
@@ -206,11 +213,11 @@ classdef equilibrium
             % % % % % % % % % % % Delta_star = d2_dR2 - d_dR./R(:) + d2_dZ2;
             % % % % % % % % % % % Delta_star = sparse(Delta_star);
             % % % % % % % % % % % clear d_dR d2_dR2 d2_dZ2
-            % % % % % % % % % % 
+            % % % % % % % % % %
             % % % % % % % % % %     % Fast method
             % % % % % % % % % % [d_dR,~,d2_dR2,d2_dZ2] = obj.utils.differential_operators_fast(obj.geo);
             % % % % % % % % % % Delta_star = d2_dR2 - d_dR./R(:) + d2_dZ2;
-            
+
             % import differential operators
             Delta_star = operators.d2_dR2 - operators.d_dR./R(:) + operators.d2_dZ2;
 
@@ -552,6 +559,204 @@ classdef equilibrium
 
         end
 
+
+        %% Grad-Shafranov Solver methods - Free Boundary
+
+        function [obj, coils] = solve_equilibrium_free_v1(obj,coils,psi)
+
+            %%
+            % psi is the first guess. If it is not given, it is calculated
+            % with the method GS_solver.first_guess
+
+            if nargin < 3
+                compute_first_guess = 1;
+            else
+                compute_first_guess = 0;
+            end
+
+            %% extract used variable (improved readability)
+            R = obj.geo.grid.Rg;
+            Z = obj.geo.grid.Zg;
+            mu0 = obj.const.mu0;
+            Ip = obj.config.toroidal_current.Ip;
+            R0 = obj.geo.R0;
+            operators = obj.geo.operators;
+
+            %% extract boundary operator
+            [M_boundary, ind_boundary] = obj.geo.geo_operator();
+
+            % extract separatrix operator
+            [M_sep,V_sep] = obj.separatrix.sep_operators(obj.geo);
+            M_sep = sparse(M_sep);
+
+            %% Matrix wall
+            [M_close_wall, ind_close_wall] = obj.geo.close_to_wall();
+
+            %% Update total boundary (boundary + wall)
+            M_boundary = [M_boundary; M_close_wall];
+
+            %% evaluate psi_plasma given Jt
+            ind_plasma = [ind_boundary; ind_close_wall'];
+
+            %% Greens Matrix for Coils
+            Green_psi_coils = obj.GreenFun.GreensFunctionCoils_method1(obj,coils);
+            N_coils = size(Green_psi_coils,2);
+
+            %% import differential operators
+            Delta_star = operators.d2_dR2 - operators.d_dR./R(:) + operators.d2_dZ2;
+
+            %% Normalisation factors
+            Jc = abs(Ip./R0.^2);
+            Psic = abs(mu0.*Jc.*R0.^3);
+            DeltaPsic = abs(Psic./R0.^2);
+            C_Delta = 1./(DeltaPsic.*length(R(:)));
+            C_bound = 1./(Psic.*length(ind_boundary));
+            C_sep = 1./(Psic.*size(M_sep,1));
+            lambda_sep = obj.config.GSsover.CoilTuning_lambda;
+
+            %% first guess (it applies only if psi is not given as input)
+            if compute_first_guess == 1
+                % Right-hand term of Grad-Shafranov (normalised flux equation used)
+                obj.Jt = obj.toroidal_curr.Jt_constant(obj.geo,obj.separatrix, obj.config.toroidal_current);
+                V_grad = -mu0.*R(:).*obj.Jt(:);
+
+                % solve system
+                M = [C_Delta.*Delta_star; lambda_sep.*C_sep.*M_sep];
+                V = [C_Delta.*V_grad; lambda_sep.*C_sep.*V_sep];
+
+                psi_v = (M'*M)\(M'*V);
+                obj.psi = reshape(psi_v,size(R));
+            else
+                obj.psi = psi;
+            end
+
+            %% Iteration info and initialisation
+            maxIter = obj.config.GSsolver.maxIter;
+            abs_tol = obj.config.GSsolver.abs_tol;
+            rel_tol = obj.config.GSsolver.rel_tol;
+            update_rate = obj.config.GSsolver.update_rate;
+
+            convergence = 0;
+            iteration = 0;
+
+            %% Solver equi
+
+            clear figure
+            if obj.config.GSsolver.Plotting == 1
+                figure(Name="Equi solver")
+            end
+
+            %% Build all matrices
+            N_plasma = length(obj.psi(:));
+            N_total = size(obj.psi(:),1) + N_coils + 1;
+
+            % Grad-Shafranov Matrix
+            M_grad = Delta_star; M_grad(:,size(obj.psi(:),1)+1:N_total) = 0;
+
+            % Separatrix Matrix
+            M_sep(:,size(obj.psi(:),1)+1:N_total-1) = 0;
+            M_sep(:,N_total) = -1;
+
+            % Boundary Matrix (takes into account the coils)
+            M_boundary(:,size(obj.psi(:),1)+1:N_total) = 0;
+            M_boundary(:,size(obj.psi(:),1)+1:N_total-1) = -Green_psi_coils(ind_plasma,:)*1e6;
+            M_boundary(:,N_total) = 1;
+
+            while convergence == 0
+
+                % new iteration
+                iteration = iteration + 1;
+
+                % compute new O and X points
+                obj = obj.equi_pp2();
+
+                % normalise psi
+                psi_0 = obj.psi(obj.Opoint.ind);
+                psi_b = mean(obj.psi(obj.Xpoint.ind));
+                obj.psi_n = (obj.psi-psi_0)./(psi_b-psi_0);
+
+                % Evaluate new plasma currents
+                obj.Jt = obj.toroidal_curr.Jt_compute(obj.psi_n,obj.config.toroidal_current,obj.geo,obj.LCFS);
+
+                % New Right-hand term of Grad-Shafranov
+                V_grad = -mu0*R(:).*obj.Jt(:);
+
+                % evaluate new psi_plasma
+                [Green_psi_plasma, ~, ~,ind_J] = obj.GreenFun.GreensFunctionPlasma_method1(obj,ind_plasma);
+                psi_plasma = sum(obj.Jt(ind_J).*Green_psi_plasma.*obj.geo.dR.*obj.geo.dZ,1);
+
+                % evaluate new boundary
+                V_boundary = psi_plasma';
+
+                % Compose operator and solution
+                M = [C_Delta.*M_grad; lambda_sep.*C_sep.*M_sep; C_bound.*M_boundary];
+                V = [C_Delta.*V_grad; lambda_sep.*C_sep.*V_sep; C_bound.*V_boundary];
+
+                % solve the system
+                b = (M'*M)\(M'*V);
+                psi_v = b(1:N_plasma);
+                psi_new = reshape(psi_v,size(R));
+
+                Ic = b(N_plasma+1:N_plasma+N_coils);
+
+                error_abs = mean((psi_new-obj.psi).^2,'all');
+                error_rel = error_abs./std(obj.psi,[],'all');
+
+                if error_abs<abs_tol || error_rel<rel_tol || iteration>=maxIter
+                    convergence = 1;
+                end
+
+                if obj.config.GSsolver.Plotting == 1
+
+                    subplot(1,3,1)
+                    hold off
+                    contourf(R,Z,obj.psi,30)
+                    hold on
+                    plot(R(obj.Xpoint.ind),Z(obj.Xpoint.ind),'xr')
+                    plot(R(obj.Opoint.ind),Z(obj.Opoint.ind),'or')
+                    axis equal
+                    xlabel("R [m]")
+                    ylabel("z [m]")
+                    title("\psi - previous iteration")
+
+                    subplot(1,3,2)
+                    hold off
+                    contourf(R,Z,psi_new,30)
+                    hold on
+                    plot(R(obj.Xpoint.ind),Z(obj.Xpoint.ind),'xr')
+                    plot(R(obj.Opoint.ind),Z(obj.Opoint.ind),'or')
+                    plot(obj.geo.wall.R,obj.geo.wall.Z,'-k','LineWidth',1.2)
+                    axis equal
+                    xlabel("R [m]")
+                    ylabel("z [m]")
+                    title("\psi - new iteration")
+
+                    subplot(1,3,3)
+                    semilogy(iteration,error_abs,'.b','markersize',16)
+                    hold on
+                    grid on
+                    grid minor
+                    xlabel("iteration")
+                    ylabel("error [Wb/rad]")
+
+                    drawnow
+
+                end
+
+                % update the psi with update_rate
+                obj.psi = update_rate.*psi_new + (1-update_rate)*obj.psi;
+
+            end
+
+            %% store current in coils object
+            coilNames = fieldnames(coils.system);
+            nCoils = numel(coilNames);
+            for c = 1:nCoils
+                coils.system.(coilNames{c}).Ic = Ic(c);
+            end
+
+        end
+
         %% Processing of \psi
         % it finds the last closed surface and critical points O and X points
 
@@ -784,10 +989,15 @@ classdef equilibrium
 
             psi_n = (psi-psi_O)./(psi_X-psi_O);
 
+            [~,Xind] = min((Xpoint_R-obj.geo.grid.Rg).^2 + (Xpoint_Z-obj.geo.grid.Zg).^2,[],'all');
+            [~,Oind] = min((Opoint_R-obj.geo.grid.Rg).^2 + (Opoint_Z-obj.geo.grid.Zg).^2,[],'all');
+
             obj.Xpoint.R = Xpoint_R;
             obj.Xpoint.Z = Xpoint_Z;
+            obj.Xpoint.ind = Xind;
             obj.Opoint.R = Opoint_R;
             obj.Opoint.Z = Opoint_Z;
+            obj.Opoint.ind = Oind;
 
             obj.psi_n = psi_n;
             obj.Psi = psi*2*pi;
@@ -821,20 +1031,20 @@ classdef equilibrium
             %       - Required for subsequent calculations of q-profile, flux mapping, and diagnostics.
 
             [p,F2] = obj.MHD_prof.Evaluate_p_F(obj);
-        
+
             Bt = sign(obj.config.toroidal_current.Bt)*sqrt(F2)./obj.geo.grid.Rg;
 
             obj.p = p;
             obj.F2 = F2;
             obj.Bt = Bt;
-        
+
             [Br,Bz,Jr,Jz] = obj.MHD_prof.MHD_fields(obj);
 
             obj.Br = Br;
             obj.Bz = Bz;
             obj.Jr = Jr;
             obj.Jz = Jz;
-        
+
             Kinetics = obj.kin_prof.evaluate_profiles(obj);
 
             obj.ne = Kinetics.ne;
@@ -848,9 +1058,9 @@ classdef equilibrium
             Radiation = obj.Rad_prof.evaluate_profiles(obj);
 
             obj.Rad= Radiation.Rad;
-            
+
         end
-        
+
         %% Evaluate 1D Profiles
 
         function obj = evaluate_profiles_1D(obj)
@@ -866,7 +1076,7 @@ classdef equilibrium
 
             [psi_n_flat, unique_incides] = unique(psi_n_flat);
 
-            %% reference psi_n 
+            %% reference psi_n
             N = 100;
             profiles_1D.psi_n = linspace(0,1,N);
 
