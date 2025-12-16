@@ -1,4 +1,4 @@
-function coils = DTT_Coils()
+function coils = DTT_like_Coils()
 % 
 % @Article{en15051702,
 % AUTHOR = {Castaldo, Antonio and Albanese, Raffaele and Ambrosino, Roberto and Crisanti, Flavio},
@@ -14,17 +14,33 @@ function coils = DTT_Coils()
 % DOI = {10.3390/en15051702}
 % }
     
+
+% @article{AMBROSINO2023113714,
+% title = {Conceptual design of the DTT in-vessel equatorial coils},
+% journal = {Fusion Engineering and Design},
+% volume = {194},
+% pages = {113714},
+% year = {2023},
+% issn = {0920-3796},
+% doi = {https://doi.org/10.1016/j.fusengdes.2023.113714},
+% url = {https://www.sciencedirect.com/science/article/pii/S0920379623002971},
+% author = {R. Ambrosino and R. Albanese and E. Acampora and A. Castaldo and F. Crisanti and R. Iervolino and A. Lampasi},
+% keywords = {DTT tokamak, Vertical stability control, IN-vessel coil, Magnetic control system},
+% abstract = {For the next generation fusion devices, the presence of in-vessel coils is fundamental to deal with elongated plasmas and alternative configurations, highly performant, yet critically sensitive to the vertical unstable mode. A pair of equatorial in-vessel coils connected in anti-series is sufficient to deal with the vertical control problem. In case of independent equatorial coils, they can also be used to produce a fast radial control action able to preserve plasma facing components during fast plasma transients. The main criticality of independent in-vessel coils is related to the induced current during disruptive events, making the coils extremely vulnerable due to overcurrents and mechanical stress. In this paper, we present the solution proposed for the conceptual design of the in-vessel equatorial coils for the Divertor Tokamak Test fusion device. This solution is able to guarantee radial and vertical control performance and robustness in case of disruption. Simulations are provided to show the efficiency of the design in case of disruptions and the effectiveness of the closed-loop control actions.}
+% }
+
+
     %% TokaLab Coils
     % Poloidal Field Coils
-    PFconfig.names = {"PF1","PF2","PF3","PF4","PF5","PF6"};
-    PFconfig.R =  [1.400, 3.080, 4.351,  4.351,  3.080,  1.400];          
-    PFconfig.Z =  [2.760, 2.534, 1.015, -1.015, -2.534, -2.760];
+    PFconfig.names = {"PF1","PF2","PF3","PF4","PF5","PF6","IVC1","IVC2","IVC3","IVC4","VSL","VSU"};
+    PFconfig.R =  [1.400, 3.080, 4.351,  4.351,  3.080,  1.400, 1.45, 1.70, 2.25, 2.85, 3.108, 3.108];          
+    PFconfig.Z =  [2.760, 2.534, 1.015, -1.015, -2.534, -2.760, -1.15,-1.75,-1.65,-1.00, -0.553, 0.553];
 
-    PFconfig.width =  [0.510, 0.279, 0.390, 0.390, 0.279, 0.510];    
-    PFconfig.heigth =  [0.590, 0.517, 0.452, 0.452, 0.517, 0.590];
+    PFconfig.width =  [0.510, 0.279, 0.390, 0.390, 0.279, 0.510, 0.07, 0.07, 0.07, 0.07, 0.104, 0.104];    
+    PFconfig.heigth = [0.590, 0.517, 0.452, 0.452, 0.517, 0.590, 0.07, 0.07, 0.07, 0.07, 0.130, 0.130];
     
-    PFconfig.NpixelR = [5, 4, 3, 3, 4, 5];         
-    PFconfig.NpixelZ = [6, 5, 4, 4, 5, 6];
+    PFconfig.NpixelR = [5, 3, 4, 4, 3, 5, 1, 1, 1, 1, 1, 1];         
+    PFconfig.NpixelZ = [6, 5, 4, 4, 5, 6, 1, 1, 1, 1, 2, 2];
     
     
     % Central Solenoid

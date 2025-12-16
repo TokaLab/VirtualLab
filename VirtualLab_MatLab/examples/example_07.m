@@ -2,6 +2,7 @@ clear; clc;
 
 
 machine = "DTT-like";
+% machine = "Tokalab";
 
 % initialise the class tokamak
 tok = tokamak();
@@ -71,6 +72,7 @@ contour(equi.geo.grid.Rg,equi.geo.grid.Zg,...
     equi.psi_n,levels,'EdgeColor','r')
 plot(new_points_R,new_points_Z,'.k','MarkerSize',16)
 plotCoils(coils)
+geo.plot_wall()
 axis equal
 grid on
 grid minor
