@@ -54,7 +54,7 @@ classdef toroidal_current
             R0 = geo.R0;
 
             % evaluate new Jt given psi (method reference)
-            Jt_plasma = (beta0*R/R0 + (1-beta0)*R0./R).*(1-psi_n.^alpha1).^alpha2;
+            Jt_plasma = (beta0*R/R0 + (1-beta0)*R0./R).*(max(1-psi_n.^alpha1,0)).^alpha2;
             Jt_plasma = Jt_plasma.*sep.inside;
             Jt = Jt_plasma.*Ip./sum(Jt_plasma.*dR.*dZ,"all");
 
@@ -77,7 +77,8 @@ classdef toroidal_current
             R0 = geo.R0;
 
             % evaluate new Jt given psi (method reference)
-            Jt_plasma = (beta0*R/R0 + (1-beta0)*R0./R).*(1-((psi_n-psi_n_peak)/(1-psi_n_peak)).^alpha1).^alpha2;
+            Jt_plasma = (beta0*R/R0 + (1-beta0)*R0./R).*...
+                max(1-((psi_n-psi_n_peak)/(1-psi_n_peak)).^alpha1,0).^alpha2;
             Jt_plasma = Jt_plasma.*sep.inside;
             Jt = Jt_plasma.*Ip./sum(Jt_plasma.*dR.*dZ,"all");
 
