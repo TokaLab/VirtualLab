@@ -40,7 +40,7 @@ classdef Diag_InterferometerPolarimeter
         unit_LID % Unit Measure of Line-Integrated Density
         unit_FAR % Unit Measure of Faraday Rotation
         unit_CM % Unit Measure of Cotton-Mouton phase shift
-     
+
         config % contains the various information such as noise, etc.
 
         ideal % contains the measurements without the noise
@@ -270,65 +270,171 @@ classdef Diag_InterferometerPolarimeter
             obj.sigma_CMh = CM_noise_abs + CMh_noise_prop;
             obj.sigma_CMh_typeI = CM_noise_abs + CMh_typeI_noise_prop;
 
-            
+
             %%
 
             obj.unit_FAR = "rad";
             obj.unit_CM = "rad";
-            
+
         end
 
-        function obj = Upload(obj,configuration)
+        function obj = Upload(obj,configuration,machine)
 
             % default configuration
             if nargin<2
                 configuration = 1;
+                machine = "TokaLab";
+            elseif nargin < 3
+                machine = "TokaLab";
             end
 
-            if configuration == 1
+            %%%%%%%%%%%% TokaLab Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                % 4 Vertical lines
-                R_in = [4; 5.4; 6.8; 8];
-                R_out = [4; 5.4; 6.8; 8];
-                Z_in = [5; 5; 5; 5];
-                Z_out = [-5; -5; -5; -5];
+            if machine == "TokaLab"
 
-                % 4 Horizontal lines
-                R_in = [R_in; 9; 9; 9; 9];
-                R_out = [R_out; 3.4; 3.4; 3.4; 3.4];
-                Z_in = [Z_in; 0; 0; 0; 0];
-                Z_out = [Z_out; -3.2; -1.4; -0.2; 1];
+                if configuration == 1
 
-                obj.R_in = R_in;
-                obj.R_out = R_out;
-                obj.Z_in = Z_in;
-                obj.Z_out = Z_out;
+                    % 4 Vertical lines
+                    R_in = [4; 5.4; 6.8; 8];
+                    R_out = [4; 5.4; 6.8; 8];
+                    Z_in = [5; 5; 5; 5];
+                    Z_out = [-5; -5; -5; -5];
 
-                % laser info and constants
-                obj.config.C1 = 2.45e-11;
-                obj.config.C3 = 5.26e-13;
-                obj.config.lambda = 75e-6; % um
+                    % 4 Horizontal lines
+                    R_in = [R_in; 9; 9; 9; 9];
+                    R_out = [R_out; 3.4; 3.4; 3.4; 3.4];
+                    Z_in = [Z_in; 0; 0; 0; 0];
+                    Z_out = [Z_out; -3.2; -1.4; -0.2; 1];
 
-                % Polarisation state (linear at 45°)
-                obj.config.alpha = [pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4];
-                obj.config.phi = [0 0 0 0 0 0 0 0];
+                    obj.R_in = R_in;
+                    obj.R_out = R_out;
+                    obj.Z_in = Z_in;
+                    obj.Z_out = Z_out;
 
-                % Discretisation
-                obj.config.LID_N_discretisation = 30;
-                obj.config.POL_N_discretisation = 30;
+                    % laser info and constants
+                    obj.config.C1 = 2.45e-11;
+                    obj.config.C3 = 5.26e-13;
+                    obj.config.lambda = 75e-6; % um
 
-                % noise information
-                obj.config.LID_noise_random_absolute_intensity = 0;
-                obj.config.LID_noise_random_proportional_intensity = 0;
+                    % Polarisation state (linear at 45°)
+                    obj.config.alpha = [pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4];
+                    obj.config.phi = [0 0 0 0 0 0 0 0];
 
-                obj.config.FAR_noise_random_absolute_intensity = 0;
-                obj.config.FAR_noise_random_proportional_intensity = 0;
+                    % Discretisation
+                    obj.config.LID_N_discretisation = 30;
+                    obj.config.POL_N_discretisation = 30;
 
-                obj.config.CM_noise_random_absolute_intensity = 0;
-                obj.config.CM_noise_random_proportional_intensity = 0;
+                    % noise information
+                    obj.config.LID_noise_random_absolute_intensity = 0;
+                    obj.config.LID_noise_random_proportional_intensity = 0;
 
+                    obj.config.FAR_noise_random_absolute_intensity = 0;
+                    obj.config.FAR_noise_random_proportional_intensity = 0;
+
+                    obj.config.CM_noise_random_absolute_intensity = 0;
+                    obj.config.CM_noise_random_proportional_intensity = 0;
+
+                end
             end
 
+            %%%%%%%%%%%% JET-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            if machine == "JET-like"
+
+                if configuration == 1
+
+                    % 4 Vertical lines
+                    R_in = [4; 5.4; 6.8; 8];
+                    R_out = [4; 5.4; 6.8; 8];
+                    Z_in = [5; 5; 5; 5];
+                    Z_out = [-5; -5; -5; -5];
+
+                    % 4 Horizontal lines
+                    R_in = [R_in; 9; 9; 9; 9];
+                    R_out = [R_out; 3.4; 3.4; 3.4; 3.4];
+                    Z_in = [Z_in; 0; 0; 0; 0];
+                    Z_out = [Z_out; -3.2; -1.4; -0.2; 1];
+
+                    obj.R_in = R_in;
+                    obj.R_out = R_out;
+                    obj.Z_in = Z_in;
+                    obj.Z_out = Z_out;
+
+                    % laser info and constants
+                    obj.config.C1 = 2.45e-11;
+                    obj.config.C3 = 5.26e-13;
+                    obj.config.lambda = 75e-6; % um
+
+                    % Polarisation state (linear at 45°)
+                    obj.config.alpha = [pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4];
+                    obj.config.phi = [0 0 0 0 0 0 0 0];
+
+                    % Discretisation
+                    obj.config.LID_N_discretisation = 30;
+                    obj.config.POL_N_discretisation = 30;
+
+                    % noise information
+                    obj.config.LID_noise_random_absolute_intensity = 0;
+                    obj.config.LID_noise_random_proportional_intensity = 0;
+
+                    obj.config.FAR_noise_random_absolute_intensity = 0;
+                    obj.config.FAR_noise_random_proportional_intensity = 0;
+
+                    obj.config.CM_noise_random_absolute_intensity = 0;
+                    obj.config.CM_noise_random_proportional_intensity = 0;
+
+                end
+            end
+
+            %%%%%%%%%%%% DTT-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            if machine == "DTT-like"
+
+                if configuration == 1
+
+                    % 4 Vertical lines
+                    R_in = [4; 5.4; 6.8; 8];
+                    R_out = [4; 5.4; 6.8; 8];
+                    Z_in = [5; 5; 5; 5];
+                    Z_out = [-5; -5; -5; -5];
+
+                    % 4 Horizontal lines
+                    R_in = [R_in; 9; 9; 9; 9];
+                    R_out = [R_out; 3.4; 3.4; 3.4; 3.4];
+                    Z_in = [Z_in; 0; 0; 0; 0];
+                    Z_out = [Z_out; -3.2; -1.4; -0.2; 1];
+
+                    obj.R_in = R_in;
+                    obj.R_out = R_out;
+                    obj.Z_in = Z_in;
+                    obj.Z_out = Z_out;
+
+                    % laser info and constants
+                    obj.config.C1 = 2.45e-11;
+                    obj.config.C3 = 5.26e-13;
+                    obj.config.lambda = 75e-6; % um
+
+                    % Polarisation state (linear at 45°)
+                    obj.config.alpha = [pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4];
+                    obj.config.phi = [0 0 0 0 0 0 0 0];
+
+                    % Discretisation
+                    obj.config.LID_N_discretisation = 30;
+                    obj.config.POL_N_discretisation = 30;
+
+                    % noise information
+                    obj.config.LID_noise_random_absolute_intensity = 0;
+                    obj.config.LID_noise_random_proportional_intensity = 0;
+
+                    obj.config.FAR_noise_random_absolute_intensity = 0;
+                    obj.config.FAR_noise_random_proportional_intensity = 0;
+
+                    obj.config.CM_noise_random_absolute_intensity = 0;
+                    obj.config.CM_noise_random_proportional_intensity = 0;
+
+                end
+            end 
+            
         end
 
         %% Plotting Functions
@@ -368,7 +474,7 @@ classdef Diag_InterferometerPolarimeter
             legend("type-I","cold plasma","hot plasma")
             xlabel("Channel #")
             ylabel("Faraday Rotation [rad]")
-    
+
             subplot(1,3,3)
             hold off
             plot(obj.CMc_typeI,'.-k','MarkerSize',12)

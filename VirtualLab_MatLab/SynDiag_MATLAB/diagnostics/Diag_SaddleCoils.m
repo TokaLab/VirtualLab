@@ -52,29 +52,79 @@ classdef Diag_SaddleCoils
 
         end
 
-        function obj = Upload(obj,configuration)
+        function obj = Upload(obj,configuration,machine)
 
             % default configuration
             if nargin<2
                 configuration = 1;
+                machine = "TokaLab";
+            elseif nargin < 3
+                machine = "TokaLab";
             end
 
-            if configuration == 1
+            %%%%%%%%%%%% TokaLab Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            if machine == "TokaLab"
+                if configuration == 1
 
-                obj.config.configuration = 1;
+                    obj.config.configuration = 1;
 
-                load("diagnostics_data/SaddleCoilsData_config_1.mat")
+                    load("SaddleCoilsData_TokaLab_config_1.mat")
 
-                obj.R1 = R1;
-                obj.Z1 = Z1;
+                    obj.R1 = R1;
+                    obj.Z1 = Z1;
 
-                obj.R2 = R2;
-                obj.Z2 = Z2;
+                    obj.R2 = R2;
+                    obj.Z2 = Z2;
 
-                obj.config.noise_random_absolute_intensity = 0;
+                    obj.config.noise_random_absolute_intensity = 0;
 
-                obj.config.noise_random_proportional_intensity = 0;
+                    obj.config.noise_random_proportional_intensity = 0;
 
+                end
+            end
+
+            %%%%%%%%%%%% JET-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            if machine == "JET-like"
+                if configuration == 1
+
+                    obj.config.configuration = 1;
+
+                    load("SaddleCoilsData_JETlike_config_1.mat")
+
+                    obj.R1 = R1;
+                    obj.Z1 = Z1;
+
+                    obj.R2 = R2;
+                    obj.Z2 = Z2;
+
+                    obj.config.noise_random_absolute_intensity = 0;
+
+                    obj.config.noise_random_proportional_intensity = 0;
+
+                end
+            end
+
+            %%%%%%%%%%%% DTT-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            if machine == "DTT-like"
+                if configuration == 1
+
+                    obj.config.configuration = 1;
+
+                    load("SaddleCoilsData_DTTlike_config_1.mat")
+
+                    obj.R1 = R1;
+                    obj.Z1 = Z1;
+
+                    obj.R2 = R2;
+                    obj.Z2 = Z2;
+
+                    obj.config.noise_random_absolute_intensity = 0;
+
+                    obj.config.noise_random_proportional_intensity = 0;
+
+                end
             end
 
         end

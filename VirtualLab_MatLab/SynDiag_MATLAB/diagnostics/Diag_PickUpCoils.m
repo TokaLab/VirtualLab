@@ -54,25 +54,76 @@ classdef Diag_PickUpCoils
 
         end
 
-        function obj = Upload(obj,configuration)
+        function obj = Upload(obj,configuration,machine)
 
             % default configuration
             if nargin<2
                 configuration = 1;
+                machine = "TokaLab";
+            elseif nargin < 3
+                machine = "TokaLab";
             end
 
-            if configuration == 1
+            %%%%%%%%%%%% TokaLab Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                obj.config.configuration = 1;
+            if machine == "TokaLab"
 
-                load("diagnostics_data/PickUpData_config_1.mat")
+                if configuration == 1
+    
+                    obj.config.configuration = 1;
+    
+                    load("PickUpData_TokaLab_config_1.mat")
+    
+                    obj.R = R;
+                    obj.Z = Z;
+                    obj.n = n;
+    
+                    obj.config.noise_random_absolute_intensity = 0;
+                    obj.config.noise_random_proportional_intensity = 0;
+    
+                end
 
-                obj.R = R;
-                obj.Z = Z;
-                obj.n = n;
+            end
 
-                obj.config.noise_random_absolute_intensity = 0;
-                obj.config.noise_random_proportional_intensity = 0;
+            %%%%%%%%%%%% JET-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            if machine == "JET-like"
+
+                if configuration == 1
+    
+                    obj.config.configuration = 1;
+    
+                    load("PickUpData_JETlike_config_1.mat")
+    
+                    obj.R = R;
+                    obj.Z = Z;
+                    obj.n = n;
+    
+                    obj.config.noise_random_absolute_intensity = 0;
+                    obj.config.noise_random_proportional_intensity = 0;
+    
+                end
+
+            end
+
+            %%%%%%%%%%%% DTT-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            if machine == "DTT-like"
+
+                if configuration == 1
+    
+                    obj.config.configuration = 1;
+    
+                    load("PickUpData_DTTlike_config_1.mat")
+    
+                    obj.R = R;
+                    obj.Z = Z;
+                    obj.n = n;
+    
+                    obj.config.noise_random_absolute_intensity = 0;
+                    obj.config.noise_random_proportional_intensity = 0;
+    
+                end
 
             end
 

@@ -2,7 +2,7 @@ clear; clc;
 
 %% here we test a new tokamak, TOKAPUG!
 
-machine = "DTT-like";
+machine = "JET-like";
 
 % initialise the class tokamak
 tok = tokamak();
@@ -52,3 +52,34 @@ equi.plot_fields("pe",1)
 hold on
 geo.plot_wall()
 title(machine + " - "+  field)
+
+%% run your diagnostics
+
+PickUp = Diag_PickUpCoils();
+PickUp = PickUp.Upload(1,machine);
+PickUp = PickUp.measure(equi);
+figure(3); clf; PickUp.plot_StandAlone();
+
+FluxLoops = Diag_FluxLoops();
+FluxLoops = FluxLoops.Upload(1,machine);
+FluxLoops = FluxLoops.measure(equi);
+figure(4); clf; FluxLoops.plot_StandAlone();
+
+SaddleCoils = Diag_SaddleCoils();
+SaddleCoils = SaddleCoils.Upload(1,machine);
+SaddleCoils = SaddleCoils.measure(equi);
+figure(5); clf; SaddleCoils.plot_StandAlone();
+
+TS = Diag_ThomsonScattering();
+TS = TS.Upload(1,machine);
+TS = TS.measure(equi);
+figure(6); clf; TS.plot_StandAlone()
+
+IntPol = Diag_InterferometerPolarimeter();
+IntPol = IntPol.Upload(1,machine);
+IntPol = IntPol.measure(equi);
+figure(7); clf; IntPol.plot_StandAlone;
+% 
+% Bolo = Diag_Bolo();
+% Bolo  = Bolo.Upload(1,machine);
+% Bolo = Bolo.measure(equi);

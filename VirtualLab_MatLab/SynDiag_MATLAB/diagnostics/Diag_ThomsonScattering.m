@@ -8,7 +8,7 @@ classdef Diag_ThomsonScattering
         Z % Vertical coordinate
 
         ne % Measured Electron Density
-        Te % Measured Electron Temperature 
+        Te % Measured Electron Temperature
 
         sigma_ne % Associated Uncertainty to Measured Electron Density
         sigma_Te % Associated Uncertainty to Measured Electron Temperature
@@ -32,10 +32,10 @@ classdef Diag_ThomsonScattering
             ne_equi = equi.ne;
             Te_equi = equi.Te;
 
-            obj.ideal.ne = interp2(R_equi,Z_equi,ne_equi,obj.R,obj.Z); 
-            obj.ideal.Te = interp2(R_equi,Z_equi,Te_equi,obj.R,obj.Z); 
+            obj.ideal.ne = interp2(R_equi,Z_equi,ne_equi,obj.R,obj.Z);
+            obj.ideal.Te = interp2(R_equi,Z_equi,Te_equi,obj.R,obj.Z);
 
-            % noise absolute 
+            % noise absolute
             noise_abs_ne = normrnd(0,obj.config.ne_noise_random_absolute_intensity,size(obj.ideal.ne));
             noise_abs_Te = normrnd(0,obj.config.Te_noise_random_absolute_intensity,size(obj.ideal.Te));
 
@@ -57,28 +57,75 @@ classdef Diag_ThomsonScattering
         end
 
         %% Functions
-        function obj = Upload(obj,configuration)
+        function obj = Upload(obj,configuration,machine)
 
             % default configuration
             if nargin<2
                 configuration = 1;
+                machine = "TokaLab";
+            elseif nargin < 3
+                machine = "TokaLab";
             end
 
-            if configuration == 1
-                
-                obj.config.configuration = 1;
+            %%%%%%%%%%%% TokaLab Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            if machine == "TokaLab"
 
-                obj.R = linspace(6,8.4,60);
-                obj.Z = linspace(0,0.5,60);
+                if configuration == 1
 
-                obj.config.ne_noise_random_absolute_intensity = 0; 
-                obj.config.Te_noise_random_absolute_intensity = 0; 
+                    obj.config.configuration = 1;
 
-                obj.config.ne_noise_random_proportional_intensity = 0;
-                obj.config.Te_noise_random_proportional_intensity = 0;
+                    obj.R = linspace(6,8.4,60);
+                    obj.Z = linspace(0,0.5,60);
 
+                    obj.config.ne_noise_random_absolute_intensity = 0;
+                    obj.config.Te_noise_random_absolute_intensity = 0;
+
+                    obj.config.ne_noise_random_proportional_intensity = 0;
+                    obj.config.Te_noise_random_proportional_intensity = 0;
+
+                end
             end
 
+            %%%%%%%%%%%% JET-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            if machine == "JET-like"
+
+                if configuration == 1
+
+                    obj.config.configuration = 1;
+
+                    obj.R = linspace(6,8.4,60);
+                    obj.Z = linspace(0,0.5,60);
+
+                    obj.config.ne_noise_random_absolute_intensity = 0;
+                    obj.config.Te_noise_random_absolute_intensity = 0;
+
+                    obj.config.ne_noise_random_proportional_intensity = 0;
+                    obj.config.Te_noise_random_proportional_intensity = 0;
+
+                end
+            end
+
+            %%%%%%%%%%%% DTT-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            if machine == "DTT-like"
+
+                if configuration == 1
+
+                    obj.config.configuration = 1;
+
+                    obj.R = linspace(6,8.4,60);
+                    obj.Z = linspace(0,0.5,60);
+
+                    obj.config.ne_noise_random_absolute_intensity = 0;
+                    obj.config.Te_noise_random_absolute_intensity = 0;
+
+                    obj.config.ne_noise_random_proportional_intensity = 0;
+                    obj.config.Te_noise_random_proportional_intensity = 0;
+
+                end
+            end
         end
 
         %% Plotting Functions
@@ -114,7 +161,7 @@ classdef Diag_ThomsonScattering
         end
 
         function plot_StandAlone(obj)
-           
+
             subplot(1,2,1)
             hold off
             plot(obj.ideal.Te,'.b','MarkerSize',16)
