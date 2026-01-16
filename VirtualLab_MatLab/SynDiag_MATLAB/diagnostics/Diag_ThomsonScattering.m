@@ -68,7 +68,7 @@ classdef Diag_ThomsonScattering
             end
 
             %%%%%%%%%%%% TokaLab Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
+
             if machine == "TokaLab"
 
                 if configuration == 1
@@ -88,15 +88,15 @@ classdef Diag_ThomsonScattering
             end
 
             %%%%%%%%%%%% JET-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
+
             if machine == "JET-like"
 
                 if configuration == 1
 
                     obj.config.configuration = 1;
 
-                    obj.R = linspace(6,8.4,60);
-                    obj.Z = linspace(0,0.5,60);
+                    obj.R = linspace(2.98,3.88,60);
+                    obj.Z = linspace(0.06,0.11,60);
 
                     obj.config.ne_noise_random_absolute_intensity = 0;
                     obj.config.Te_noise_random_absolute_intensity = 0;
@@ -108,7 +108,7 @@ classdef Diag_ThomsonScattering
             end
 
             %%%%%%%%%%%% DTT-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
+
             if machine == "DTT-like"
 
                 if configuration == 1

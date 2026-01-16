@@ -2,7 +2,7 @@ clear; clc;
 
 
 machine = "DTT-like";
-% machine = "Tokalab";
+% machine = "TokaLab";
 
 % initialise the class tokamak
 tok = tokamak();
@@ -47,6 +47,13 @@ coils = coils.build_coils();
 
 equi.config.GSsolver.maxIter = 30;
 [equi, coils] = equi.solve_equilibrium_free_v1(coils);
+
+% coils.system.PF3.Ic = coils.system.PF3.Ic.*10;
+% coils.system.PF4.Ic = coils.system.PF4.Ic.*10;
+% coils.system.VSU.Ic = coils.system.VSU.Ic.*10;
+% 
+% [equi, coils] = equi.solve_equilibrium_free_v1(coils);
+
 equi = equi.equi_pp2();
 
 %%

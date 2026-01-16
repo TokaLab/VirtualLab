@@ -126,7 +126,7 @@ classdef geometry
             [~,indices] = min(d_wall,[],1);
 
             d = ones(size(R));
-            M_wall = spdiags(d', 0, length(d), length(d));
+            M_wall = spdiags(d, 0, length(d), length(d));
             M_wall = M_wall(indices,:);
 
         end
