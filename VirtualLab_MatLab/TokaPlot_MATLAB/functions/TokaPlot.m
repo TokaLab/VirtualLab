@@ -109,6 +109,7 @@ classdef TokaPlot
 
             figure(fig)
             subplot(config.subplot(1),config.subplot(2), config.subplot(3))
+            
 
             % plot walls, if asked
 
@@ -162,6 +163,9 @@ classdef TokaPlot
                 end
 
                 title("Bolometers")
+                % diag.R = [diag.R_in diag.R_end];
+                % diag.Z = [diag.Z_in diag.Z_end];
+                
             end
 
             if isfield(config, "hold") == 1 && config.hold == "on"
@@ -172,8 +176,14 @@ classdef TokaPlot
 
             % complete the plot
             axis equal
-            xlim([-inf inf])
-            ylim([-inf inf])
+            if isa(diag,"Diag_Bolo")==0
+                xlim([equi.geo.R(1) equi.geo.R(end)]) 
+                ylim([equi.geo.Z(1) equi.geo.Z(end)])
+            else
+                R_lim = [diag.R_in diag.R_end]; Z_lim = [diag.Z_in diag.Z_end];
+                xlim([min(R_lim, [], "all") max(R_lim, [],  "all")])
+                ylim([min(Z_lim, [],  "all") max(Z_lim, [],  "all")])
+            end 
             xlabel("R [m]")
             ylabel("z [m]")
             colormap("jet")
