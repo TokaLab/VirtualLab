@@ -39,7 +39,7 @@ classdef tokamak
             % minor radii, grid information, and wall contours).
 
             if nargin < 2
-                machine = "Tokalab";
+                machine = "TokaLab";
             end
 
             disp(machine)
