@@ -2,7 +2,7 @@ clear; clc;
 
 %% here we test a new tokamak, TOKAPUG!
 
-machine = "JET-like";
+machine = "DTT-like";
 
 % initialise the class tokamak
 tok = tokamak();
@@ -83,4 +83,4 @@ figure(7); clf; IntPol.plot_StandAlone;
 Bolo = Diag_Bolo();
 Bolo  = Bolo.Upload(1,machine);
 Bolo = Bolo.measure(equi);
-figure(8); clf; 
+figure(8); clf; Bolo.plot_geo()

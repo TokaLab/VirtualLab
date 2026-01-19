@@ -48,9 +48,6 @@ def function_solve_GS(equi):
     equi.evaluate_profiles_1D()
     
     return equi
-
-# --- Simulate Measurements 
-def function_measure(equi,)
     
 # --- Plot Field
 def function_plot_field(equi,PlotConfig):
@@ -151,6 +148,157 @@ def function_plot_profiles(equi,PlotConfig):
     st.pyplot(fig, use_container_width=True)
     plt.close(fig)
     
+def function_plot_diagnostics(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS):
+    
+    # Configuration
+    FontSize = PlotConfig.FontSize
+    width = PlotConfig.Width
+    height = PlotConfig.Height
+    
+    fig, ax = plt.subplots(figsize=(width, height))
+    ax.plot(equi.geo.wall.R,equi.geo.wall.Z,color = "k",linewidth = 2)
+    
+    # --- Legenda
+    legend_entries = []
+    legend_entries.append("Wall")
+
+    if "Pick Up" in PlotConfig.Diag:
+        ax.plot(PickUp.R,PickUp.Z,'.b',markersize=16)
+        legend_entries.append("Pick Ups")
+    if "Saddle Loops" in PlotConfig.Diag:
+        R = np.vstack((SaddleCoils.R1, SaddleCoils.R2))
+        Z = np.vstack((SaddleCoils.Z1, SaddleCoils.Z2))
+        ax.plot(R,Z,'.-', color="#7E2F8E", markersize=16)
+        legend_entries.append("Saddle Loops")
+    if "Flux Loops" in PlotConfig.Diag:
+        ax.plot(FluxLoops.R,FluxLoops.Z,'sg', linewidth=1.6, markersize=10)
+        legend_entries.append("Flux Loops")
+    if "Thomson Scattering" in PlotConfig.Diag:
+        ax.plot(TS.R, TS.Z, '.r')
+        legend_entries.append("Thomson Scattering")
+    if "Interferometer-Polarimeter" in PlotConfig.Diag:
+        R = np.vstack((IP.R_in, IP.R_out))
+        Z = np.vstack((IP.Z_in, IP.Z_out))
+        ax.plot(R,Z,'-', color="#A2142F", markersize=16)
+        legend_entries.append("Interferometer-Polarimeter")
+    
+    ax.set_aspect('equal')
+    ax.set_xlim(equi.geo.R.min(), equi.geo.R.max())
+    ax.set_ylim(equi.geo.Z.min(), equi.geo.Z.max())
+    ax.autoscale(False)
+    
+    ax.set_xlabel("R [m]",fontsize=FontSize)
+    ax.set_ylabel("Z [m]",fontsize=FontSize)
+    ax.tick_params(axis="both",labelsize=FontSize)
+    
+    # --- Mostra su Streamlit
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+    
+def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS):
+    
+    # Configuration
+    FontSize = PlotConfig.FontSize
+    width = PlotConfig.Width
+    height = PlotConfig.Height
+
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(width,height))
+    
+    # -------------------- Axis 0 --------------------
+    ax = axes[0]
+    if "Pick Up Coils" in PlotConfig.Measure1:
+        PickUp.measure(equi)
+        ax.plot(PickUp.ideal['B'],'.b')
+        ax.plot(PickUp.B,'or')
+        ax.set_ylabel(r"$B [T]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Saddle Loops" in PlotConfig.Measure1:
+        SaddleCoils.measure(equi)
+        ax.plot(SaddleCoils.ideal['Dpsi'][0],'.b')
+        ax.plot(SaddleCoils.Dpsi[0],'or')
+        ax.set_ylabel(r"$\Delta\psi [Wb/rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Flux Loops" in PlotConfig.Measure1:
+        FluxLoops.measure(equi)
+        ax.plot(FluxLoops.ideal['psi'],'.b')
+        ax.plot(FluxLoops.psi,'or')
+        ax.set_ylabel(r"$\psi [Wb/rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+    
+    elif "Thomson Scattering - Density" in PlotConfig.Measure1:
+        TS.measure(equi)
+        ax.plot(TS.R,TS.ideal['ne'],'.b')
+        ax.plot(TS.R,TS.ne,'or')
+        ax.set_ylabel(r"$n_e [m^{-3}]$", fontsize=FontSize)
+        ax.set_xlabel("R [m]",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Thomson Scattering - Temperature" in PlotConfig.Measure1:
+        TS.measure(equi)
+        ax.plot(TS.R,TS.ideal['Te'],'.b')
+        ax.plot(TS.R,TS.Te,'or')
+        ax.set_ylabel(r"$T_e [eV]$", fontsize=FontSize)
+        ax.set_xlabel("R [m]",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+    
+    elif "Interferometer" in PlotConfig.Measure1:
+        IP.measure(equi)
+        ax.plot(IP.ideal['LIDc'],'.k')
+        ax.plot(IP.LIDc,'ob')
+        ax.plot(IP.LIDh,'or')
+        ax.set_ylabel(r"$LID [m^{-3}]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Polarimeter - Faraday Rotation" in PlotConfig.Measure1:
+        IP.measure(equi)
+        ax.plot(IP.ideal['FARc'],'.k')
+        ax.plot(IP.FARc,'ob')
+        ax.plot(IP.FARh,'or')
+        ax.set_ylabel(r"$Faraday [rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Polarimeter - Cotton-Mouton" in PlotConfig.Measure1:
+        IP.measure(equi)
+        ax.plot(IP.ideal['CMc'],'.k')
+        ax.plot(IP.CMc,'ob')
+        ax.plot(IP.CMh,'or')
+        ax.set_ylabel(r"$CM [rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    
+        
+    # --- Mostra su Streamlit
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+        
+    
+    
+    
+    
     
 
 # -----------------------------------------------------------------------------
@@ -224,6 +372,10 @@ if 'app_initialised' not in st.session_state:
     class PlotConfiguration:
         def __init__(self):
             self.Field = PlotConfigField()
+            self.Diag = None
+            self.Measure1 = None
+            self.Measure2 = None
+            self.Measure3 = None
             self.Width = None
             self.Height = None
             self.FontSize = None
@@ -300,27 +452,60 @@ with col1:
         equi.config.kinetic.a1 = st.slider(r"$n_e$ shape parameter $\alpha_1$",0.1,5.0,2.0,0.1)
         equi.config.kinetic.a2 = st.slider(r"$n_e$ shape parameter $\alpha_2$",0.1,5.0,2.0,0.1); 
     
+    with tab_diag: 
+        PlotConfig.Measure1 = st.selectbox("Select Diagnostic - Plot 1:",
+                                          ("Pick Up Coils","Saddle Loops",
+                                           "Flux Loops","Thomson Scattering - Density",
+                                           "Thomson Scattering - Temperature",
+                                           "Interferometer",
+                                           "Polarimeter - Faraday Rotation",
+                                           "Polarimeter - Cotton-Mouton"));
+        
+        PlotConfig.Measure2 = st.selectbox("Select Diagnostic - Plot 2:",
+                                          ("Pick Up Coils","Saddle Loops",
+                                           "Flux Loops","Thomson Scattering - Density",
+                                           "Thomson Scattering - Temperature",
+                                           "Interferometer",
+                                           "Polarimeter - Faraday Rotation",
+                                           "Polarimeter - Cotton-Mouton"));
+        
+        PlotConfig.Measure3 = st.selectbox("Select Diagnostic - Plot 3:",
+                                          ("Pick Up Coils","Saddle Loops",
+                                           "Flux Loops","Thomson Scattering - Density",
+                                           "Thomson Scattering - Temperature",
+                                           "Interferometer",
+                                           "Polarimeter - Faraday Rotation",
+                                           "Polarimeter - Cotton-Mouton"));
+        
     with tab_plot:
         PlotConfig.Field.field = st.selectbox("choose field to plot",("ne","Te"))
         PlotConfig.Field.update()
+        
+        PlotConfig.Diag = st.multiselect("Diagnostics to show in geometry",
+                                      ["Pick Up","Saddle Loops","Flux Loops",
+                                       "Thomson Scattering","Interferometer-Polarimeter"])
     
 # --------------------------- New Solution ----------------------------------
 # --- Solve equilibrium
 equi = function_solve_GS(equi)
 
 # --- Adjust Plot Size
-PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6)
-PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6)
-PlotConfig.FontSize = st.sidebar.slider("font size", 1, 20, 12)
+PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6, 1)
+PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6, 1)
+PlotConfig.FontSize = st.sidebar.slider("font size", 1, 20, 12, 1)
 
 
 # --------------------------- Update Plot -----------------------------------  
 with col3:
     tab_field, tab_profiles, tab_diag, tab_measurements = st.tabs(["Fields","Profiles","Diagnostics","Measurements"])
     with tab_field:
-        #with st.container(height=800):
         function_plot_field(equi,PlotConfig)
     with tab_profiles: 
         function_plot_profiles(equi,PlotConfig)
+    with tab_diag:
+        function_plot_diagnostics(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS)
+    with tab_measurements:
+        function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS)
+        
     
     
