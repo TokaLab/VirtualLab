@@ -49,6 +49,12 @@ def function_solve_GS(equi):
     
     return equi
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+# --- Simulate Measurements 
+def function_measure(equi,)
+>>>>>>> Stashed changes
 =======
 
 # --- Simulate Measurements 
@@ -154,6 +160,7 @@ def function_plot_profiles(equi,PlotConfig):
     st.pyplot(fig, use_container_width=True)
     plt.close(fig)
     
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 def function_plot_diagnostics(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS):
     
@@ -308,6 +315,8 @@ def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS
     
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     
 
 # -----------------------------------------------------------------------------
@@ -382,10 +391,13 @@ if 'app_initialised' not in st.session_state:
         def __init__(self):
             self.Field = PlotConfigField()
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             self.Diag = None
             self.Measure1 = None
             self.Measure2 = None
             self.Measure3 = None
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
             self.Width = None
@@ -465,6 +477,7 @@ with col1:
         equi.config.kinetic.a2 = st.slider(r"$n_e$ shape parameter $\alpha_2$",0.1,5.0,2.0,0.1); 
     
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     with tab_diag: 
         PlotConfig.Measure1 = st.selectbox("Select Diagnostic - Plot 1:",
                                           ("Pick Up Coils","Saddle Loops",
@@ -502,6 +515,11 @@ with col1:
         PlotConfig.Field.field = st.selectbox("choose field to plot",("ne","Te"))
         PlotConfig.Field.update()
 >>>>>>> Stashed changes
+=======
+    with tab_plot:
+        PlotConfig.Field.field = st.selectbox("choose field to plot",("ne","Te"))
+        PlotConfig.Field.update()
+>>>>>>> Stashed changes
     
 # --------------------------- New Solution ----------------------------------
 # --- Solve equilibrium
@@ -509,9 +527,15 @@ equi = function_solve_GS(equi)
 
 # --- Adjust Plot Size
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6, 1)
 PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6, 1)
 PlotConfig.FontSize = st.sidebar.slider("font size", 1, 20, 12, 1)
+=======
+PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6)
+PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6)
+PlotConfig.FontSize = st.sidebar.slider("font size", 1, 20, 12)
+>>>>>>> Stashed changes
 =======
 PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6)
 PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6)
@@ -524,6 +548,7 @@ with col3:
     tab_field, tab_profiles, tab_diag, tab_measurements = st.tabs(["Fields","Profiles","Diagnostics","Measurements"])
     with tab_field:
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         function_plot_field(equi,PlotConfig)
     with tab_profiles: 
         function_plot_profiles(equi,PlotConfig)
@@ -533,10 +558,15 @@ with col3:
         function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS)
         
 =======
+=======
+>>>>>>> Stashed changes
         #with st.container(height=800):
         function_plot_field(equi,PlotConfig)
     with tab_profiles: 
         function_plot_profiles(equi,PlotConfig)
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     
     

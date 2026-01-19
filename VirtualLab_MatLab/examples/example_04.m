@@ -84,7 +84,11 @@ Bolo = Diag_Bolo();
 Bolo  = Bolo.Upload(1,machine);
 Bolo = Bolo.measure(equi);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 figure(8); clf; Bolo.plot_geo()
+=======
+figure(8); clf; 
+>>>>>>> Stashed changes
 =======
 figure(8); clf; 
 >>>>>>> Stashed changes
