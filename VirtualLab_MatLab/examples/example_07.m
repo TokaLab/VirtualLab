@@ -1,8 +1,13 @@
 clear; clc;
 
 
+<<<<<<< Updated upstream
 machine = "DTT-like";
 % machine = "TokaLab";
+=======
+% machine = "DTT-like";
+machine = "TokaLab";
+>>>>>>> Stashed changes
 
 % initialise the class tokamak
 tok = tokamak();

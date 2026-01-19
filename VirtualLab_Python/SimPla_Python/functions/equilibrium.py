@@ -45,6 +45,7 @@ class equilibrium:
         self.const = None
         self.MHD_prof = None
         self.kin_prof = None
+        self.profiles_1D = None
 
         self.psi = None
         self.psi_n = None
@@ -240,7 +241,6 @@ class equilibrium:
             psi_v = spsolve(A, b) 
             psi = psi_v.reshape(R.shape)
         
-        
         # iterative calculation
 
         maxIter = self.config.GSsolver.maxIter;
@@ -317,6 +317,38 @@ class equilibrium:
         self.ni = kinetics['ni']
         self.Te = kinetics['Te']
         self.Ti = kinetics['Ti']
+        
+    def evaluate_profiles_1D(self):
+        # --- Copy normalized flux
+        psi_n = self.psi_n.copy()
+        inside = self.LCFS.inside
+    
+        # --- Flatten psi
+        psi_n[~inside] = 1.1
+        psi_n_flat = psi_n.flatten()
+    
+        # --- Profiles to interpolate
+        profiles = ["ne", "Te", "ni", "Ti"]
+    
+        # --- Keep unique psi_n values
+        psi_n_flat_unique, unique_indices = np.unique(psi_n_flat, return_index=True)
+    
+        # --- Reference psi_n
+        N = 100
+        psi_n_ref = np.linspace(0, 1, N)
+        self.profiles_1D = {"psi_n": psi_n_ref}
+    
+        # --- Interpolation
+        for prof in profiles:
+            y_flat = getattr(self, prof).flatten()
+            y_flat_unique = y_flat[unique_indices]
+    
+            # Interp1 equivalente in Python
+            y_interp = np.interp(psi_n_ref, psi_n_flat_unique, y_flat_unique)
+    
+            self.profiles_1D[prof] = y_interp
+    
+
 
     def equi_pp(self):
         

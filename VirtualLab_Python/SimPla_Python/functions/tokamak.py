@@ -28,10 +28,10 @@ class tokamak:
         self.separatrix = None
         self.config = {}
 
-    def machine_upload(self, machine="Tokalab"):
+    def machine_upload(self, machine="TokaLab"):
         print(machine)
 
-        if machine == "Tokalab":
+        if machine == "TokaLab":
             from tokamaks.geometry.Tokalab_Geometry import Tokalab_Geometry
             geo = Tokalab_Geometry()
         elif machine == "NewMachine":
@@ -47,7 +47,7 @@ class tokamak:
         self.grid = geo.grid
 
     def scenario_upload(self,separatrix=1,Jt_method=1):
-        if self.machine == "Tokalab":
+        if self.machine == "TokaLab":
             from tokamaks.equilibrium.Tokalab_Scenario import Tokalab_Scenario
             config = Tokalab_Scenario(separatrix,Jt_method)
         elif self.machine == "NewMachine":
@@ -58,7 +58,7 @@ class tokamak:
         self.config = config
 
     def kinetic_upload(self,kinetic_scenario=1):
-        if self.machine == "Tokalab":
+        if self.machine == "TokaLab":
             from tokamaks.kinetic.Tokalab_Kinetic import Tokalab_Kinetic
             config = Tokalab_Kinetic(kinetic_scenario)
         elif self.machine == "NewMachine":

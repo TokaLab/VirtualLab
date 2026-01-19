@@ -8,8 +8,7 @@ class separatrix_target:
         self.inside = None
 
     def build_separatrix(self, separatrix_config, geo):
-        
-        
+    
         if separatrix_config.method == 1:
             self.build_separatrix_m1(separatrix_config, geo)
         # Add future methods here
@@ -58,8 +57,9 @@ class separatrix_target:
         gamma_n1, gamma_n2 = p.gamma_n_1, p.gamma_n_2
         gamma_p1, gamma_p2 = p.gamma_p_1, p.gamma_p_2
     
-        R0 = geo.R0
-        a = geo.a
+        R0 = p.R0
+        Z0 = p.Z0
+        a = p.a
         
         def inner_segment(k, d, gamma, upper=True):
 
@@ -139,6 +139,6 @@ class separatrix_target:
         
         # Composizione finale
         self.R_sep_target = np.concatenate([Rnu, Rpu[::-1], Rpl, Rnl[::-1]])
-        self.Z_sep_target = np.concatenate([Znu, Zpu[::-1], Zpl, Znl[::-1]])
+        self.Z_sep_target = np.concatenate([Znu, Zpu[::-1], Zpl, Znl[::-1]]) + Z0
             
             

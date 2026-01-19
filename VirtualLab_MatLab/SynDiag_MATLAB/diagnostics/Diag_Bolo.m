@@ -6,6 +6,9 @@ classdef Diag_Bolo
         Z_in % Vertical coordinate
         Z_end
         R_end
+
+        R_grid % Grid of the Weight
+        Z_grid % Grid of the Weight 
         Weights % Weight Matrix
         W
 
@@ -25,6 +28,27 @@ classdef Diag_Bolo
     methods
 
         function obj = measure(obj,equi)
+            
+            if size(obj.W,[1 2]) ~= size(equi.Rad)
+                
+                for z=1:size(obj.W,3)
+
+                    W_temp = interp2(obj.R_grid,obj.Z_grid,obj.W(:,:,z), equi.geo.grid.Rg, equi.geo.grid.Zg);
+                    
+                    W_temp(isnan(W_temp))=0;
+                    
+                    
+                    Weights(:,z) = W_temp(:);
+
+                    W_temp_1(:,:,z)=W_temp;
+            
+
+            end
+               
+                obj.W= W_temp_1;
+                obj.Weights = Weights;
+
+            end
 
             obj.ideal.prj =obj.W.*equi.Rad;
             obj.ideal.prj=reshape(sum(obj.ideal.prj,[1,2]),[1 size(obj.ideal.prj,3)]);
@@ -68,9 +92,15 @@ classdef Diag_Bolo
                     obj.Z_in = Bolo.plot.start(:,2);
                     obj.R_end = Bolo.plot.end(:,1);
                     obj.Z_end = Bolo.plot.end(:,2);
+                    
+                    obj.R_grid  =Bolo.Rgrid;
+                    obj.Z_grid = Bolo.Zgrid;
 
                     obj.Weights= Bolo.Weights;
                     obj.W= Bolo.W;
+                    
+
+
                     obj.config.prj_noise_random_absolute_intensity = 0;
 
                     obj.config.prj_noise_random_proportional_intensity = 0;
@@ -90,6 +120,8 @@ classdef Diag_Bolo
                     obj.Z_in = Bolo.plot.start(:,2);
                     obj.R_end = Bolo.plot.end(:,1);
                     obj.Z_end = Bolo.plot.end(:,2);
+                    obj.R_grid  =Bolo.Rgrid;
+                    obj.Z_grid = Bolo.Zgrid;
 
                     obj.Weights= Bolo.Weights;
                     obj.W= Bolo.W;
@@ -112,6 +144,9 @@ classdef Diag_Bolo
                     obj.Z_in = Bolo.plot.start(:,2);
                     obj.R_end = Bolo.plot.end(:,1);
                     obj.Z_end = Bolo.plot.end(:,2);
+                    
+                    obj.R_grid  =Bolo.Rgrid;
+                    obj.Z_grid = Bolo.Zgrid;
 
                     obj.Weights= Bolo.Weights;
                     obj.W= Bolo.W;
