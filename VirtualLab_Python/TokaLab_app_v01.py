@@ -402,6 +402,7 @@ if 'app_initialised' not in st.session_state:
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             self.Diag = None
             self.Measure1 = None
             self.Measure2 = None
@@ -593,6 +594,9 @@ with col3:
         function_plot_profiles(equi,PlotConfig)
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
