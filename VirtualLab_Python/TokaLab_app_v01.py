@@ -48,30 +48,6 @@ def function_solve_GS(equi):
     equi.evaluate_profiles_1D()
     
     return equi
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-
-# --- Simulate Measurements 
-def function_measure(equi,)
->>>>>>> Stashed changes
-=======
-
-# --- Simulate Measurements 
-def function_measure(equi,)
->>>>>>> Stashed changes
-=======
-
-# --- Simulate Measurements 
-def function_measure(equi,)
->>>>>>> Stashed changes
-=======
-
-# --- Simulate Measurements 
-def function_measure(equi,)
->>>>>>> Stashed changes
     
 # --- Plot Field
 def function_plot_field(equi,PlotConfig):
@@ -172,10 +148,6 @@ def function_plot_profiles(equi,PlotConfig):
     st.pyplot(fig, use_container_width=True)
     plt.close(fig)
     
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 def function_plot_diagnostics(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS):
     
     # Configuration
@@ -235,6 +207,7 @@ def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS
     # -------------------- Axis 0 --------------------
     ax = axes[0]
     if "Pick Up Coils" in PlotConfig.Measure1:
+        PickUp.config['noise_random_proportional_intensity'] = PlotConfig.Noise1/100
         PickUp.measure(equi)
         ax.plot(PickUp.ideal['B'],'.b')
         ax.plot(PickUp.B,'or')
@@ -245,6 +218,7 @@ def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS
         ax.tick_params(axis="both", labelsize=FontSize)
         
     elif "Saddle Loops" in PlotConfig.Measure1:
+        SaddleCoils.config['noise_random_proportional_intensity'] = PlotConfig.Noise1/100
         SaddleCoils.measure(equi)
         ax.plot(SaddleCoils.ideal['Dpsi'][0],'.b')
         ax.plot(SaddleCoils.Dpsi[0],'or')
@@ -255,6 +229,7 @@ def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS
         ax.tick_params(axis="both", labelsize=FontSize)
         
     elif "Flux Loops" in PlotConfig.Measure1:
+        FluxLoops.config['noise_random_proportional_intensity'] = PlotConfig.Noise1/100
         FluxLoops.measure(equi)
         ax.plot(FluxLoops.ideal['psi'],'.b')
         ax.plot(FluxLoops.psi,'or')
@@ -265,6 +240,7 @@ def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS
         ax.tick_params(axis="both", labelsize=FontSize)
     
     elif "Thomson Scattering - Density" in PlotConfig.Measure1:
+        TS.config['ne_noise_random_proportional_intensity'] = PlotConfig.Noise1/100
         TS.measure(equi)
         ax.plot(TS.R,TS.ideal['ne'],'.b')
         ax.plot(TS.R,TS.ne,'or')
@@ -275,6 +251,7 @@ def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS
         ax.tick_params(axis="both", labelsize=FontSize)
         
     elif "Thomson Scattering - Temperature" in PlotConfig.Measure1:
+        TS.config['Te_noise_random_proportional_intensity'] = PlotConfig.Noise1/100
         TS.measure(equi)
         ax.plot(TS.R,TS.ideal['Te'],'.b')
         ax.plot(TS.R,TS.Te,'or')
@@ -285,6 +262,7 @@ def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS
         ax.tick_params(axis="both", labelsize=FontSize)
     
     elif "Interferometer" in PlotConfig.Measure1:
+        IP.config['LID_noise_random_proportional_intensity'] = PlotConfig.Noise1/100
         IP.measure(equi)
         ax.plot(IP.ideal['LIDc'],'.k')
         ax.plot(IP.LIDc,'ob')
@@ -296,6 +274,7 @@ def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS
         ax.tick_params(axis="both", labelsize=FontSize)
         
     elif "Polarimeter - Faraday Rotation" in PlotConfig.Measure1:
+        IP.config['FAR_noise_random_proportional_intensity'] = PlotConfig.Noise1/100
         IP.measure(equi)
         ax.plot(IP.ideal['FARc'],'.k')
         ax.plot(IP.FARc,'ob')
@@ -307,35 +286,212 @@ def function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS
         ax.tick_params(axis="both", labelsize=FontSize)
         
     elif "Polarimeter - Cotton-Mouton" in PlotConfig.Measure1:
+        IP.config['CM_noise_random_proportional_intensity'] = PlotConfig.Noise1/100
         IP.measure(equi)
         ax.plot(IP.ideal['CMc'],'.k')
         ax.plot(IP.CMc,'ob')
         ax.plot(IP.CMh,'or')
         ax.set_ylabel(r"$CM [rad]$", fontsize=FontSize)
         ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(["ideal - cold","cold plasma","hot plasma"],fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+        
+            
+    # -------------------- Axis 1 --------------------
+    ax = axes[1]
+    if "Pick Up Coils" in PlotConfig.Measure2:
+        PickUp.config['noise_random_proportional_intensity'] = PlotConfig.Noise2/100
+        PickUp.measure(equi)
+        ax.plot(PickUp.ideal['B'],'.b')
+        ax.plot(PickUp.B,'or')
+        ax.set_ylabel(r"$B [T]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
         ax.legend(fontsize=FontSize)
         ax.grid(True, which="both")
         ax.tick_params(axis="both", labelsize=FontSize)
         
-    
+    elif "Saddle Loops" in PlotConfig.Measure2:
+        SaddleCoils.config['noise_random_proportional_intensity'] = PlotConfig.Noise2/100
+        SaddleCoils.measure(equi)
+        ax.plot(SaddleCoils.ideal['Dpsi'][0],'.b')
+        ax.plot(SaddleCoils.Dpsi[0],'or')
+        ax.set_ylabel(r"$\Delta\psi [Wb/rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
         
+    elif "Flux Loops" in PlotConfig.Measure2:
+        FluxLoops.config['noise_random_proportional_intensity'] = PlotConfig.Noise2/100
+        FluxLoops.measure(equi)
+        ax.plot(FluxLoops.ideal['psi'],'.b')
+        ax.plot(FluxLoops.psi,'or')
+        ax.set_ylabel(r"$\psi [Wb/rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+    
+    elif "Thomson Scattering - Density" in PlotConfig.Measure2:
+        TS.config['ne_noise_random_proportional_intensity'] = PlotConfig.Noise2/100
+        TS.measure(equi)
+        ax.plot(TS.R,TS.ideal['ne'],'.b')
+        ax.plot(TS.R,TS.ne,'or')
+        ax.set_ylabel(r"$n_e [m^{-3}]$", fontsize=FontSize)
+        ax.set_xlabel("R [m]",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Thomson Scattering - Temperature" in PlotConfig.Measure2:
+        TS.config['Te_noise_random_proportional_intensity'] = PlotConfig.Noise2/100
+        TS.measure(equi)
+        ax.plot(TS.R,TS.ideal['Te'],'.b')
+        ax.plot(TS.R,TS.Te,'or')
+        ax.set_ylabel(r"$T_e [eV]$", fontsize=FontSize)
+        ax.set_xlabel("R [m]",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+    
+    elif "Interferometer" in PlotConfig.Measure2:
+        IP.config['LID_noise_random_proportional_intensity'] = PlotConfig.Noise2/100
+        IP.measure(equi)
+        ax.plot(IP.ideal['LIDc'],'.k')
+        ax.plot(IP.LIDc,'ob')
+        ax.plot(IP.LIDh,'or')
+        ax.set_ylabel(r"$LID [m^{-3}]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Polarimeter - Faraday Rotation" in PlotConfig.Measure2:
+        IP.config['FAR_noise_random_proportional_intensity'] = PlotConfig.Noise2/100
+        IP.measure(equi)
+        ax.plot(IP.ideal['FARc'],'.k')
+        ax.plot(IP.FARc,'ob')
+        ax.plot(IP.FARh,'or')
+        ax.set_ylabel(r"$Faraday [rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Polarimeter - Cotton-Mouton" in PlotConfig.Measure2:
+        IP.config['CM_noise_random_proportional_intensity'] = PlotConfig.Noise2/100
+        IP.measure(equi)
+        ax.plot(IP.ideal['CMc'],'.k')
+        ax.plot(IP.CMc,'ob')
+        ax.plot(IP.CMh,'or')
+        ax.set_ylabel(r"$CM [rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(["ideal - cold","cold plasma","hot plasma"],fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+        
+    # -------------------- Axis 2 --------------------
+    ax = axes[2]
+    if "Pick Up Coils" in PlotConfig.Measure3:
+        PickUp.config['noise_random_proportional_intensity'] = PlotConfig.Noise3/100
+        PickUp.measure(equi)
+        ax.plot(PickUp.ideal['B'],'.b')
+        ax.plot(PickUp.B,'or')
+        ax.set_ylabel(r"$B [T]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+            
+    elif "Saddle Loops" in PlotConfig.Measure3:
+        SaddleCoils.config['noise_random_proportional_intensity'] = PlotConfig.Noise3/100
+        SaddleCoils.measure(equi)
+        ax.plot(SaddleCoils.ideal['Dpsi'][0],'.b')
+        ax.plot(SaddleCoils.Dpsi[0],'or')
+        ax.set_ylabel(r"$\Delta\psi [Wb/rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+            
+    elif "Flux Loops" in PlotConfig.Measure3:
+        FluxLoops.config['noise_random_proportional_intensity'] = PlotConfig.Noise3/100
+        FluxLoops.measure(equi)
+        ax.plot(FluxLoops.ideal['psi'],'.b')
+        ax.plot(FluxLoops.psi,'or')
+        ax.set_ylabel(r"$\psi [Wb/rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Thomson Scattering - Density" in PlotConfig.Measure3:
+        TS.config['ne_noise_random_proportional_intensity'] = PlotConfig.Noise3/100
+        TS.measure(equi)
+        ax.plot(TS.R,TS.ideal['ne'],'.b')
+        ax.plot(TS.R,TS.ne,'or')
+        ax.set_ylabel(r"$n_e [m^{-3}]$", fontsize=FontSize)
+        ax.set_xlabel("R [m]",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+            
+    elif "Thomson Scattering - Temperature" in PlotConfig.Measure3:
+        TS.config['Te_noise_random_proportional_intensity'] = PlotConfig.Noise3/100
+        TS.measure(equi)
+        ax.plot(TS.R,TS.ideal['Te'],'.b')
+        ax.plot(TS.R,TS.Te,'or')
+        ax.set_ylabel(r"$T_e [eV]$", fontsize=FontSize)
+        ax.set_xlabel("R [m]",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+        
+    elif "Interferometer" in PlotConfig.Measure3:
+        IP.config['LID_noise_random_proportional_intensity'] = PlotConfig.Noise3/100
+        IP.measure(equi)
+        ax.plot(IP.ideal['LIDc'],'.k')
+        ax.plot(IP.LIDc,'ob')
+        ax.plot(IP.LIDh,'or')
+        ax.set_ylabel(r"$LID [m^{-3}]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+            
+    elif "Polarimeter - Faraday Rotation" in PlotConfig.Measure3:
+        IP.config['FAR_noise_random_proportional_intensity'] = PlotConfig.Noise3/100
+        IP.measure(equi)
+        ax.plot(IP.ideal['FARc'],'.k')
+        ax.plot(IP.FARc,'ob')
+        ax.plot(IP.FARh,'or')
+        ax.set_ylabel(r"$Faraday [rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+            
+    elif "Polarimeter - Cotton-Mouton" in PlotConfig.Measure3:
+        IP.config['CM_noise_random_proportional_intensity'] = PlotConfig.Noise3/100
+        IP.measure(equi)
+        ax.plot(IP.ideal['CMc'],'.k')
+        ax.plot(IP.CMc,'ob')
+        ax.plot(IP.CMh,'or')
+        ax.set_ylabel(r"$CM [rad]$", fontsize=FontSize)
+        ax.set_xlabel("channel",fontsize=FontSize)
+        ax.legend(["ideal - cold","cold plasma","hot plasma"],fontsize=FontSize)
+        ax.grid(True, which="both")
+        ax.tick_params(axis="both", labelsize=FontSize)
+            
+    plt.tight_layout()
+    
     # --- Mostra su Streamlit
     st.pyplot(fig, use_container_width=True)
     plt.close(fig)
         
-    
-    
-    
-    
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-    
 
 # -----------------------------------------------------------------------------
 # --------------------------- App Specific Scripts ----------------------------
@@ -408,22 +564,13 @@ if 'app_initialised' not in st.session_state:
     class PlotConfiguration:
         def __init__(self):
             self.Field = PlotConfigField()
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
             self.Diag = None
             self.Measure1 = None
             self.Measure2 = None
             self.Measure3 = None
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+            self.Noise1 = None
+            self.Noise2 = None
+            self.Noise3 = None
             self.Width = None
             self.Height = None
             self.FontSize = None
@@ -438,19 +585,29 @@ if 'app_initialised' not in st.session_state:
     # --- Initialise diagnostics
     PickUp = Diag_PickUpCoils()
     PickUp.upload()
+    PickUp.config['noise_random_absolute_intensity'] = 0
+    PickUp.config['noise_random_proportional'] = 1
     
     SaddleCoils = Diag_SaddleCoils()
     SaddleCoils.upload()
+    SaddleCoils.config['noise_random_absolute_intensity'] = 0
+    SaddleCoils.config['noise_random_proportional'] = 1
     
     FluxLoops = Diag_FluxLoops()
     FluxLoops.upload()
+    FluxLoops.config['noise_random_absolute_intensity'] = 0
+    FluxLoops.config['noise_random_proportional'] = 1
     
     TS = Diag_ThomsonScattering()
     TS.upload()
+    TS.config['ne_noise_random_absolute_intensity'] = 0
+    TS.config['Te_noise_random_absolute_intensity'] = 0
     
     IP = Diag_InterferometerPolarimeter()
     IP.upload()
-    
+    IP.config['LID_noise_random_absolute_intensity'] = 0
+    IP.config['FAR_noise_random_absolute_intensity'] = 0
+    IP.config['CM_noise_random_absolute_intensity'] = 0
     
 # --- Three Columns ---
 col1, col2, col3 = st.columns([1,1,1])  # l'ultima colonna più larga per il plot
@@ -461,16 +618,6 @@ col1, col2, col3 = st.columns([1,1,1])  # l'ultima colonna più larga per il plo
 with col1:
     
     tab_geo, tab_sep, tab_prof, tab_diag, tab_plot = st.tabs(["Main Parameters","Separatrix","Profiles","Diagnostics","Plot"])
-    
-    #st.markdown("""
-    #<style>
-    #div.stSlider > div > div {
-    #    height: 5px;  /* altezza barra slider */
-    #}
-    #</style>
-    #""", unsafe_allow_html=True)
-
-    #st.markdown("<h3 style='font-size:14px;'>Separatrix Parameters</h3>", unsafe_allow_html=True)
     
     with tab_geo:  
         equi.config.separatrix.R0 = st.slider("Major Radius $R_0 [m]$", 5.0, 7.0, 6.0, 0.01)
@@ -500,10 +647,6 @@ with col1:
         equi.config.kinetic.a1 = st.slider(r"$n_e$ shape parameter $\alpha_1$",0.1,5.0,2.0,0.1)
         equi.config.kinetic.a2 = st.slider(r"$n_e$ shape parameter $\alpha_2$",0.1,5.0,2.0,0.1); 
     
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     with tab_diag: 
         PlotConfig.Measure1 = st.selectbox("Select Diagnostic - Plot 1:",
                                           ("Pick Up Coils","Saddle Loops",
@@ -512,6 +655,7 @@ with col1:
                                            "Interferometer",
                                            "Polarimeter - Faraday Rotation",
                                            "Polarimeter - Cotton-Mouton"));
+        PlotConfig.Noise1 = st.slider("Noise Diagnostic [%] - Plot 1:",0.0,100.0,10.0,1.0);
         
         PlotConfig.Measure2 = st.selectbox("Select Diagnostic - Plot 2:",
                                           ("Pick Up Coils","Saddle Loops",
@@ -520,6 +664,7 @@ with col1:
                                            "Interferometer",
                                            "Polarimeter - Faraday Rotation",
                                            "Polarimeter - Cotton-Mouton"));
+        PlotConfig.Noise2 = st.slider("Noise Diagnostic [%] - Plot 2:",0.0,100.0,10.0,1.0);
         
         PlotConfig.Measure3 = st.selectbox("Select Diagnostic - Plot 3:",
                                           ("Pick Up Coils","Saddle Loops",
@@ -528,6 +673,7 @@ with col1:
                                            "Interferometer",
                                            "Polarimeter - Faraday Rotation",
                                            "Polarimeter - Cotton-Mouton"));
+        PlotConfig.Noise3 = st.slider("Noise Diagnostic [%] - Plot 3:",0.0,100.0,10.0,1.0);
         
     with tab_plot:
         PlotConfig.Field.field = st.selectbox("choose field to plot",("ne","Te"))
@@ -536,69 +682,20 @@ with col1:
         PlotConfig.Diag = st.multiselect("Diagnostics to show in geometry",
                                       ["Pick Up","Saddle Loops","Flux Loops",
                                        "Thomson Scattering","Interferometer-Polarimeter"])
-=======
-    with tab_plot:
-        PlotConfig.Field.field = st.selectbox("choose field to plot",("ne","Te"))
-        PlotConfig.Field.update()
->>>>>>> Stashed changes
-=======
-    with tab_plot:
-        PlotConfig.Field.field = st.selectbox("choose field to plot",("ne","Te"))
-        PlotConfig.Field.update()
->>>>>>> Stashed changes
-=======
-    with tab_plot:
-        PlotConfig.Field.field = st.selectbox("choose field to plot",("ne","Te"))
-        PlotConfig.Field.update()
->>>>>>> Stashed changes
-=======
-    with tab_plot:
-        PlotConfig.Field.field = st.selectbox("choose field to plot",("ne","Te"))
-        PlotConfig.Field.update()
->>>>>>> Stashed changes
     
 # --------------------------- New Solution ----------------------------------
 # --- Solve equilibrium
 equi = function_solve_GS(equi)
 
 # --- Adjust Plot Size
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6, 1)
 PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6, 1)
 PlotConfig.FontSize = st.sidebar.slider("font size", 1, 20, 12, 1)
-=======
-PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6)
-PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6)
-PlotConfig.FontSize = st.sidebar.slider("font size", 1, 20, 12)
->>>>>>> Stashed changes
-=======
-PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6)
-PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6)
-PlotConfig.FontSize = st.sidebar.slider("font size", 1, 20, 12)
->>>>>>> Stashed changes
-=======
-PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6)
-PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6)
-PlotConfig.FontSize = st.sidebar.slider("font size", 1, 20, 12)
->>>>>>> Stashed changes
-=======
-PlotConfig.Width = st.sidebar.slider("plot width", 1, 25, 6)
-PlotConfig.Height = st.sidebar.slider("plot height", 1, 25, 6)
-PlotConfig.FontSize = st.sidebar.slider("font size", 1, 20, 12)
->>>>>>> Stashed changes
-
 
 # --------------------------- Update Plot -----------------------------------  
 with col3:
     tab_field, tab_profiles, tab_diag, tab_measurements = st.tabs(["Fields","Profiles","Diagnostics","Measurements"])
     with tab_field:
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
         function_plot_field(equi,PlotConfig)
     with tab_profiles: 
         function_plot_profiles(equi,PlotConfig)
@@ -606,27 +703,3 @@ with col3:
         function_plot_diagnostics(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS)
     with tab_measurements:
         function_plot_measurement(equi,PlotConfig,PickUp,SaddleCoils,FluxLoops,IP,TS)
-        
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-        #with st.container(height=800):
-        function_plot_field(equi,PlotConfig)
-    with tab_profiles: 
-        function_plot_profiles(equi,PlotConfig)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-    
-    
