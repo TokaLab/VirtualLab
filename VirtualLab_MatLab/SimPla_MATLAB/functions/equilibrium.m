@@ -469,16 +469,27 @@ classdef equilibrium
                 iteration = iteration + 1;
 
                 % find critical points (O-point, X-point)
-                [Opoint,Xpoint] = obj.CriticalPoints(Ip,R,Z,inside_wall,psi);
+                if iteration == 1
+                    [Opoint,Xpoint] = obj.CriticalPoints(Ip,R,Z,inside_wall,psi);
+                    % normalisation of psi
+                    psi_0 = psi(Opoint);
+                    psi_b = mean(psi(ind_sep)); % Psi_b = Psi(Xpoint);
+                    psi_n = (psi-psi_0)./(psi_b-psi_0);
 
-                % normalisation of psi
-                psi_0 = psi(Opoint);
-                psi_b = mean(psi(ind_sep)); % Psi_b = Psi(Xpoint);
+                    % update toroidal current given previous psi
+                    Jt = obj.toroidal_curr.Jt_compute(psi_n,obj.config.toroidal_current,obj.geo,obj.separatrix);
+                else
+                    obj.psi = psi;
+                    [Opoint,Xpoint] = obj.CriticalPoints_v2(Ip,R,Z,inside_wall,psi);
+                    psi_0 = psi(Opoint);
+                    psi_b = psi(Xpoint);
+                    psi_n = (psi-psi_0)./(psi_b-psi_0);
+                    obj = obj.find_LCFS;
+                    % update toroidal current given previous psi
+                    Jt = obj.toroidal_curr.Jt_compute(psi_n,obj.config.toroidal_current,obj.geo,obj.LCFS);
+                end
 
-                psi_n = (psi-psi_0)./(psi_b-psi_0);
 
-                % update toroidal current given previous psi
-                Jt = obj.toroidal_curr.Jt_compute(psi_n,obj.config.toroidal_current,obj.geo,obj.separatrix);
 
                 % New Right-hand term of Grad-Shafranov
                 V_grad = -mu0*R(:).*Jt(:);
@@ -963,9 +974,14 @@ classdef equilibrium
             Opoint= ind(Opoint_ind);
             ind(Opoint_ind) = [];
 
-            % Xpoint is defined as closest Xpoint to the LCFS
-            [~,Xpoint_ind] = min((obj.LCFS.psi - Psi(ind)).^2);
-            Xpoint = ind(Xpoint_ind);
+            % Xpoint is defined as closest Xpoint to the LCFS with a
+            % minimum threshold of 1 cm 
+            [dist,Xpoint_ind] = min((obj.LCFS.psi - Psi(ind)).^2);
+            if dist < 0.01
+                Xpoint = ind(Xpoint_ind);
+            else
+                Xpoint = [];
+            end
 
             % if Opoint is not found, geometrical centre is used
             if isempty(Opoint)
@@ -1164,6 +1180,76 @@ classdef equilibrium
 
         end
 
+        function [Opoint,Xpoint] = CriticalPoints_v2(obj,Ip,R,Z,inside_wall,Psi)
+            % CriticalPoints  Identify O-point and X-point in the poloidal flux
+            %
+            %   [Opoint,Xpoint] = obj.CriticalPoints(Ip,R,Z,inside_wall,Psi)
+            %
+            %   This method locates the critical points of the poloidal flux:
+            %     - O-point: location of the flux minimum (magnetic axis)
+            %     - X-point: location of the closest saddle point (magnetic null)
+            %
+            %   Input:
+            %       Ip          - Plasma toroidal current [A]
+            %       R, Z        - Grid coordinates (2D arrays)
+            %       inside_wall - Logical mask for points inside the wall
+            %       Psi         - Poloidal flux on the grid [Wb/(2pi)]
+            %
+            %   Output:
+            %       Opoint - Linear index of the O-point in the grid
+            %       Xpoint - Linear index of the X-point in the grid
+            %
+            %   Notes:
+            %       - Psi is inverted for positive Ip to maintain consistent sign.
+            %       - Uses local minima of the squared flux gradient to identify points.
+            %       - If O-point is not found, the geometric center is used as fallback.
+            %       - If X-point is not found, the minimum of the target separatrix is used.
+
+            obj = obj.find_LCFS();
+
+            R_b = obj.LCFS.R;
+            Z_b = obj.LCFS.Z;
+
+            % sign correction
+            if Ip > 0
+                Psi = -Psi;
+            end
+
+            % evaluate gradient of poloidal flux
+            [dPsidR,dPsidZ] = gradient(Psi);
+
+            % find zero values
+            gradPsi_2 = (dPsidR./R).^2+(dPsidZ./R).^2;
+            ismin = islocalmin(gradPsi_2,1) & islocalmin(gradPsi_2,2) & inside_wall;
+            ind = find(ismin);
+
+            % Opoint is defined as the point with the minimum value
+            % (negative psi considered)
+            [~,Opoint_ind] = min(Psi(ismin));
+            Opoint = ind(Opoint_ind);
+            ind(Opoint_ind) = [];
+
+            % Xpoint is defined as closest Xpoint to the Opoint
+            % (alternative methods to be explored (closer to target
+            % separatrix?)
+            [~,Xpoint_ind] = min((Psi(Opoint) - Psi(ind)).^2);
+            Xpoint = ind(Xpoint_ind);
+
+            % if Opoint is not found, geometrical centre is used
+            if isempty(Opoint)
+                [~,Opoint] = min((R-R0).^2 + (Z).^2,[],"all");
+            end
+
+            % if X point is not found, minimum value of LCFS
+            % is used (to be optimised for more generability)
+            if isempty(Xpoint)
+                [~,Xpoint_boundary] = min(Z_b);
+                [~,Xpoint] = min((R-R_b(Xpoint_boundary)).^2 + (Z-Z_b(Xpoint_boundary)).^2,[],"all");
+            end
+
+        end
+
+
         function obj = find_LCFS(obj)
             % find_LCFS  Identify the Last Closed Flux Surface (LCFS)
             %
@@ -1245,9 +1331,13 @@ classdef equilibrium
 
             % a new iteration is done for psi values close to the
             % previously find LCFS
-            i = find(levels_coarse == obj.LCFS.psi);
+            [~,i] = min(abs(levels_coarse - obj.LCFS.psi));
             n_levels = 30;
-            levels_fine = linspace(levels_coarse(i-1),levels_coarse(i+1),n_levels);
+            try
+                levels_fine = linspace(levels_coarse(i-1),levels_coarse(i+1),n_levels);
+            catch
+                disp(1)
+            end
             lines = contourc(R,Z,psi,levels_fine);
 
             ind_level = 1;
@@ -1286,6 +1376,8 @@ classdef equilibrium
                 end
 
             end
+
+            obj.LCFS.inside = inpolygon(obj.geo.grid.Rg,obj.geo.grid.Zg,obj.LCFS.R,obj.LCFS.Z);
 
         end
 

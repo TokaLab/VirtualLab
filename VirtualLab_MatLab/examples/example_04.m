@@ -2,7 +2,7 @@ clear; clc;
 
 %% here we test a new tokamak, TOKAPUG!
 
-machine = "DTT-like";
+machine = "JET-like";
 
 % initialise the class tokamak
 tok = tokamak();
@@ -83,20 +83,5 @@ figure(7); clf; IntPol.plot_StandAlone;
 Bolo = Diag_Bolo();
 Bolo  = Bolo.Upload(1,machine);
 Bolo = Bolo.measure(equi);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 figure(8); clf; Bolo.plot_geo()
-=======
-figure(8); clf; 
->>>>>>> Stashed changes
-=======
-figure(8); clf; 
->>>>>>> Stashed changes
-=======
-figure(8); clf; 
->>>>>>> Stashed changes
-=======
-figure(8); clf; 
->>>>>>> Stashed changes
+

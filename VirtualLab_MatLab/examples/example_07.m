@@ -1,38 +1,7 @@
 clear; clc;
 
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-machine = "DTT-like";
-% machine = "TokaLab";
-=======
-% machine = "DTT-like";
 machine = "TokaLab";
->>>>>>> Stashed changes
-=======
-% machine = "DTT-like";
-machine = "TokaLab";
->>>>>>> Stashed changes
-=======
-% machine = "DTT-like";
-machine = "TokaLab";
->>>>>>> Stashed changes
-=======
-% machine = "DTT-like";
-machine = "TokaLab";
->>>>>>> Stashed changes
-=======
-% machine = "DTT-like";
-machine = "TokaLab";
->>>>>>> Stashed changes
-=======
-% machine = "DTT-like";
-machine = "TokaLab";
->>>>>>> Stashed changes
 
 % initialise the class tokamak
 tok = tokamak();
