@@ -22,6 +22,7 @@ from scipy.sparse import csr_matrix
 from scipy.sparse import vstack
 from scipy.sparse.linalg import spsolve
 from scipy.signal import argrelextrema
+from scipy.ndimage import minimum_filter, gaussian_filter
 from matplotlib.path import Path
 from scipy.interpolate import RegularGridInterpolator
 
@@ -136,7 +137,6 @@ class equilibrium:
         
         
         # iterative calculation
-
         maxIter = self.config.GSsolver.maxIter;
         abs_tol = self.config.GSsolver.abs_tol;
         rel_tol = self.config.GSsolver.rel_tol;
@@ -258,16 +258,37 @@ class equilibrium:
         while not convergence:
             iteration += 1
 
-            # Critical points (Opoint, Xpoint are indices)
-            Opoint, Xpoint = self.critical_points(Ip, R, Z, inside_wall, psi)
+            if iteration == 1:
+                # Critical points (Opoint, Xpoint are indices)
+                Opoint, Xpoint = self.critical_points(Ip, R, Z, inside_wall, psi)
 
-            psi_0 = psi.ravel()[Opoint]
-            psi_b = np.mean(psi.ravel()[ind_sep])  # mean along separatrix indices
+                psi_0 = psi.ravel()[Opoint]
+                psi_b = np.mean(psi.ravel()[ind_sep])  # mean along separatrix indices
 
-            psi_n = (psi - psi_0) / (psi_b - psi_0)
+                psi_n = (psi - psi_0) / (psi_b - psi_0)
 
-            # Compute new Jt from updated psi_n
-            Jt = self.toroidal_curr.Jt_compute(psi_n, self.config.toroidal_current, self.geo, self.separatrix)
+                # Compute new Jt from updated psi_n
+                Jt = self.toroidal_curr.Jt_compute(psi_n, self.config.toroidal_current, self.geo, self.separatrix)
+            
+            else:
+                self.psi = psi
+                self.find_LCFS()
+                path = Path(np.column_stack((self.LCFS.R, self.LCFS.Z)))
+                points = np.vstack((R.ravel(), Z.ravel())).T
+                self.LCFS.inside = path.contains_points(points).reshape(R.shape)
+                psi_LCFS = psi[self.LCFS.inside]
+
+                # Critical points (Opoint, Xpoint are indices)
+                Opoint, Xpoint = self.critical_points_v2(Ip, R, Z, inside_wall, psi)
+
+                psi_0 = psi.ravel()[Opoint]
+                psi_b = np.max(psi_LCFS) 
+
+                psi_n = (psi - psi_0) / (psi_b - psi_0)
+
+                # Compute new Jt from updated psi_n
+                Jt = self.toroidal_curr.Jt_compute(psi_n, self.config.toroidal_current, self.geo, self.LCFS)
+
 
             # Right-hand term (flatten R and Jt)
             V_grad = -mu0 * R.ravel() * Jt.ravel()
@@ -317,6 +338,8 @@ class equilibrium:
         self.ni = kinetics['ni']
         self.Te = kinetics['Te']
         self.Ti = kinetics['Ti']
+        self.pe = kinetics['pe']
+        self.pi = kinetics['pi']
         
     def evaluate_profiles_1D(self):
         # --- Copy normalized flux
@@ -328,7 +351,7 @@ class equilibrium:
         psi_n_flat = psi_n.flatten()
     
         # --- Profiles to interpolate
-        profiles = ["ne", "Te", "ni", "Ti"]
+        profiles = ["ne", "Te", "ni", "Ti", "pe", "pi"]
     
         # --- Keep unique psi_n values
         psi_n_flat_unique, unique_indices = np.unique(psi_n_flat, return_index=True)
@@ -348,8 +371,6 @@ class equilibrium:
     
             self.profiles_1D[prof] = y_interp
     
-
-
     def equi_pp(self):
         
         LCFS = self.LCFS
@@ -425,12 +446,346 @@ class equilibrium:
         inside = path.contains_points(points).reshape(R.shape)
         
         # Store results
-        self.LCFS.inside= inside
+        self.LCFS.inside = inside
         self.Opoint.R = Opoint_R
         self.Opoint.Z = Opoint_Z
         self.Xpoint.R = Xpoint_R
         self.Xpoint.Z = Xpoint_Z
         self.psi_n = psi_n
+
+    def equi_pp2(self):
+            
+            self.find_LCFS()
+            R = self.geo.grid.Rg
+            Z = self.geo.grid.Zg
+            R0 = self.geo.R0
+            R_wall = self.geo.wall.R
+            Z_wall = self.geo.wall.Z
+            psi = self.psi
+            Ip = self.config.toroidal_current.Ip
+        
+            # Evaluate inside LCFS - standard resolution
+            path = Path(np.column_stack((self.LCFS.R, self.LCFS.Z)))
+            points = np.vstack((R.ravel(), Z.ravel())).T
+            self.LCFS.inside = path.contains_points(points).reshape(R.shape) 
+        
+            # Create high-resolution grid
+            R_hr = np.linspace(np.min(R), np.max(R), 500)
+            Z_hr = np.linspace(np.min(Z), np.max(Z), 700)
+            R_HR, Z_HR = np.meshgrid(R_hr, Z_hr)
+        
+            # Interpolate psi on high-resolution grid
+            #psi_interp = interp2d(R[0, :], Z[:, 0], psi, kind='cubic') IW: interp2d` has been removed in SciPy 1.14.0.
+            psi_interp=RegularGridInterpolator((Z[:, 0], R[0, :]), psi, method='cubic', bounds_error=False, fill_value=None)
+
+            points = np.stack([Z_HR.ravel(), R_HR.ravel()], axis=-1)
+            psi_HR = psi_interp(points).reshape(Z_HR.shape)
+        
+            # Compute inside_wall on HR grid
+            points = np.vstack((R_HR.ravel(), Z_HR.ravel())).T
+            path = Path(np.column_stack((R_wall, Z_wall)))
+            inside_wall_HR = path.contains_points(points).reshape(R_HR.shape)
+
+            # Compute Inside LCFS on HR grid
+            path = Path(np.column_stack((self.LCFS.R, self.LCFS.Z)))
+            inside_LCFS = path.contains_points(points).reshape(R_HR.shape)
+
+            # sign correction
+            if Ip > 0:
+                psi_HR = -psi_HR
+
+            # Compute gradient
+            dPsidZ, dPsidR = np.gradient(psi_HR)
+            R = R_HR    
+            Z = Z_HR
+
+            # Evaluate gradient magnitude squared (normalized by R)
+            gradPsi_2 = (dPsidR / R)**2 + (dPsidZ / R)**2
+        
+            # find local minima
+            # Initialize masks
+            row_min = np.zeros_like(gradPsi_2, dtype=bool)
+            col_min = np.zeros_like(gradPsi_2, dtype=bool)
+            
+            # Row-wise (axis=1)
+            for i in range(gradPsi_2.shape[0]):
+                indices = argrelextrema(gradPsi_2[i, :], np.less)[0]
+                row_min[i, indices] = True
+            
+            # Column-wise (axis=0)
+            for j in range(gradPsi_2.shape[1]):
+                indices = argrelextrema(gradPsi_2[:, j], np.less)[0]
+                col_min[indices, j] = True
+
+            # Combine
+            ismin = row_min & col_min & inside_LCFS
+            ind = np.where(ismin.ravel())[0]
+            
+            # Opoint is defined as the point with the minimum value
+            #(negative psi considered)
+            Opoint_ind = np.argmin(psi_HR.ravel()[ind])
+            Opoint = ind[Opoint_ind]
+            
+            # Remove the Opoint index from ind
+            ind = np.delete(ind, Opoint_ind)
+
+            if ind.size > 0:
+                #Xpoint is defined as closest Xpoint to the Opoint
+                #(alternative methods to be explored (closer to target
+                #separatrix?)
+                diff_sq = (psi_HR.ravel()[Opoint] - psi_HR.ravel()[ind]) ** 2
+                Xpoint_ind = np.argmin(diff_sq)
+                Xpoint = ind[Xpoint_ind]
+            else:
+                Xpoint = None
+            
+            # If Opoint is not found (None or empty), use geometric center
+            if Opoint is None or (hasattr(Opoint, '__len__') and len(Opoint) == 0):
+                diff = (R - R0)**2 + Z**2
+                Opoint = np.argmin(diff)
+            
+            # If Xpoint is not found (None or empty), use minimum Z in target separatrix
+            if Xpoint is None or (hasattr(Xpoint, '__len__') and len(Xpoint) == 0):
+                Xpoint_boundary = np.argmin(self.LCFS.Z)
+                diff = (R - self.LCFS.R[Xpoint_boundary])**2 + (Z - self.LCFS.Z[Xpoint_boundary])**2
+                Xpoint = np.argmin(diff)
+
+            Opoint_R, Opoint_Z = R_HR.ravel()[Opoint], Z_HR.ravel()[Opoint]
+            Xpoint_R, Xpoint_Z = R_HR.ravel()[Xpoint], Z_HR.ravel()[Xpoint]
+       
+            psi_O = psi_HR.ravel()[Opoint]
+            psi_X = psi_HR.ravel()[Xpoint]
+        
+            # Normalize original psi on coarse grid
+            psi_n = (psi - psi_O) / (psi_X - psi_O)
+            
+            # Store results
+            self.Opoint.R = Opoint_R
+            self.Opoint.Z = Opoint_Z
+            self.Xpoint.R = Xpoint_R
+            self.Xpoint.Z = Xpoint_Z
+            self.psi_n = psi_n
+
+
+    def equi_pp3(self):
+
+        R = self.geo.grid.Rg
+        Z = self.geo.grid.Zg
+        R_wall = self.geo.wall.R
+        Z_wall = self.geo.wall.Z
+        R0 = self.geo.R0
+        psi = self.psi
+        Ip = self.config.toroidal_current.Ip
+
+        self.find_LCFS()
+        path = Path(np.column_stack((self.LCFS.R, self.LCFS.Z)))
+        points = np.vstack((R.ravel(), Z.ravel())).T
+        self.LCFS.inside = path.contains_points(points).reshape(R.shape)
+        psi_LCFS = psi[self.LCFS.inside]
+        psi_LCFS = np.max(psi_LCFS) 
+
+        # Inside LCFS (coarse grid)
+        path_lcfs = Path(np.column_stack((self.LCFS.R, self.LCFS.Z)))
+        points = np.column_stack((R.ravel(), Z.ravel()))
+        self.LCFS.inside = path_lcfs.contains_points(points).reshape(R.shape)
+
+        # --------------------------------------------------
+        # High-resolution grid
+        # --------------------------------------------------
+        R_hr = np.linspace(R.min(), R.max(), 500)
+        Z_hr = np.linspace(Z.min(), Z.max(), 700)
+        R_HR, Z_HR = np.meshgrid(R_hr, Z_hr)
+
+        # Compute inside_wall on HR grid
+        points = np.vstack((R_HR.ravel(), Z_HR.ravel())).T
+        path = Path(np.column_stack((R_wall, Z_wall)))
+        inside_wall_HR = path.contains_points(points).reshape(R_HR.shape)
+
+        # --------------------------------------------------
+        # Interpolate psi on HR grid
+        # --------------------------------------------------
+        psi_interp = RegularGridInterpolator(
+            (Z[:, 0], R[0, :]),
+            psi,
+            method="cubic",
+            bounds_error=False,
+            fill_value=None,
+        )
+
+        pts_hr = np.column_stack((Z_HR.ravel(), R_HR.ravel()))
+        psi_HR = psi_interp(pts_hr).reshape(R_HR.shape)
+
+        if Ip > 0:
+            psi_HR = -psi_HR
+
+        # --------------------------------------------------
+        # Gradient and |grad psi|^2
+        # --------------------------------------------------
+        dPsidZ, dPsidR = np.gradient(psi_HR, Z_hr, R_hr)
+
+        gradPsi_2 = (dPsidR / R_HR)**2 + (dPsidZ / R_HR)**2
+
+        # (opzionale ma consigliato)
+        gradPsi_2 = gaussian_filter(gradPsi_2, sigma=1.0)
+
+        # --------------------------------------------------
+        # Local minima (2D)
+        # --------------------------------------------------
+        neigh = np.ones((3, 3))
+
+        min_filt = minimum_filter(
+            gradPsi_2,
+            footprint=neigh,
+            mode="constant",
+            cval=np.inf,
+        )
+
+        eps = 1e-12
+        local_min = gradPsi_2 <= min_filt + eps
+        local_min &= inside_wall_HR
+
+        ind = np.flatnonzero(local_min)
+
+        # --------------------------------------------------
+        # O-point
+        # --------------------------------------------------
+        if ind.size > 0:
+            # indice globale!
+            Opoint = ind[np.argmin(psi_HR.ravel()[ind])]
+        else:
+            # fallback: centro geometrico
+            diff = (R_HR - R0)**2 + Z_HR**2
+            Opoint = np.argmin(diff.ravel())
+
+
+        # --------------------------------------------------
+        # X-point
+        # --------------------------------------------------
+        ind_others = ind[ind != Opoint]
+
+        if ind_others.size > 0:
+            diff_sq = (psi_HR.ravel()[ind_others] - psi_HR.ravel()[Opoint])**2
+            Xpoint = ind_others[np.argmin(diff_sq)]
+        else:
+            # fallback: punto LCFS con Z minimo
+            k = np.argmin(self.LCFS.Z)
+            diff = (R_HR - self.LCFS.R[k])**2 + (Z_HR - self.LCFS.Z[k])**2
+            Xpoint = np.argmin(diff.ravel())
+
+        # --------------------------------------------------
+        # Store results
+        # --------------------------------------------------
+        Opoint_R, Opoint_Z = R_HR.ravel()[Opoint], Z_HR.ravel()[Opoint]
+        Xpoint_R, Xpoint_Z = R_HR.ravel()[Xpoint], Z_HR.ravel()[Xpoint]
+
+        psi_O = psi_HR.ravel()[Opoint]
+        psi_X = psi_HR.ravel()[Xpoint]
+
+        #psi_n = (psi - psi_O) / (psi_X - psi_O)
+        psi_n = (psi - psi_O) / (psi_LCFS - psi_O)
+
+        self.Opoint.R = Opoint_R
+        self.Opoint.Z = Opoint_Z
+        self.Xpoint.R = Xpoint_R
+        self.Xpoint.Z = Xpoint_Z
+        self.psi_n = psi_n
+
+
+    def polygon_area(self, x, y):
+        """Equivalent of MATLAB polyarea"""
+        return 0.5 * np.abs(
+            np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1))
+        )
+
+    def find_LCFS(self):
+        """
+        Identify the Last Closed Flux Surface (LCFS)
+        """
+
+        # --- extract inputs ---
+        psi = self.psi                    # 2D array
+        R = self.geo.grid.Rg                    # 2D grid
+        Z = self.geo.grid.Zg                    # 2D grid
+        inside_mask = self.geo.wall.inside
+
+        wall_poly = np.column_stack((self.geo.wall.R, self.geo.wall.Z))
+        wall_path = Path(wall_poly)
+
+        # --- psi range inside wall ---
+        level_min = np.min(psi[inside_mask])
+        level_max = np.max(psi[inside_mask])
+        
+        # --- coarse levels ---
+        n_levels = 200
+        levels_coarse = np.linspace(level_min, level_max, n_levels)
+
+        best_area = 0.0
+        best_R = None
+        best_Z = None
+        best_psi = None
+
+        cs = plt.contour(R, Z, psi, levels=levels_coarse)
+        plt.close()
+        for level, segs in zip(cs.levels, cs.allsegs):
+
+            for seg in segs:
+
+                R_line = seg[:, 0]
+                Z_line = seg[:, 1]
+               
+                # closeness check
+                closeness = abs(R_line[0] - R_line[-1]) + abs(Z_line[0] - Z_line[-1])
+
+                close = closeness <= 1e-3
+
+                if not close:
+                    continue
+
+                vertices = np.column_stack((R_line, Z_line))
+
+                inside = wall_path.contains_points(vertices, radius=1e-6)
+
+                if not np.all(inside):
+                    continue
+                
+                area_now = self.polygon_area(R_line, Z_line)
+
+                if area_now > best_area:
+                    best_area = area_now
+                    best_R = R_line
+                    best_Z = Z_line
+                    best_psi = level
+        
+        # --- refinement around coarse LCFS ---
+        idx = np.argmin(np.abs(levels_coarse - best_psi))
+        levels_fine = np.linspace(levels_coarse[max(idx-1,0)], levels_coarse[min(idx+1,len(levels_coarse)-1)], n_levels)
+
+        cs = plt.contour(R, Z, psi, levels=levels_fine)
+        plt.close()
+
+        for level, segs in zip(cs.levels, cs.allsegs):
+            for seg in segs:
+                R_line = seg[:,0]
+                Z_line = seg[:,1]
+                closeness = abs(R_line[0]-R_line[-1]) + abs(Z_line[0]-Z_line[-1])
+                close = closeness <= 1e-1
+                if not close:
+                    continue
+                vertices = np.column_stack((R_line, Z_line))
+                inside = wall_path.contains_points(vertices, radius=1e-6)
+                if np.mean(inside) < 0.99:
+                    continue
+                area_now = self.polygon_area(R_line, Z_line)
+                if area_now > best_area:
+                    best_area = area_now
+                    self.LCFS.R = R_line
+                    self.LCFS.Z = Z_line
+                    self.LCFS.psi = level
+
+        # store coarse LCFS
+        self.LCFS.R = best_R
+        self.LCFS.Z = best_Z
+        self.LCFS.psi = best_psi
 
     def critical_points(self, Ip, R, Z, inside_wall, Psi):
     
@@ -485,7 +840,7 @@ class equilibrium:
             Xpoint = ind[Xpoint_ind]
         else:
             Xpoint = None
-        
+
         # If Opoint is not found (None or empty), use geometric center
         if Opoint is None or (hasattr(Opoint, '__len__') and len(Opoint) == 0):
             diff = (R - R0)**2 + Z**2
@@ -496,6 +851,74 @@ class equilibrium:
             Xpoint_boundary = np.argmin(Z_b)
             diff = (R - R_b[Xpoint_boundary])**2 + (Z - Z_b[Xpoint_boundary])**2
             Xpoint = np.argmin(diff)
+        
+        return Opoint, Xpoint
+    
+
+    def critical_points_v2(self, Ip, R, Z, inside_wall, Psi):
+    
+        #
+        R0 = self.geo.R0
+        
+        R_b = self.separatrix.R_sep_target
+        Z_b = self.separatrix.Z_sep_target
+
+        inside_wall = self.geo.wall.inside
+        
+        # Sign correction
+        Psi_working = -Psi if Ip > 0 else Psi
+    
+        # Compute gradient
+        dPsidZ, dPsidR = np.gradient(Psi_working)  # note: np.gradient returns (y, x)
+        
+        # Evaluate gradient magnitude squared (normalized by R)
+        gradPsi_2 = (dPsidR / R)**2 + (dPsidZ / R)**2
+
+        # (opzionale ma consigliato)
+        gradPsi_2 = gaussian_filter(gradPsi_2, sigma=1.0)
+    
+        # --------------------------------------------------
+        # Local minima (2D)
+        # --------------------------------------------------
+        neigh = np.ones((3, 3))
+
+        min_filt = minimum_filter(
+            gradPsi_2,
+            footprint=neigh,
+            mode="constant",
+            cval=np.inf,
+        )
+
+        eps = 1e-12
+        local_min = gradPsi_2 <= min_filt + eps
+        local_min &= inside_wall
+
+        ind = np.flatnonzero(local_min)
+        
+         # --------------------------------------------------
+        # O-point
+        # --------------------------------------------------
+        if ind.size > 0:
+            # indice globale!
+            Opoint = ind[np.argmin(Psi_working.ravel()[ind])]
+        else:
+            # fallback: centro geometrico
+            diff = (R - R0)**2 + Z**2
+            Opoint = np.argmin(diff.ravel())
+
+        # --------------------------------------------------
+        # X-point
+        # --------------------------------------------------
+        ind_others = ind[ind != Opoint]
+
+        if ind_others.size > 0:
+            diff_sq = (Psi_working.ravel()[ind_others] - Psi_working.ravel()[Opoint])**2
+            Xpoint = ind_others[np.argmin(diff_sq)]
+        else:
+            # fallback: punto LCFS con Z minimo
+            k = np.argmin(self.LCFS.Z)
+            diff = (R - self.LCFS.R[k])**2 + (Z - self.LCFS.Z[k])**2
+            Xpoint = np.argmin(diff.ravel())
         
         return Opoint, Xpoint
     

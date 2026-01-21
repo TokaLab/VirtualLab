@@ -61,14 +61,18 @@ class profile_magnetic:
         dpsi = np.mean(np.diff(psi_1D))
 
         # Compute Jt and λ
-        Jt_plasma = ((beta0 * R / R0) + (1 - beta0) * R0 / R) * \
-                    ((1 - psi_n ** alpha1) ** alpha2) * inside_wall
+        term = (beta0 * R / R0 + (1 - beta0) * R0 / R)
+        profile = np.maximum((1 - psi_n**alpha1),0)**alpha2
+        Jt_plasma = term * profile
+        Jt_plasma = Jt_plasma * inside_LCFS
         volume_integral = np.sum(Jt_plasma * dR * dZ)
         lam = Ip / volume_integral
 
+        profile_1D = np.maximum((1 - psi_n_1D**alpha1),0)**alpha2
+
         # Compute dp/dψ and dF²/dψ
-        dpdpsi = -lam * beta0 / R0 * ((1 - psi_n_1D ** alpha1) ** alpha2)
-        dF2dpsi = -lam * 2 * (1 - beta0) * R0 * mu0 * ((1 - psi_n_1D ** alpha1) ** alpha2)
+        dpdpsi = -lam * beta0 / R0 * profile_1D
+        dF2dpsi = -lam * 2 * (1 - beta0) * R0 * mu0 * profile_1D
 
         # Integrate (flip integration like MATLAB)
         p_1D = np.flip(np.cumsum(np.flip(dpdpsi))) * dpsi + p_sep
@@ -126,15 +130,18 @@ class profile_magnetic:
         dpsi = np.mean(np.diff(psi_1D))
 
         # Compute Jt and λ
-        Jt_plasma = (beta0 * R / R0 + (1 - beta0) * R0 / R) * \
-                     (1 - ((psi_n - psi_n_peak) / (1 - psi_n_peak)) ** alpha1) ** alpha2 * inside_wall
-        
+        term = (beta0 * R / R0 + (1 - beta0) * R0 / R)
+        profile = np.maximum(1 - ((psi_n - psi_n_peak) / (1 - psi_n_peak)) ** alpha1,0)**alpha2
+        Jt_plasma = term * profile
+        Jt_plasma = Jt_plasma * inside_LCFS
         volume_integral = np.sum(Jt_plasma * dR * dZ)
         lam = Ip / volume_integral
         
+        profile_1D = np.maximum(1 - ((psi_n_1D - psi_n_peak) / (1 - psi_n_peak)) ** alpha1,0)**alpha2
+
         # Compute dp/dψ and dF²/dψ
-        dpdpsi = -lam * beta0 / R0 * ((1 - psi_n_1D ** alpha1) ** alpha2)
-        dF2dpsi = -lam * 2 * (1 - beta0) * R0 * mu0 * ((1 - psi_n_1D ** alpha1) ** alpha2)
+        dpdpsi = -lam * beta0 / R0 * profile_1D
+        dF2dpsi = -lam * 2 * (1 - beta0) * R0 * mu0 * profile_1D
 
         # Integrate (flip integration like MATLAB)
         p_1D = np.flip(np.cumsum(np.flip(dpdpsi))) * dpsi + p_sep

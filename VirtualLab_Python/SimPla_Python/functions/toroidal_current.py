@@ -40,11 +40,13 @@ class toroidal_current:
         dR = geo.dR
         dZ = geo.dZ
 
+        psi_n = np.maximum(psi_n,0)
+
         R = geo.R
         R0 = geo.R0
 
         term = (beta0 * R / R0 + (1 - beta0) * R0 / R)
-        profile = (1 - psi_n**alpha1)**alpha2
+        profile = np.maximum((1 - psi_n**alpha1),0)**alpha2
         Jt_plasma = term * profile
         Jt_plasma = Jt_plasma * sep.inside
 
@@ -61,12 +63,14 @@ class toroidal_current:
         dZ = geo.dZ
         
         psi_n_peak = Jt_config.psi_n_peak;
+        psi_n = np.maximum(psi_n,0)
 
         R = geo.R
         R0 = geo.R0
 
-        Jt_plasma = (beta0 * R / R0 + (1 - beta0) * R0 / R) * \
-                     (1 - ((psi_n - psi_n_peak) / (1 - psi_n_peak)) ** alpha1) ** alpha2
+        term = (beta0 * R / R0 + (1 - beta0) * R0 / R)
+        profile = np.maximum(1 - ((psi_n - psi_n_peak) / (1 - psi_n_peak)) ** alpha1,0)**alpha2
+        Jt_plasma = term * profile
         Jt_plasma = Jt_plasma * sep.inside
         Jt = Jt_plasma * Ip / np.sum(Jt_plasma * dR * dZ)
 

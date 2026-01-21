@@ -41,11 +41,15 @@ class profile_kinetic:
         n *= inside_wall
         T *= inside_wall
 
+        # Pressure calculation
+        pe = n * T * e_charge
+        pi = pe
+
         return {
             'ne': n,
             'ni': n,
             'Te': T,
             'Ti': T,
-            'pe': p,
-            'pi': p
+            'pe': pe,
+            'pi': pi
         }
