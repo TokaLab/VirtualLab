@@ -47,6 +47,14 @@ classdef TokaPlot
 
             figure(fig)
             subplot(config.subplot(1),config.subplot(2), config.subplot(3))
+           
+            % complete the plot
+            if isfield(config, "hold") == 1 && config.hold == "on"
+                hold on
+            else
+                hold off
+            end
+
             contourf(equi.geo.grid.Rg,equi.geo.grid.Zg,equi.(field).*equi.geo.wall.inside, 50, "LineStyle", "none")
 
             % plot walls, if asked
@@ -63,14 +71,7 @@ classdef TokaPlot
                 hold on
                 contour(equi.geo.grid.Rg, equi.geo.grid.Zg, equi.psi_n, config.psi_lines, '-w', 'LineWidth', 1.5)
             end
-
-            % complete the plot
-            if isfield(config, "hold") == 1 && config.hold == "on"
-                hold on
-            else
-                hold off
-            end
-
+            
             %complete the plot
 
             uom = FieldUnitOfMeasurement(obj,field);
@@ -110,6 +111,11 @@ classdef TokaPlot
             figure(fig)
             subplot(config.subplot(1),config.subplot(2), config.subplot(3))
             
+            if isfield(config, "hold") == 1 && config.hold == "on"
+                hold on
+            else
+                hold off
+            end
 
             % plot walls, if asked
 
@@ -162,16 +168,7 @@ classdef TokaPlot
                     hold on
                 end
 
-                title("Bolometers")
-                % diag.R = [diag.R_in diag.R_end];
-                % diag.Z = [diag.Z_in diag.Z_end];
-                
-            end
-
-            if isfield(config, "hold") == 1 && config.hold == "on"
-                hold on
-            else
-                hold off
+                title("Bolometers")              
             end
 
             % complete the plot

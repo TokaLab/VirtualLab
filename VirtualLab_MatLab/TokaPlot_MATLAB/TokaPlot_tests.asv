@@ -80,7 +80,6 @@ figure2.config.hold = "on";
 figure3.config.hold = "on";
 figure4.config.hold = "on";
 figure5.config.hold = "on";
-figure4.config.plot_wall = 1;
 
 figura1 = TP.PlotField(equi,"ne", figura1, figura.config);
 % figura1 = TP.PlotDiagnostics(equi,Bolo, figura1, figure2.config);
