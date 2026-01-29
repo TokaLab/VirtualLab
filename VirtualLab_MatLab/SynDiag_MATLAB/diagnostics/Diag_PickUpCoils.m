@@ -48,7 +48,8 @@ classdef Diag_PickUpCoils
             obj.B = obj.ideal.B + noise_abs + noise_prop;
 
             %associated uncertainty
-            obj.sigma_B = noise_abs + noise_prop;
+            obj.sigma_B = sqrt(obj.config.noise_random_absolute_intensity.^2 +...
+                (abs(obj.ideal.B).*obj.config.noise_random_proportional_intensity).^2);
 
             obj.unit = "T";
 

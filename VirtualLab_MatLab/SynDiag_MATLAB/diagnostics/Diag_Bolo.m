@@ -64,7 +64,8 @@ classdef Diag_Bolo
 
             obj.unit = "W/m^2";
 
-            obj.sigma_prj = noise_abs_prj + noise_prop_prj;
+            obj.sigma_prj = sqrt(obj.config.prj_noise_random_absolute_intensity.^2 +...
+                (abs(obj.ideal.prj).*obj.config.prj_noise_random_proportional_intensity).^2);
 
         end
 

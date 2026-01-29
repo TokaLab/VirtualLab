@@ -160,7 +160,7 @@ class TokaPlot:
         uom = self.MeasUOM(diag, meas)
 
         if "errorbar" in config and config["errorbar"]==1:
-            plt.errorbar(R,getattr(diag,meas), yerr=getattr(diag, "sigma_"+meas)) #.*np.ones(len(R)+1))
+            plt.errorbar(R,getattr(diag,meas), yerr=getattr(diag, config, meas)) #.*np.ones(len(R)+1))
             
     def plotwalls(self, ax, equi):
         

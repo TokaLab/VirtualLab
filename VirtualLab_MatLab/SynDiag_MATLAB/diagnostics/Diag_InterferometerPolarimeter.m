@@ -108,8 +108,10 @@ classdef Diag_InterferometerPolarimeter
             obj.LIDh = obj.ideal.LIDh + noise_abs + noise_prop_h;
 
             % associated uncertainty
-            obj.sigma_LIDc = noise_abs + noise_prop_c;
-            obj.sigma_LIDh = noise_abs + noise_prop_h;
+            obj.sigma_LIDc = sqrt(obj.config.LID_noise_random_absolute_intensity.^2 +...
+                (abs(obj.ideal.LIDc).*obj.config.LID_noise_random_proportional_intensity).^2);
+            obj.sigma_LIDh = sqrt(obj.config.LID_noise_random_absolute_intensity.^2 +...
+                (abs(obj.ideal.LIDh).*obj.config.LID_noise_random_proportional_intensity).^2);
 
             % unit measure
             obj.unit_LID = "m^{-2}";
@@ -260,15 +262,23 @@ classdef Diag_InterferometerPolarimeter
             obj.CMh_typeI = obj.ideal.CMh_typeI + CM_noise_abs + CMh_typeI_noise_prop;
 
             % associated uncertainties
-            obj.sigma_FARc = FAR_noise_abs + FARc_noise_prop;
-            obj.sigma_FARc_typeI = FAR_noise_abs + FARc_typeI_noise_prop;
-            obj.sigma_FARh = FAR_noise_abs + FARh_noise_prop;
-            obj.sigma_FARh_typeI = FAR_noise_abs + FARh_typeI_noise_prop;
+            obj.sigma_FARc = sqrt(obj.config.FAR_noise_random_absolute_intensity.^2 + ...
+                (abs(obj.ideal.FARc).*obj.config.FAR_noise_random_proportional_intensity).^2);
+            obj.sigma_FARc_typeI = sqrt(obj.config.FAR_noise_random_absolute_intensity.^2 + ...
+                (abs(obj.ideal.FARc_typeI).*obj.config.FAR_noise_random_proportional_intensity).^2);
+            obj.sigma_FARh = sqrt(obj.config.FAR_noise_random_absolute_intensity.^2 + ...
+                (abs(obj.ideal.FARh).*obj.config.FAR_noise_random_proportional_intensity).^2);
+            obj.sigma_FARh_typeI = sqrt(obj.config.FAR_noise_random_absolute_intensity.^2 + ...
+                (abs(obj.ideal.FARh_typeI).*obj.config.FAR_noise_random_proportional_intensity).^2);
 
-            obj.sigma_CMc = CM_noise_abs + CMc_noise_prop;
-            obj.sigma_CMc_typeI = CM_noise_abs + CMc_typeI_noise_prop;
-            obj.sigma_CMh = CM_noise_abs + CMh_noise_prop;
-            obj.sigma_CMh_typeI = CM_noise_abs + CMh_typeI_noise_prop;
+            obj.sigma_CMc = sqrt(obj.config.CM_noise_random_absolute_intensity.^2 + ...
+                (abs(obj.ideal.CMc).*obj.config.CM_noise_random_proportional_intensity).^2);
+            obj.sigma_CMc_typeI = sqrt(obj.config.CM_noise_random_absolute_intensity.^2 + ...
+                (abs(obj.ideal.CMc_typeI).*obj.config.CM_noise_random_proportional_intensity).^2);
+            obj.sigma_CMh = sqrt(obj.config.CM_noise_random_absolute_intensity.^2 + ...
+                (abs(obj.ideal.CMh).*obj.config.CM_noise_random_proportional_intensity).^2);
+            obj.sigma_CMh_typeI = sqrt(obj.config.CM_noise_random_absolute_intensity.^2 + ...
+                (abs(obj.ideal.CMh_typeI).*obj.config.CM_noise_random_proportional_intensity).^2);
 
 
             %%

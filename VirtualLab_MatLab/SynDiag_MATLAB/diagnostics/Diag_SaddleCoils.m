@@ -46,7 +46,8 @@ classdef Diag_SaddleCoils
             obj.Dpsi = obj.ideal.Dpsi + noise_abs + noise_prop;
 
             % associated uncertainty
-            obj.sigma_Dpsi = noise_abs + noise_prop;
+            obj.sigma_Dpsi = sqrt(obj.config.noise_random_absolute_intensity.^2 + ...
+                (abs(obj.ideal.Dpsi).*obj.config.noise_random_proportional_intensity).^2);
 
             obj.unit = "Wb/rad";
 

@@ -42,7 +42,8 @@ classdef Diag_FluxLoops
             obj.psi = obj.ideal.psi + noise_abs + noise_prop;
 
             %associated uncertainty
-            obj.sigma_psi = noise_abs + noise_prop;
+            obj.sigma_psi = sqrt(obj.config.noise_random_absolute_intensity.^2 +...
+                (abs(obj.ideal.psi).*obj.config.noise_random_proportional_intensity).^2);
 
             obj.unit = "Wb/rad";
 
