@@ -31,7 +31,7 @@ equi.separatrix.build_separatrix(equi.config.separatrix,equi.geo)
 
 # solve equilibrium
 equi.solve_equilibrium()
-Opoint, Xpoint = equi.critical_points(equi.config.toroidal_current.Ip, equi.geo.grid.Rg, equi.geo.wall.inside, equi.psi)
+Opoint, Xpoint = equi.critical_points(equi.config.toroidal_current.Ip, equi.geo.grid.Rg, equi.geo.grid.Zg, equi.geo.wall.inside, equi.psi)
 
 # pp equilibrium
 equi.equi_pp()

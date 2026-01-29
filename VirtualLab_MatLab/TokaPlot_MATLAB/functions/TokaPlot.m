@@ -210,22 +210,8 @@ classdef TokaPlot
 
             % Get the x axis label information
 
-            if isfield(config, "axis_label") == 1 && config.axis_label == "R"
-                if isa(diag,"Diag_SaddleCoils")
-                    R = (diag.R2 + diag.R1)./2;
-                    labelx = "R [m]";
-                elseif isa(diag,"Diag_InterferometerPolarimeter") || isa(diag,"Diag_Bolo")
-                    disp("For this diagnostic only the ch x label option is available")
-                    R = 1 : length(diag.R_in);
-                    labelx = "ch";
-                else
-                    R = diag.R;
-                    labelx = "R [m]";
-                end
-            else
                 R = 1 : length(diag.(meas));
                 labelx = "ch";
-            end
 
             % Plot
 

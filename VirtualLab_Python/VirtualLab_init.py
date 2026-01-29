@@ -36,6 +36,8 @@ paths_to_add = [
         "SynDiag_Python/diagnostics",
         f"SynDiag_Python/diagnostics/{machine}",
         f"SynDiag_Python/diagnostics/{machine}/diagnostics_data"
+        "TokaPlot_Python", 
+        "TokaPlot_Python/functions"
     ]
 
 # Correct path separators for Unix systems (if needed)

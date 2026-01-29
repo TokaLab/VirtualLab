@@ -100,7 +100,7 @@ figura1 = TP.PlotDiagnostics(equi,SaddleCoils, figura1, figure4.config);
 % figure3.config.hold = "off";
 % 
 % figure4.config.subplot = [1 3 1];
-% figure4.config.axis_label = "ch";
+%
 % figure4.config.errorplot = 0;
 % figure4.config.hold = "on";
 % 
