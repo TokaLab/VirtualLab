@@ -1,17 +1,14 @@
-clear; clc;
-clf
+clear
+clc
 close all
 
-machine = "TokaLab";
-
 % initialise the class tokamak
-tok = tokamak();
+tok = tokamak;
 
 % upload the geometry information of your tokamak
-tok = tok.machine_upload(machine);
-tok = tok.scenario_upload(1);
+tok = tok.machine_upload();
+tok = tok.scenario_upload();
 tok = tok.kinetic_upload();
-tok = tok.coils_upload();
 
 % initialise the class geometry
 geo = geometry;
@@ -19,36 +16,26 @@ geo = geo.import_geometry(tok);
 geo = geo.build_geometry();
 geo = geo.inside_wall();
 
-% initialise the equlibrium class
+% initialise the class equilibrium
 equi = equilibrium;
 equi = equi.import_configuration(geo,tok.config);
 equi = equi.import_classes();
 equi.separatrix = equi.separatrix.build_separatrix(equi.config.separatrix,equi.geo);
 
-% load("additional_points.mat")
-new_points_R = [];%new_points_R(1:end);
-new_points_Z = [];%new_points_Z(1:end);
+% solve equilibrium
+equi = equi.solve_equilibrium();
 
-equi.separatrix.R_additional = new_points_R;
-equi.separatrix.Z_additional = new_points_Z;
-
-equi.config.GSsolver.maxIter = 5;
-equi = equi.solve_equilibrium_dimless();
+% post processing (Opoint, Xpoint, LFCS)
 equi = equi.equi_pp2();
 
-equi_fixed = equi;
+% mhd and kinetic profiles
+equi  = equi.compute_profiles();
 
 %%
+
 coils = coils;
 coils = coils.import_coils(tok);
 coils = coils.build_coils();
-
-equi.config.GSsolver.maxIter = 30;
-[equi, coils] = equi.solve_equilibrium_free_v1(coils);
-
-equi = equi.equi_pp2();
-
-equi  = equi.compute_profiles();
 
 %% run your diagnostics
 

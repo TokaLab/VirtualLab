@@ -309,6 +309,10 @@ classdef TokaPlot
 
         end
 
+        %% Function plot coils
+
+        % function fig = PlotCoils(obj,)
+
         %% Function Field's unit of measurement
 
         function uom = FieldUnitOfMeasurement(obj,field)
