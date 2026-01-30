@@ -18,6 +18,7 @@ class Diag_SaddleCoils:
         self.R2 = None
         self.Z2 = None
         self.Dpsi = None
+        self.sigma_Dpsi = None
         self.unit = None
         self.config = {}
         self.ideal = {}
@@ -56,6 +57,8 @@ class Diag_SaddleCoils:
 
         # Aggiungi il rumore alla misura
         self.Dpsi = Dpsi + noise_abs + noise_prop
+        self.sigma_Dpsi = np.sqrt(self.config.get('noise_random_absolute_intensity')**2 +
+                                  (np.abs(Dpsi) * self.config.get('noise_random_proportional_intensity'))**2)
         self.unit = "Wb/rad"
 
         return self
@@ -79,6 +82,23 @@ class Diag_SaddleCoils:
 
             self.config['noise_random_absolute_intensity'] = 0
             self.config['noise_random_proportional_intensity'] = 0
+            
+        elif configuration == 2:
+            
+            from scipy.io import loadmat
+            module_path = os.path.abspath(__file__)
+            module_path = os.path.dirname(module_path)
+            module_path = os.path.join(module_path,"diagnostics_data","SaddleCoilsData_config_1.mat")
+            data = loadmat(module_path)
+
+            # Carica i dati
+            self.R1 = data['R1']
+            self.Z1 = data['Z1']
+            self.R2 = data['R2']
+            self.Z2 = data['Z2']
+
+            self.config['noise_random_absolute_intensity'] = 0.1
+            self.config['noise_random_proportional_intensity'] = 0.1
 
         return self
     

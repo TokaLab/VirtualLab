@@ -140,11 +140,15 @@ class TokaPlot:
                  ax.set_ylim([min(Z), max(Z)])      
 
             # ax.plot(diag.R, diag.Z, color=plot_colours)
+            return ax
             
     def plotmeasurements(self, diag, meas, fig, ax, config):
+
+        fig, ax = plt.subplots()
         
-        labelx = "ch"
-        R = np.linspace(1, len(getattr(diag,meas))+1, len(getattr(diag,meas)))
+        y_value = getattr(diag,meas)
+        
+        R = np.linspace(1, y_value.size + 1, y_value.size, dtype=int)
         
         if "n_ofcolours" in config:
                n_ofcolours = config["n_ofcolours"]
@@ -158,10 +162,25 @@ class TokaPlot:
                 
         plot_colours = self.tokacolor(diag,n_ofcolours)
         uom = self.MeasUOM(diag, meas)
-
+                
         if "errorbar" in config and config["errorbar"]==1:
-            plt.errorbar(R,getattr(diag,meas), yerr=getattr(diag, config, meas)) #.*np.ones(len(R)+1))
-            
+            y_value=y_value.squeeze()
+            y_err = np.ones((1,y_value.size))*getattr(diag, "sigma_" + meas)
+            y_err = y_err.squeeze()
+            # print(y_err.shape)
+            # print(R.shape)
+            # print(y_value.shape)
+            # print(y_err)
+            ax.errorbar(R, y_value, y_err, fmt='-', marker='.', label=meas) 
+        else: 
+            ax.plot(getattr(diag, meas), '-', marker='.', label=meas)
+        
+        ax.set_xlabel("# of channel")
+        ax.set_ylabel(uom)
+        ax.legend()
+        
+        return ax
+                 
     def plotwalls(self, ax, equi):
         
              ax.plot(equi.geo.wall.R, equi.geo.wall.Z, '-k', linewidth=2)

@@ -80,7 +80,7 @@ PU.upload()
 PU.measure(equi)
 
 SL = Diag_SaddleCoils()
-SL.upload()
+SL.upload(2)
 SL.measure(equi)
 
 FL = Diag_FluxLoops()
@@ -111,10 +111,11 @@ fig1 = plt.figure(num=1)
 fig2 = plt.figure(num=2)
 config["errorbar"]=1
 ax2 = {}
-ax1 = TP.plotfield(equi, "Te", fig1, ax1, config)
+# ax1 = TP.plotfield(equi, "Te", fig1, ax1, config)
 # TP.plotdiagnostics(equi, TS, fig1, ax1, config)
-TP.plotmeasurements(PU,"B", fig2, ax2, config)
-
+# TP.plotmeasurements(SL,"Dpsi", fig2, ax2, config)
+ax2 = TP.plotmeasurements(IP, "FARh_typeI", fig2, ax2, config)
+TP.plotmeasurements(IP, "FARc_typeI", fig2, ax2, config)
 plt.show()
 # fig3 = plt.figure(num=3)
 

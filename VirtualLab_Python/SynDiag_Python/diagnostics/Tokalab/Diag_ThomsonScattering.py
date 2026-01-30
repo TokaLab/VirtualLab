@@ -14,7 +14,9 @@ class Diag_ThomsonScattering:
         self.R = None  # Horizontal coordinate
         self.Z = None  # Vertical coordinate
         self.ne = None  # Measured electron density
+        self.sigma_ne = None # Uncertainty of the measured electron density
         self.Te = None  # Measured electron temperature
+        self.sigma_Te = None # Uncertainty of the measured electron temperature
         self.unit_ne = None  # Unit for ne
         self.unit_Te = None  # Unit for Te
         self.config = {}  # Configuration dictionary
@@ -40,6 +42,11 @@ class Diag_ThomsonScattering:
         self.ne = ne + noise_abs_ne + noise_prop_ne
         self.Te = Te + noise_abs_Te + noise_prop_Te
 
+        self.sigma_ne = np.sqrt(self.config.get("ne_noise_random_absolute_intensity", 0)**2 +
+                                np.abs(ne) * self.config.get("ne_noise_random_proportional_intensity", 0)**2)
+        self.sigma_Te = np.sqrt(self.config.get("Te_noise_random_absolute_intensity", 0)**2 +
+                                (np.abs(Te) * self.config.get("Te_noise_random_proportional_intensity", 0))**2)
+        
         self.unit_ne = "m^{-3}"
         self.unit_Te = "eV"
 

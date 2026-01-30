@@ -15,6 +15,7 @@ class Diag_FluxLoops:
         self.R = None  # Horizontal coordinate
         self.Z = None  # Vertical coordinate
         self.psi = None  # Measured magnetic flux
+        self.sigma_psi = None # Uncertainty for Measured magnetic flux
         self.unit = None  # Unit of measurement
         self.config = {}  # Configuration parameters
         self.ideal = {}  # Ideal (noise-free) measurements
@@ -34,6 +35,8 @@ class Diag_FluxLoops:
         noise_prop = np.random.normal(0, np.abs(psi) * self.config.get("noise_random_proportional_intensity", 0))
 
         self.psi = psi + noise_abs + noise_prop
+        self.sigma_psi = np.sqrt(self.config.get("noise_random_absolute_intensity", 0)**2 +
+                                    (np.abs(psi) * self.config.get("noise_random_proportional_intensity", 0))**2)
         self.unit = "Wb/rad"
 
     def upload(self, configuration=1):

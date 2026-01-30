@@ -20,16 +20,29 @@ class Diag_InterferometerPolarimeter:
 
         self.LIDc= None   #measurement of Line_integrated Density (cold-plasma approximation)
         self.LIDh= None   #measurement of Line_integrated Density (hot-plasma approximation)
+        
+        self.sigma_LIDc = None # Uncertainty of measurement of Line_integrated Density (cold-plasma approximation)
+        self.sigma_LIDh = None # Uncertainty of measurement of Line_integrated Density (hot-plasma approximation)
 
-        self.FARc= None     #measurement Faraday- Cold plasma approximation
-        self.FARc_typeI= None     #measurement Faraday- Cold pasma and typeI approximation
-        self.FARh = None     #measurement Faraday- hot plasma approximation
-        self.FARh_typeI = None   #measurement Faraday - hot plasma and typeI approximation
+        self.FARc= None     # Measurement Faraday- Cold plasma approximation
+        self.FARc_typeI= None     # Measurement Faraday- Cold pasma and typeI approximation
+        self.FARh = None     # Measurement Faraday- hot plasma approximation
+        self.FARh_typeI = None   # Measurement Faraday - hot plasma and typeI approximation
+        
+        self.sigma_FARc= None     # Uncertainty measurement Faraday- Cold plasma approximation
+        self.sigma_FARc_typeI= None     # Uncertainty measurement Faraday- Cold pasma and typeI approximation
+        self.sigma_FARh = None     # Uncertainty measurement Faraday- hot plasma approximation
+        self.sigma_FARh_typeI = None   # Uncertainty measurement Faraday - hot plasma and typeI approximation
 
-        self.CMc= None     #measurement Cotton Mouton - cold plasma approximation
-        self.CMc_typeI = None     #measurement Cotton Mouton - cold plasma and typeI approximation
-        self.CMch = None    #measurement Cotton Mouton - hot plasma approximation
-        self.CMh_typeI = None    #measurement Cotton Mouton - hot plasma and typeI approximation
+        self.CMc= None     # Measurement Cotton Mouton - cold plasma approximation
+        self.CMc_typeI = None     # Measurement Cotton Mouton - cold plasma and typeI approximation
+        self.CMch = None    # Measurement Cotton Mouton - hot plasma approximation
+        self.CMh_typeI = None    # Measurement Cotton Mouton - hot plasma and typeI approximation
+
+        self.sigma_CMc= None     # Uncertainty measurement Cotton Mouton - cold plasma approximation
+        self.sigma_CMc_typeI = None     # Uncertainty measurement Cotton Mouton - cold plasma and typeI approximation
+        self.sigma_CMch = None    # Uncertainty measurement Cotton Mouton - hot plasma approximation
+        self.sigma_CMh_typeI = None    # Uncertainty measurement Cotton Mouton - hot plasma and typeI approximation
 
         self.unit_LIDc= None
 
@@ -113,6 +126,12 @@ class Diag_InterferometerPolarimeter:
         # Noisy measurements
         self.LIDc = np.array(self.ideal["LIDc"]) + noise_abs + noise_prop_c
         self.LIDh = np.array(self.ideal["LIDh"]) + noise_abs + noise_prop_h
+        
+        # Uncertainties
+        self.sigma_LIDc = np.sqrt(self.config["LID_noise_random_absolute_intensity"]**2 + 
+                                  (np.abs(self.ideal["LIDc"]) * self.config["LID_noise_random_proportional_intensity"])**2)
+        self.sigma_LIDh = np.sqrt(self.config["LID_noise_random_absolute_intensity"]**2 + 
+                                  (np.abs(self.ideal["LIDh"]) * self.config["LID_noise_random_proportional_intensity"])**2)
         
         # Unit measure
         self.unit_LIDc = "m^-2"
@@ -284,7 +303,27 @@ class Diag_InterferometerPolarimeter:
         self.CMc = np.array(self.ideal["CMc"]) + CM_noise_abs + CMc_noise_prop
         self.CMc_typeI = np.array(self.ideal["CMc_typeI"]) + CM_noise_abs + CMc_typeI_noise_prop
         self.CMh = np.array(self.ideal["CMh"]) + CM_noise_abs + CMh_noise_prop
-        self.CMh_typeI = np.array(self.ideal["CMh_typeI"]) + CM_noise_abs + CMh_typeI_noise_prop        
+        self.CMh_typeI = np.array(self.ideal["CMh_typeI"]) + CM_noise_abs + CMh_typeI_noise_prop
+
+        # Uncertainties
+        self.sigma_FARc = np.sqrt(self.config["FAR_noise_random_proportional_intensity"]**2 +
+                                  (abs(self.ideal["FARc"]*self.config["FAR_noise_random_proportional_intensity"]))**2)
+        self.sigma_FARc_typeI = np.sqrt(self.config["FAR_noise_random_proportional_intensity"]**2 +
+                                  (abs(self.ideal["FARc_typeI"] * self.config["FAR_noise_random_proportional_intensity"]))**2)
+        self.sigma_FARh = np.sqrt(self.config["FAR_noise_random_proportional_intensity"]**2 +
+                                  (abs(self.ideal["FARh"] * self.config["FAR_noise_random_proportional_intensity"]))**2)
+        self.sigma_FARh_typeI = np.sqrt(self.config["FAR_noise_random_proportional_intensity"]**2 +
+                                  (abs(self.ideal["FARh_typeI"] * self.config["FAR_noise_random_proportional_intensity"]))**2)
+        
+        self.sigma_CMc = np.sqrt(self.config["CM_noise_random_proportional_intensity"]**2 +
+                                  (abs(self.ideal["CMc"]*self.config["CM_noise_random_proportional_intensity"]))**2)
+        self.sigma_CMc_typeI = np.sqrt(self.config["CM_noise_random_proportional_intensity"]**2 +
+                                  (abs(self.ideal["CMc_typeI"] * self.config["CM_noise_random_proportional_intensity"]))**2)
+        self.sigma_CMh = np.sqrt(self.config["CM_noise_random_proportional_intensity"]**2 +
+                                  (abs(self.ideal["CMh"] * self.config["CM_noise_random_proportional_intensity"]))**2)
+        self.sigma_CMh_typeI = np.sqrt(self.config["CM_noise_random_proportional_intensity"]**2 +
+                                  (abs(self.ideal["CMh_typeI"] * self.config["CM_noise_random_proportional_intensity"]))**2)
+        
 
     def upload(self, configuration=1):
         if configuration == 1:

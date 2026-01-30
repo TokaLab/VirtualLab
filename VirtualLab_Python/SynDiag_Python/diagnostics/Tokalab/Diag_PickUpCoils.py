@@ -17,6 +17,7 @@ class Diag_PickUpCoils:
         self.Z = None       # Vertical coordinate
         self.n = None       # Coil normal versor (vector)
         self.B = None       # Measured Magnetic Field
+        self.sigma_B = None # Uncertainty for Measured Magnetic Field
         self.unit = None    # Unit measure
         self.config = {}    # Configuration dict (noise etc)
         self.ideal = {}     # Measurements without noise
@@ -43,6 +44,8 @@ class Diag_PickUpCoils:
 
         # Misura reale con rumore
         self.B = self.ideal['B'] + noise_abs + noise_prop
+        self.sigma_B = np.sqrt(self.config.get('noise_random_absolute_intensity',0)**2 + 
+                              (abs(self.ideal['B']) * self.config.get('noise_random_proportional_intensity', 0))**2)
 
         self.unit = "T"
 
