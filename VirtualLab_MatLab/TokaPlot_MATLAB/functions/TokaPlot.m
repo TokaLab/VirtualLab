@@ -311,7 +311,38 @@ classdef TokaPlot
 
         %% Function plot coils
 
-        % function fig = PlotCoils(obj,)
+        function fig = PlotCoils(obj,fig, config, coils)
+
+            coilNames = fieldnames(coils.system);
+            nCoils = numel(coilNames);
+
+            figure(fig)
+
+            if isfield(config, "hold") == 1 && config.hold == "on"
+                hold on
+            else 
+                hold off
+            end
+
+            for c = 1:nCoils
+                coil = coils.system.(coilNames{c});
+                hold on
+
+                fill([coil.edge.R(1) coil.edge.R(end) coil.edge.R(end) coil.edge.R(1)], ...
+                    [coil.edge.Z(1) coil.edge.Z(1) coil.edge.Z(end) coil.edge.Z(end)], [0.6 0.6 0.6]);
+                [RR,ZZ] = meshgrid(coil.R,coil.Z);
+                plot(RR,ZZ,'.r')
+
+                R_lim(:,c) = [min(coil.edge.R); max(coil.edge.R)];
+                Z_lim(:,c) = [min(coil.edge.Z); max(coil.edge.Z)];
+                
+            end
+
+            xlim([min(R_lim, [], "all") max(R_lim, [], "all")])
+            ylim([min(Z_lim, [], "all") max(Z_lim, [], "all")])
+            set(gca, 'color', [0.75 0.75 0.75])
+            
+        end
 
         %% Function Field's unit of measurement
 

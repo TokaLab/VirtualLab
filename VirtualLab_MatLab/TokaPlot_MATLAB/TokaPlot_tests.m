@@ -85,8 +85,9 @@ TP = TokaPlot;
 
 % fig.config.psi_lines = [0.88 0.9 0.99 1 1.01 1.1];
 figura.config.subplot = [1 1 1];
-figura.config.plot_wall = 0;
+figura.config.plot_wall = 1;
 figura1 = figure();
+config.plot_wall = 1;
 figura.config.hold = "on";
 
 
@@ -101,8 +102,10 @@ figure5.config.hold = "on";
 figure4.config.plot_wall = 1;
 
 figura1 = TP.PlotField(equi,"ne", figura1, figura.config);
+config2.hold = "on";
+TP.PlotCoils(figura1, config2, coils)
 % figura1 = TP.PlotDiagnostics(equi,Bolo, figura1, figure2.config);
-figura1 = TP.PlotDiagnostics(equi,SaddleCoils, figura1, figure4.config);
+% figura1 = TP.PlotDiagnostics(equi,SaddleCoils, figura1, figure4.config);
 % figura1 = TP.PlotDiagnostics(equi,TS, figura1, figure5.config);
 % figura1 = TP.PlotDiagnostics(equi,PickUp, figura1, figure3.config);
 % figura1 = TP.PlotDiagnostics(equi,FluxLoops, figura1, figure3.config);
