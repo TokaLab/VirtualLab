@@ -144,7 +144,6 @@ class TokaPlot:
             
     def plotmeasurements(self, diag, meas, fig, ax, config):
 
-        fig, ax = plt.subplots()
         
         y_value = getattr(diag,meas)
         
@@ -167,10 +166,6 @@ class TokaPlot:
             y_value=y_value.squeeze()
             y_err = np.ones((1,y_value.size))*getattr(diag, "sigma_" + meas)
             y_err = y_err.squeeze()
-            # print(y_err.shape)
-            # print(R.shape)
-            # print(y_value.shape)
-            # print(y_err)
             ax.errorbar(R, y_value, y_err, fmt='-', marker='.', label=meas) 
         else: 
             ax.plot(getattr(diag, meas), '-', marker='.', label=meas)
