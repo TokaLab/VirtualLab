@@ -4,6 +4,8 @@ Authors: TokaLab team,
 https://github.com/TokaLab/VirtualLab
 Date: 31/10/2025
 """
+# 
+from VirtualLab_init import *  # this will set up the paths and import necessary modules for the TokaLab environment
 
 from functions.tokamak import tokamak
 from functions.geometry import geometry
