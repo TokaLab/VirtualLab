@@ -2,7 +2,7 @@ clear; clc;
 
 % load equilibrium (calculated from SimPla)
 
-machine = "Tokalab";
+machine = "JET-like";
 paths = SynDiag_init(machine);
 
 addpath("equilibrium\")

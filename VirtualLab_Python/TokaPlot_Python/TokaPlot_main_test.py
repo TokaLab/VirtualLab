@@ -26,6 +26,7 @@ from diagnostics.Tokalab.Diag_ThomsonScattering import Diag_ThomsonScattering
 from diagnostics.Tokalab.Diag_InterferometerPolarimeter import Diag_InterferometerPolarimeter
 
 from TokaPlot import TokaPlot
+from Diag_LIT import Diag_LIT
 # Apri il file in modalità lettura binaria ("rb")
 #with open("equilibrium/equi.pkl", "rb") as f:
  #    equi = dill.load(f)
@@ -65,7 +66,6 @@ equi.equi_pp()
 # compute kinetic profiles
 equi.compute_profiles()
 
-import dill
 with open("equi.pkl", "wb") as f:
     dill.dump(equi, f)
 
@@ -112,27 +112,21 @@ fig2 = plt.figure(num=2)
 config["errorbar"]=1
 ax2 = {}
 ax1 = TP.plotfield(equi, "Te", fig1, ax1, config)
-TP.plotdiagnostics(equi, TS, fig1, ax1, config)
-# TP.plotmeasurements(SL,"Dpsi", fig2, ax2, config)
-fig2, ax2 = plt.subplots()
-ax2 = TP.plotmeasurements(SL, "Dpsi", fig2, ax2, config)
-TP.plotmeasurements(IP, "FARc_typeI", fig2, ax2, config)
+TP.plotdiagnostics(equi, IP, fig1, ax1, config)
+# # TP.plotmeasurements(SL,"Dpsi", fig2, ax2, config)
+# fig2, ax2 = plt.subplots()
+# ax2 = TP.plotmeasurements(SL, "Dpsi", fig2, ax2, config)
+# TP.plotmeasurements(IP, "FARc_typeI", fig2, ax2, config)
 plt.show()
-# fig3 = plt.figure(num=3)
-
-# config2 = {}
-# config2["subplot"] = [1, 3, 0, 2]   # aggiungi la "chiave"
-# config2["hold"] = True
-# config2["n_ofcolours"] = 3
-# config2["plot_walls"] = 0
 
 
+##
 
-# config = {}
-# fig = plt.figure(num=4)
-# config["axis_label"] = 'R'
-# config["errorplot"] = 1
-# config["plot_walls"] = 1
-# config["psi_lines"] = [0.5, 0.75, 0.9, 1, 1.2]
-# # config["n_ofcolours"] = 10
-# TP.plotfield(equi, "ne", fig, config)
+LIT = Diag_LIT()
+LIT.upload()
+LIT.measure(equi)
+
+fig3 = plt.figure(num=3)
+fig3, plt.plot(LIT.LAT)
+plt.show()
+    

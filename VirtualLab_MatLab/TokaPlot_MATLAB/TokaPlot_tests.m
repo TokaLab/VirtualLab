@@ -2,7 +2,7 @@ clear; clc;
 clf
 close all
 
-machine = "TokaLab";
+machine = "JET-like";
 
 % initialise the class tokamak
 tok = tokamak();
