@@ -354,7 +354,7 @@ classdef Diag_InterferometerPolarimeter
                 if configuration == 1
 
                     % 4 Vertical lines
-                    R_in = [1.89; 2.7; 3.04; 3.74];
+                    R_in = [1.89; 2.70; 3.04; 3.74];
                     R_out = [1.89; 2.70; 3.04; 3.74];
                     Z_in = [2; 2; 2; 2];
                     Z_out = [-2; -2; -2; -2];

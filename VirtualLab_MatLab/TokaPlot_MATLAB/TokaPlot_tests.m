@@ -11,7 +11,7 @@ tok = tokamak();
 tok = tok.machine_upload(machine);
 tok = tok.scenario_upload(1);
 tok = tok.kinetic_upload();
-tok = tok.coils_upload();
+% tok = tok.coils_upload();
 
 % initialise the class geometry
 geo = geometry;
@@ -39,41 +39,41 @@ equi = equi.equi_pp2();
 equi_fixed = equi;
 
 %%
-coils = coils;
-coils = coils.import_coils(tok);
-coils = coils.build_coils();
-
-equi.config.GSsolver.maxIter = 30;
-[equi, coils] = equi.solve_equilibrium_free_v1(coils);
-
-equi = equi.equi_pp2();
+% coils = coils;
+% coils = coils.import_coils(tok);
+% coils = coils.build_coils();
+% 
+% equi.config.GSsolver.maxIter = 30;
+% [equi, coils] = equi.solve_equilibrium_free_v1(coils);
+% 
+% equi = equi.equi_pp2();
 
 equi  = equi.compute_profiles();
 
 %% run your diagnostics
 
 PickUp = Diag_PickUpCoils();
-PickUp = PickUp.Upload(1);
+PickUp = PickUp.Upload(1,tok.machine);
 PickUp = PickUp.measure(equi);
 
 FluxLoops = Diag_FluxLoops();
-FluxLoops = FluxLoops.Upload(1);
+FluxLoops = FluxLoops.Upload(1,tok.machine);
 FluxLoops = FluxLoops.measure(equi);
 
 SaddleCoils = Diag_SaddleCoils();
-SaddleCoils = SaddleCoils.Upload(1);
+SaddleCoils = SaddleCoils.Upload(1,tok.machine);
 SaddleCoils = SaddleCoils.measure(equi);
 
 TS = Diag_ThomsonScattering();
-TS = TS.Upload(1);
+TS = TS.Upload(1,tok.machine);
 TS = TS.measure(equi);
 
 IntPol = Diag_InterferometerPolarimeter();
-IntPol = IntPol.Upload(1);
+IntPol = IntPol.Upload(1,tok.machine);
 IntPol = IntPol.measure(equi);
 
 Bolo = Diag_Bolo();
-Bolo = Bolo.Upload(1);
+Bolo = Bolo.Upload(1,tok.machine);
 Bolo = Bolo.measure(equi);
 
 %%
@@ -103,7 +103,7 @@ figure4.config.plot_wall = 1;
 
 figura1 = TP.PlotField(equi,"ne", figura1, figura.config);
 config2.hold = "on";
-TP.PlotCoils(figura1, config2, coils)
+% TP.PlotCoils(figura1, config2, coils)
 % figura1 = TP.PlotDiagnostics(equi,Bolo, figura1, figure2.config);
 % figura1 = TP.PlotDiagnostics(equi,SaddleCoils, figura1, figure4.config);
 % figura1 = TP.PlotDiagnostics(equi,TS, figura1, figure5.config);
@@ -114,7 +114,7 @@ TP.PlotCoils(figura1, config2, coils)
 % figura2.fig = figure();
 % figura2 = TP.PlotDiagnostics(equi,Bolo, figura2.fig, figura2.config);
 
-% fig3 = figure();
+fig3 = figure();
 % figure3.config.subplot = [1 3 1];
 % figure3.config.axis_label = "ch";
 % figure3.config.errorplot = 0;
@@ -125,8 +125,12 @@ TP.PlotCoils(figura1, config2, coils)
 % figure4.config.errorplot = 0;
 % figure4.config.hold = "on";
 % 
-% fig3 = TP.PlotDiagnostics(equi,TS, fig3, figure2.config);
-% fig3 = TP.PlotDiagnostics(equi,IntPol, fig3, figure2.config);
-% 
+fig3 = TP.PlotDiagnostics(equi,TS, fig3, figure2.config);
+fig3 = TP.PlotDiagnostics(equi,IntPol, fig3, figure2.config);
+fig3 = TP.PlotDiagnostics(equi,PickUp, fig3, figure2.config);
+fig3 = TP.PlotDiagnostics(equi,FluxLoops, fig3, figure2.config);
+fig3 = TP.PlotDiagnostics(equi,SaddleCoils, fig3, figure2.config);
+
+
 % 
 % 
