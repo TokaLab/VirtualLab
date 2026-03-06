@@ -1,6 +1,4 @@
 %% 
-%% 
-
 function VirtualLab_init(machine,restore_paths)
     % VirtualLab_init.m
     % 

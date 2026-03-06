@@ -35,14 +35,14 @@ paths_to_add = [
         "SynDiag_Python",
         "SynDiag_Python/diagnostics",
         f"SynDiag_Python/diagnostics/{machine}",
-        f"SynDiag_Python/diagnostics/{machine}/diagnostics_data"
+        f"SynDiag_Python/diagnostics/{machine}/diagnostics_data",
         "TokaPlot_Python", 
         "TokaPlot_Python/functions"
     ]
 
 # Correct path separators for Unix systems (if needed)
 if os.sep == '/':
-    paths_to_add = paths_to_add.replace('\\', '/')
+    paths_to_add = [p.replace('\\', '/') for p in paths_to_add]
 
 # Add paths to sys.path only if they are not already present
 for relative_path in paths_to_add:

@@ -16,7 +16,7 @@ tok = tokamak()
 
 # Upload the geometry information of your tokamak
 tok.machine_upload()
-tok.scenario_upload(3, 1)
+tok.scenario_upload(1, 1)
 tok.kinetic_upload(1)
 
 # Initialize the geometry class
