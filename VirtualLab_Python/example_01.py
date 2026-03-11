@@ -7,9 +7,9 @@ Date: 31/10/2025
 # 
 from VirtualLab_init import *  # this will set up the paths and import necessary modules for the TokaLab environment
 
-from functions.tokamak import tokamak
-from functions.geometry import geometry
-from functions.equilibrium import equilibrium
+from tokamak import tokamak
+from geometry import geometry
+from equilibrium import equilibrium
 
 # initialise the class tokamak to upload machine-dependent information
 tok = tokamak()

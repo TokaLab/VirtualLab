@@ -4,7 +4,7 @@ classdef Diag_InterferometerPolarimeter
 
     properties
 
-        R_in % Horixontal coordinate input
+        R_in % Horizontal coordinate input
         R_out % Horizontal coordinate output
 
         Z_in % Vertical coordinate input
