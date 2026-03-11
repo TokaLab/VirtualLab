@@ -27,8 +27,6 @@ equi.separatrix = equi.separatrix.build_separatrix(equi.config.separatrix,equi.g
 % load("additional_points.mat")
 new_points_R = [];%new_points_R(1:end);
 new_points_Z = [];%new_points_Z(1:end);
-% new_points_R = [4.2 3.6 5.4 5.8];
-% new_points_Z = [-4.3 -5 -4.6 -5.22];
 
 equi.separatrix.R_additional = new_points_R;
 equi.separatrix.Z_additional = new_points_Z;
@@ -47,13 +45,9 @@ coils = coils.build_coils();
 equi.config.GSsolver.maxIter = 30;
 [equi, coils] = equi.solve_equilibrium_free_v1(coils);
 
-% coils.system.PF3.Ic = coils.system.PF3.Ic.*10;
-% coils.system.PF4.Ic = coils.system.PF4.Ic.*10;
-% coils.system.VSU.Ic = coils.system.VSU.Ic.*10;
-% 
-% [equi, coils] = equi.solve_equilibrium_free_v1(coils);
-
 equi = equi.equi_pp2();
+
+equi  = equi.compute_profiles();
 
 %%
 

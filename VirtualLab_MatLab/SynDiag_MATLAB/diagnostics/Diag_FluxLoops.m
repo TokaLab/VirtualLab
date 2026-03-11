@@ -74,8 +74,9 @@ classdef Diag_FluxLoops
 
                     obj.config.noise_random_absolute_intensity = 0;
                     obj.config.noise_random_proportional_intensity = 0;
-
+            
                 end
+                 
             end
 
             %%%%%%%%%%%% JET-like Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%

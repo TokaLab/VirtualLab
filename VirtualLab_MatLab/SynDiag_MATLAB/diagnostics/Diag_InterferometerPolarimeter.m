@@ -354,16 +354,16 @@ classdef Diag_InterferometerPolarimeter
                 if configuration == 1
 
                     % 4 Vertical lines
-                    R_in = [4; 5.4; 6.8; 8];
-                    R_out = [4; 5.4; 6.8; 8];
-                    Z_in = [5; 5; 5; 5];
-                    Z_out = [-5; -5; -5; -5];
+                    R_in = [1.89; 2.70; 3.04; 3.74];
+                    R_out = [1.89; 2.70; 3.04; 3.74];
+                    Z_in = [2; 2; 2; 2];
+                    Z_out = [-2; -2; -2; -2];
 
                     % 4 Horizontal lines
-                    R_in = [R_in; 9; 9; 9; 9];
-                    R_out = [R_out; 3.4; 3.4; 3.4; 3.4];
-                    Z_in = [Z_in; 0; 0; 0; 0];
-                    Z_out = [Z_out; -3.2; -1.4; -0.2; 1];
+                    R_in = [R_in; 4; 4; 4;	4];
+                    R_out = [R_out; 1.7; 1.7; 1.7; 1.7];
+                    Z_in = [Z_in; -0.20; -0.20; -0.19; -0.06];
+                    Z_out = [Z_out; -1.15; -0.56; -0.10; 0.51];
 
                     obj.R_in = R_in;
                     obj.R_out = R_out;
@@ -373,10 +373,10 @@ classdef Diag_InterferometerPolarimeter
                     % laser info and constants
                     obj.config.C1 = 2.45e-11;
                     obj.config.C3 = 5.26e-13;
-                    obj.config.lambda = 75e-6; % um
+                    obj.config.lambda = 1.95e-4; % m
 
                     % Polarisation state (linear at 45°)
-                    obj.config.alpha = [pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4 pi/4];
+                    obj.config.alpha = [0.78 0.78 -0.78 -0.78 0.01 -0.001 0.019 -0.04];
                     obj.config.phi = [0 0 0 0 0 0 0 0];
 
                     % Discretisation

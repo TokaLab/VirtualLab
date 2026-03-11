@@ -185,6 +185,10 @@ class TokaPlot:
               color=[0.75, 0.75, 0.75],
               label="_nolegend_")
              
+     # def plotcoils(self, ax, equi, coils):
+         
+         
+             
 
     def tokacolor(self,diag,n_ofcolours):
         

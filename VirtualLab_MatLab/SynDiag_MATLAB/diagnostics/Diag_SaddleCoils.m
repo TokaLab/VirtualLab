@@ -113,7 +113,7 @@ classdef Diag_SaddleCoils
 
                     obj.config.configuration = 1;
 
-                    load("SaddleCoilsData_DTTlike_config_1.mat")
+                    load("SaddleCoilsData_DTTlike_config_1.mat", "R1", "R2", "Z1", "Z2")
 
                     obj.R1 = R1;
                     obj.Z1 = Z1;
