@@ -27,11 +27,10 @@ classdef profile_radiation
             Te = equi.Te;
             Ti = equi.Ti;
             
-            if isempty(equi.Zeff)
-            
+            if isempty(equi.Zeff) || ~isfield(equi.Zeff)
                 Zeff=1;
             else
-            Zeff=equi.Zeff;
+                Zeff=equi.Zeff;
             end
 
             profiles_radiation.Rad = 1.82*1e-36*Zeff*ne.*ni.*sqrt(Te);
