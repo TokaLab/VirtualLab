@@ -3,9 +3,8 @@ classdef radiation
     % radiation description
 
     properties
-
         brems
-
+        analytic
     end
 
     methods
@@ -22,6 +21,15 @@ classdef radiation
         end 
 
         %% analythical 
+        
+        function obj = initialise_phantoms(obj,method)
+            
+            if nargin < 2; method = 1; end
+
+            obj.analytic = phantom();
+            obj.analytic = obj.analytic.initialise(method);
+     
+        end 
 
        
  

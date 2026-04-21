@@ -1,7 +1,5 @@
 clear; clc;
-
-clear; clc;
-
+addpath('functions_rad\')
 % initialise the class tokamak
 tok = tokamak;
 
@@ -41,22 +39,38 @@ equi = equi.equi_pp2();
 equi  = equi.compute_profiles();
 
 % plot my equilibrium and profiles
-figure(2)
-clf
-equi.plot_fields("ne",1)
-hold on
-equi.geo.plot_wall
+% figure(2)
+% clf
+% equi.plot_fields("ne",1)
+% hold on
+% equi.geo.plot_wall
 
 %% 
-
 rad = radiation();
 rad = rad.initialise_brems(1);
-rad = rad.brems.calculation_m1(equi);
-
-
+rad = rad.initialise_phantoms(2);
+equi.Rad= rad.analytic.calculation_phantom(equi);
 Bolo = Diag_Bolo();
 Bolo  = Bolo.Upload(1);
 Bolo = Bolo.measure(equi);
+
+%%
+equi.Rad= rad.analytic.calculation_phantom(equi);
+
+TP = TokaPlot();
+figura1 = figure(1);
+figura.config.psi_lines = [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 0.99 1 1.01 1.1];
+figura.config.subplot = [1 1 1];
+figura.config.plot_wall = 1;
+figura1 = TP.PlotField(equi,"Rad",figura1, figura.config);
+
+
+%% Database
+DB1 = SyntheticDB(1000,equi,'Analytic');
+DB1= DB1.generate();
+DB1.save('RadDB.csv')
+
+
 
 
 

@@ -364,6 +364,9 @@ classdef TokaPlot
                 uom = " [arb. units]";
             elseif field == "p"
                 uom = " [Pa]";
+            elseif field == 'Rad'
+                uom = "[W/m^3]";
+
             end
         end
 
