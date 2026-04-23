@@ -1,0 +1,91 @@
+
+db{1}.config.machine = "TokaLab";
+
+db{1}.config.rad_method = "phantom"; % bremsstrahlung / phantom /
+db{1}.config.rad_gen = "random"; % random / scenario /
+db{1}.config.rad_scenario = 1;
+db{1}.config.rad_N = 10;
+db{1}.config.rad_seeds = 4;
+
+db{1}.config.equi_sim = 0; % utilizza solo un equilibrio
+db{1}.config.equi_scenario = 1;
+
+
+%%
+
+% function db_gen
+
+for i1 = 1 : length(db)
+
+    %% equilibrium generation
+
+    % initialise the class tokamak
+    tok = tokamak;
+
+    % upload the geometry information of your tokamak
+    tok = tok.machine_upload(db{i1}.config.machine);
+    tok = tok.scenario_upload(db{i1}.config.equi_scenario);
+    tok = tok.kinetic_upload();
+
+    % initialise the class geometry
+    geo = geometry;
+    geo = geo.import_geometry(tok);
+    geo = geo.build_geometry();
+    geo = geo.inside_wall();
+
+    % initialise the class equilibrium
+    equi = equilibrium;
+    equi = equi.import_configuration(geo,tok.config);
+    equi = equi.import_classes();
+    equi.separatrix = equi.separatrix.build_separatrix(equi.config.separatrix,equi.geo);
+
+    % solve equilibrium
+    equi.config.GSsolver.Plotting = 0;
+    equi = equi.solve_equilibrium();
+
+    % post processing (Opoint, Xpoint, LFCS)
+    equi = equi.equi_pp2();
+
+    % mhd and kinetic profiles
+    equi  = equi.compute_profiles();
+
+    %% phantom generation
+
+    % initialise radiation class
+    rad = radiation();
+    rad = rad.initialise_phantoms(db{i1}.config.rad_scenario);
+
+    % generate phantoms
+    for i2 = 1 : db{i1}.config.rad_N
+
+        % generate
+
+        if db{i1}.config.rad_gen == "random"
+
+            % generate (randomly) synthetic
+            seeds = randi(4);
+            lambda = rand(1,seeds);
+            phantom = zeros(size(equi.geo.grid.Rg));
+
+            for i3 = 1 : length(lambda)
+                rad.analytic.config.I0=1e4+(1e5-1e4)*rand();
+                rad.analytic.config.mu_p=2*pi*rand();
+                rad.analytic.config.mu_h=1.005*rand();
+                rad.analytic.config.std_p=0.1+0.4*rand()*rad.analytic.config.mu_h*pi;
+                rad.analytic.config.std_h=0.01+0.05*rad.analytic.config.mu_h+0.25*rand()*min(rad.analytic.config.mu_h,0.5);
+                phantom_1=rad.analytic.calculation_phantom(equi);
+                phantom=phantom+phantom_1;
+            end
+
+        else
+            % new generation method to be implemented
+
+        end
+        
+        % append
+        data(i2,:) = phantom(:);
+
+    end
+
+end
+
