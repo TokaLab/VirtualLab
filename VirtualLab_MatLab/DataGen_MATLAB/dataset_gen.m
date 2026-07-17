@@ -1,4 +1,4 @@
-clear; clc;
+clear; clc; clf
 
 %% Upload the dataset configuration
 
