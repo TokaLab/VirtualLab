@@ -1,0 +1,127 @@
+classdef db_gen_radiation
+
+    properties
+
+    end
+
+    methods
+
+        %% main methods for db generation
+        function db = generate(obj,db)
+
+            for i1 = 1 : length(db)
+
+                if db{i1}.config.equi_sim == 0
+
+                    %% Equilibrium
+
+                    % it generates only one equilibrium for the entire db{i1}
+                    equi = obj.equi_generate_1(db{i1}.config);
+                    db{i1}.equi = equi;
+
+                    %% Phantom
+
+                    % radiation generation method
+                    if db{i1}.config.rad_gen == "random"
+                        % random generation
+                        db{i1}.data_rad = obj.phantom_random_m1(db{i1}.config,equi);
+                    else
+                        % other methods to be implemented
+                    end
+                    
+                else
+                    % other methods to generate equilibrium
+
+                end
+
+
+            end
+
+        end
+
+        %% equilibrium generation
+
+        function equi = equi_generate_1(~,config)
+
+            % initialise the class tokamak
+            tok = tokamak;
+
+            % upload the geometry information of your tokamak
+            tok = tok.machine_upload(config.machine);
+            tok = tok.scenario_upload(config.equi_scenario);
+            tok = tok.kinetic_upload();
+
+            % initialise the class geometry
+            geo = geometry;
+            geo = geo.import_geometry(tok);
+            geo = geo.build_geometry();
+            geo = geo.inside_wall();
+
+            % initialise the class equilibrium
+            equi = equilibrium;
+            equi = equi.import_configuration(geo,tok.config);
+            equi = equi.import_classes();
+            equi.separatrix = equi.separatrix.build_separatrix(equi.config.separatrix,equi.geo);
+
+            % solve equilibrium
+            equi.config.GSsolver.Plotting = 0;
+            equi = equi.solve_equilibrium();
+
+            % post processing (Opoint, Xpoint, LFCS)
+            equi = equi.equi_pp2();
+
+            % mhd and kinetic profiles
+            equi  = equi.compute_profiles();
+
+        end
+
+        %% Phantom random generation
+        function data = phantom_random_m1(~,config,equi)
+
+            % initialise radiation class
+            rad = radiation();
+            rad = rad.initialise_phantoms(config.rad_scenario);
+
+            for i2 = 1 : config.rad_N
+
+                % generate (randomly) synthetic
+                seeds = randi(config.rad_seeds);
+                lambda = rand(1,seeds);
+                phantom = zeros(size(equi.geo.grid.Rg));
+
+                for i3 = 1 : length(lambda)
+                    rad.analytic.config.I0 = 1e4+(1e5-1e4)*rand();
+                    rad.analytic.config.mu_p = 2*pi*rand();
+                    rad.analytic.config.mu_h = 1.005*rand();
+                    rad.analytic.config.std_p = 0.1+0.4*rand()*rad.analytic.config.mu_h*pi;
+                    rad.analytic.config.std_h = 0.01+0.05*rad.analytic.config.mu_h+0.25*rand()*min(rad.analytic.config.mu_h,0.5);
+                    phantom_1=rad.analytic.calculation_phantom(equi);
+                    phantom=phantom+phantom_1;
+                end
+
+                data(i2,:) = phantom(:);
+
+            end
+        end
+
+        %% utils functions
+
+        function [] = save_db(~,db,filename,folder)
+
+            if nargin == 2
+                filename = "db_last";
+                folder = "dataset";
+            elseif nargin == 3
+                folder = "dataset";
+            end
+
+            if ~(exist(folder,"dir") == 7)
+                save(folder+"\"+filename+".mat", 'db');
+
+            disp("db saved in " + folder + " - filename: " + name)
+
+        end
+
+    end
+
+end
