@@ -85,3 +85,46 @@ Bolo  = Bolo.Upload(1,machine);
 Bolo = Bolo.measure(equi);
 figure(8); clf; Bolo.plot_geo()
 
+%%
+close all; 
+figure(9)
+clf
+subplot(2,3,1)
+equi.plot_fields("pe",1)
+hold on
+geo.plot_wall()
+plot(PickUp.R,PickUp.Z,'.r','MarkerSize',16)
+
+subplot(2,3,2)
+equi.plot_fields("pe",1)
+hold on
+geo.plot_wall()
+plot([SaddleCoils.R1 SaddleCoils.R2],...
+    [SaddleCoils.Z1 SaddleCoils.Z2],'.-r','MarkerSize',16)
+
+subplot(2,3,3)
+equi.plot_fields("pe",1)
+hold on
+geo.plot_wall()
+plot(FluxLoops.R,FluxLoops.Z,'or','LineWidth',2)
+
+subplot(2,3,4)
+equi.plot_fields("pe",1)
+hold on
+geo.plot_wall()
+plot([IntPol.R_in IntPol.R_out]',...
+    [IntPol.Z_in IntPol.Z_out]','.-r','MarkerSize',16)
+
+subplot(2,3,5)
+equi.plot_fields("pe",1)
+hold on
+geo.plot_wall()
+plot(TS.R,TS.Z,'.r','MarkerSize',16)
+
+subplot(2,3,6)
+equi.plot_fields("pe",1)
+hold on
+geo.plot_wall()
+plot([Bolo.R_in Bolo.R_end]',...
+    [Bolo.Z_in Bolo.Z_end]','-r')
+

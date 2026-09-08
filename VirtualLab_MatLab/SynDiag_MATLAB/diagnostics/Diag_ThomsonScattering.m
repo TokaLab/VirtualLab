@@ -149,8 +149,8 @@ classdef Diag_ThomsonScattering
 
                     obj.config.configuration = 1;
 
-                    obj.R = linspace(6,8.4,60);
-                    obj.Z = linspace(0,0.5,60);
+                    obj.R = linspace(1.05,0.85,35);
+                    obj.Z = linspace(0.53,0,35);
 
                     obj.config.ne_noise_random_absolute_intensity = 0;
                     obj.config.Te_noise_random_absolute_intensity = 0;

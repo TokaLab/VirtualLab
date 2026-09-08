@@ -4,6 +4,11 @@ function geo = DTT_like_Geometry()
     geo.R0 = 2.2;
     geo.a = 0.7;
 
+    geo.grid.build_method = "edge";
+
+    geo.grid.R_range = [1.2 3.2];
+    geo.grid.Z_range = [-2 2];
+
     geo.grid.kappa_max = 2.1;
     geo.grid.wall_thick = 0.2;
 

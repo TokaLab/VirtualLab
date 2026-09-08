@@ -65,8 +65,13 @@ classdef geometry
             N_Z = obj.grid.N_Z;
 
             % horizontal (R) and vertical (Z) coordinates
-            R = linspace(R0-a-wall_thick,R0+a+wall_thick,N_R);
-            Z = linspace(-kappa_max*a-wall_thick,kappa_max*a+wall_thick,N_Z);
+            if  obj.grid.build_method == "edge"
+                R = linspace(obj.grid.R_range(1),obj.grid.R_range(2),N_R);
+                Z = linspace(obj.grid.Z_range(1),obj.grid.Z_range(2),N_Z);
+            elseif obj.grid.build_method == "wallthick"
+                R = linspace(R0-a-wall_thick,R0+a+wall_thick,N_R);
+                Z = linspace(-kappa_max*a-wall_thick,kappa_max*a+wall_thick,N_Z);
+            end
 
             % generate the grid
             [Rg,Zg] = meshgrid(R,Z);

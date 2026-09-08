@@ -4,6 +4,7 @@ function geo = Tokalab_Geometry()
     geo.R0 = 6;
     geo.a = 2;
 
+    geo.grid.build_method = "wallthick";
     geo.grid.kappa_max = 2.2;
     geo.grid.wall_thick = 1.25;
 
